@@ -1,65 +1,94 @@
-using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 using System.Collections;
-
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 public class SceneFade : MonoBehaviour
 {
-    [Header("Scene Settings")]
-    public string targetSceneName;
-    public float delaySeconds = 1f;
+    [Header("フェード用Image")]
+    public Image fadeImage;
 
-    [Header("Fade Settings")]
-    public bool useFade = true;
-    public float fadeDuration = 1f;
-    public Image fadeImage; // 黒背景のImage（Alpha=0の状態）
+    [Header("シーン開始時のフェード設定")]
+    public bool fadeInOnStart = false;
+    public bool fadeOutOnStart = false;
 
-    private bool isSwitching = false;
+    [Header("次のシーン名 (フェードアウト時のみ使用)")]
+    public string nextSceneName;
+
+    [Header("フェードの所要時間(秒)")]
+    public float fadeDuration = 1.0f;
+
+    private bool isFading = false;
 
     void Start()
     {
-        if (useFade && fadeImage != null)
+        if (fadeInOnStart && fadeOutOnStart)
         {
-            // 最初にフェードイン（画面表示）
-            StartCoroutine(Fade(1, 0));
+            Debug.LogWarning("FadeInOnStart と FadeOutOnStart が両方ONになっています。どちらか1つにしてください。");
+            return;
+        }
+
+        if (fadeInOnStart)
+        {
+            StartCoroutine(FadeIn());
         }
     }
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0) && !isSwitching)
+        // クリックでフェードアウト実行
+        if (Input.GetMouseButtonDown(0) && !isFading)
         {
-            StartCoroutine(SwitchScene());
+            StartCoroutine(FadeOut(nextSceneName));
         }
     }
 
-    IEnumerator SwitchScene()
+    public IEnumerator FadeIn()
     {
-        isSwitching = true;
+        isFading = true;
 
-        yield return new WaitForSeconds(delaySeconds);
-
-        if (useFade && fadeImage != null)
-        {
-            yield return StartCoroutine(Fade(0, 1)); // フェードアウト
-        }
-
-        SceneManager.LoadScene(targetSceneName);
-    }
-
-    IEnumerator Fade(float fromAlpha, float toAlpha)
-    {
-        float t = 0f;
+        float time = 0f;
         Color color = fadeImage.color;
-        while (t < fadeDuration)
+        color.a = 1f;
+        fadeImage.color = color;
+
+        while (time < fadeDuration)
         {
-            t += Time.deltaTime;
-            float a = Mathf.Lerp(fromAlpha, toAlpha, t / fadeDuration);
-            fadeImage.color = new Color(color.r, color.g, color.b, a);
+            time += Time.deltaTime;
+            color.a = Mathf.Lerp(1f, 0f, time / fadeDuration);
+            fadeImage.color = color;
             yield return null;
         }
 
-        // 完全に指定されたアルファに設定（補正）
-        fadeImage.color = new Color(color.r, color.g, color.b, toAlpha);
+        color.a = 0f;
+        fadeImage.color = color;
+        isFading = false;
+    }
+
+    public IEnumerator FadeOut(string sceneName)
+    {
+        isFading = true;
+
+        float time = 0f;
+        Color color = fadeImage.color;
+        color.a = 0f;
+        fadeImage.color = color;
+
+        while (time < fadeDuration)
+        {
+            time += Time.deltaTime;
+            color.a = Mathf.Lerp(0f, 1f, time / fadeDuration);
+            fadeImage.color = color;
+            yield return null;
+        }
+
+        color.a = 1f;
+        fadeImage.color = color;
+        isFading = false;
+
+        if (!string.IsNullOrEmpty(sceneName))
+        {
+            SceneManager.LoadScene(sceneName);
+        }
     }
 }
