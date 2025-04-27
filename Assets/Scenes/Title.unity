@@ -436,6 +436,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetSceneName: Title2
   delaySeconds: 1
+  isSwitching: 0
 --- !u!1 &1276682045
 GameObject:
   m_ObjectHideFlags: 0
@@ -865,6 +866,6 @@ SceneRoots:
   m_Roots:
   - {fileID: 1870156325}
   - {fileID: 97684659}
-  - {fileID: 1739375175}
   - {fileID: 1069075081}
+  - {fileID: 1739375175}
   - {fileID: 822082581}
