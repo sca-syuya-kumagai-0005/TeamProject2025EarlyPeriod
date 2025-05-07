@@ -3,7 +3,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 
-public class CameraMask : MonoBehaviour
+public class CameraMask :SoundPlayer
 {
     [SerializeField] GameObject mask;
     [SerializeField] float lensSpeed;
@@ -16,6 +16,7 @@ public class CameraMask : MonoBehaviour
     [SerializeField]private GameObject lens;
     private string enemyTag="Enemy";
     private string backGroundTag="BackGround";
+    AudioClip clip;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -24,6 +25,8 @@ public class CameraMask : MonoBehaviour
         enemies=(GameObject.FindGameObjectsWithTag(enemyTag));
         mask.transform.position = new Vector3(0, 0, 0);
         Cursor.visible = false;
+        SEPlayer(clip,false);
+
     }
 
     // Update is called once per frame
@@ -38,7 +41,7 @@ public class CameraMask : MonoBehaviour
     }
 
     /// <summary>
-    /// ƒJ[ƒ\ƒ‹‚Ì“®‚«@ƒfƒoƒbƒO—p‚È‚Ì‚Å‰¼À‘•
+    /// ï¿½Jï¿½[ï¿½\ï¿½ï¿½ï¿½Ì“ï¿½ï¿½ï¿½ï¿½@ï¿½fï¿½oï¿½bï¿½Oï¿½pï¿½È‚Ì‚Å‰ï¿½ï¿½ï¿½ï¿½ï¿½
     /// </summary>
     void PointerMove()
     {
@@ -50,7 +53,7 @@ public class CameraMask : MonoBehaviour
     }
 
     /// <summary>
-    /// Ê^‚ÌØ‚è”²‚«
+    /// ï¿½Ê^ï¿½ÌØ‚è”²ï¿½ï¿½
     /// </summary>
     void MakePhoto()
     {
@@ -75,7 +78,7 @@ public class CameraMask : MonoBehaviour
     }
 
     /// <summary>
-    /// ì¬‚µ‚½Ê^ƒIƒuƒWƒFƒNƒg‚ğPhotoStorage‚ÉƒRƒs[
+    /// ï¿½ì¬ï¿½ï¿½ï¿½ï¿½ï¿½Ê^ï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½ï¿½PhotoStorageï¿½ÉƒRï¿½sï¿½[
     /// </summary>
     void SavePhoto()
     {
@@ -84,7 +87,7 @@ public class CameraMask : MonoBehaviour
         photo.SetActive(false);
     }
 
-    //ƒfƒoƒbƒO—p@”wŒi‚Æ‚©‚à‚ë‚à‚ë‚ÌActive‚ğfalse‚É‚µ‚ÄŒ©‚â‚·‚­‚·‚é‚½‚ß‚ÌŠÖ”@
+    //ï¿½fï¿½oï¿½bï¿½Oï¿½pï¿½@ï¿½wï¿½iï¿½Æ‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Activeï¿½ï¿½falseï¿½É‚ï¿½ï¿½ÄŒï¿½ï¿½â‚·ï¿½ï¿½ï¿½ï¿½ï¿½é‚½ï¿½ß‚ÌŠÖï¿½ï¿½@
     void DebugFunction()
     {
         backGround.SetActive(false);
