@@ -132,8 +132,8 @@ GameObject:
   - component: {fileID: 5115188}
   - component: {fileID: 5115187}
   m_Layer: 0
-  m_Name: Circle (2)
-  m_TagString: Untagged
+  m_Name: Eye
+  m_TagString: Eye
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -509,8 +509,8 @@ GameObject:
   - component: {fileID: 817013479}
   - component: {fileID: 817013478}
   m_Layer: 0
-  m_Name: Circle (1)
-  m_TagString: Untagged
+  m_Name: Eye
+  m_TagString: Eye
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -889,7 +889,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa15053326cc71f42a02cd852ea364be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AddPoint: 0
 --- !u!212 &1200418119
 SpriteRenderer:
   m_ObjectHideFlags: 0
