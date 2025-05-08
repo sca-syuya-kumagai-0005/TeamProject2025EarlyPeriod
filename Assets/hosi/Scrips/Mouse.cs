@@ -4,47 +4,56 @@ using UnityEngine;
 
 public class Mouse : MonoBehaviour
 {
-    Vector3 mousePos, pos; //マウスとゲームオブジェクトの座標データを格納
-
-    public bool AddPoint = false;
+    Vector3 mousePos, pos;
     int score;
+    Collider2D circleCollider;
 
-    private void Start()
+    void Start()
     {
-        AddPoint = false;
         score = 0;
+        circleCollider = GetComponent<Collider2D>();
     }
 
     void Update()
     {
-        //マウスの座標を取得する
+        // マウス座標からワールド座標へ変換し位置を更新
         mousePos = Input.mousePosition;
-        //マウス位置を確認
-        //Debug.Log(mousePos);
-        //スクリーン座標をワールド座標に変換する
         pos = Camera.main.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, 10f));
-        //ワールド座標をゲームオブジェクトの座標に設定する
         transform.position = pos;
 
-        if(AddPoint == true)
+        // マウス左クリックでスコア計算
+        if (Input.GetMouseButtonDown(0))
         {
-            if (Input.GetMouseButtonDown(0))
+            AddScore();
+        }
+    }
+
+    void AddScore()
+    {
+        Collider2D[] eyes = GameObject.FindObjectsOfType<Collider2D>();
+        int addPoints = 0;
+
+        foreach (var eye in eyes)
+        {
+            if (eye.CompareTag("Eye"))
             {
-                score++;
-                Debug.Log(score);
+                // 各目の全Boundsがサークル内に含まれているかチェック
+                if (IsFullyInside(circleCollider.bounds, eye.bounds))
+                {
+                    addPoints++;
+                }
             }
         }
-        
+
+        if (addPoints > 0)
+        {
+            score += addPoints;
+            Debug.Log("Score: " + score);
+        }
     }
 
-    void OnTriggerStay2D(Collider2D other)
+    bool IsFullyInside(Bounds outer, Bounds inner)
     {
-        AddPoint = true;
+        return outer.Contains(inner.min) && outer.Contains(inner.max);
     }
-
-    void OnTriggerExit2D(Collider2D other)
-    {
-        AddPoint = false;
-    }
-
 }
