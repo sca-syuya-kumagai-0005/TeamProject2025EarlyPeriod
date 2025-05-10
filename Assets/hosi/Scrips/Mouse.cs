@@ -30,24 +30,48 @@ public class Mouse : MonoBehaviour
 
     void AddScore()
     {
-        Collider2D[] eyes = GameObject.FindObjectsOfType<Collider2D>();
-        int addPoints = 0;
+        Collider2D[] colliders = GameObject.FindObjectsOfType<Collider2D>();
+        int nAddPoints = 0;
+        int tAddPoints = 0;
 
-        foreach (var eye in eyes)
+        int AddedScore = 0;
+
+        foreach (var col in colliders)
         {
-            if (eye.CompareTag("Eye"))
+            if (col.CompareTag("nEye") && IsFullyInside(circleCollider.bounds, col.bounds))
             {
-                // 各目の全Boundsがサークル内に含まれているかチェック
-                if (IsFullyInside(circleCollider.bounds, eye.bounds))
-                {
-                    addPoints++;
-                }
+                nAddPoints++; //ノーマルの目、1もしくは2追加される
+            }
+            else if (col.CompareTag("tEye") && IsFullyInside(circleCollider.bounds, col.bounds))
+            {
+                tAddPoints++; //脅かしの目、2もしくは5追加される
             }
         }
 
-        if (addPoints > 0)
+        // ノーマル目のスコア処理
+        if (nAddPoints == 1) //ノーマルの目:1つの時
         {
-            score += addPoints;
+            AddedScore += 1;
+        }
+        else if(nAddPoints == 2) //ノーマルの目:2つの時
+        {
+            AddedScore += 2;
+        }
+            
+        // 脅かし目のスコア処理
+        if (tAddPoints == 1) //脅かしの目:1つの時
+        {
+            AddedScore += 2;
+        }
+        else if (tAddPoints == 2) //脅かしの目:1つの時
+        {
+            AddedScore += 5;
+        }
+
+        // スコア加算と表示
+        if (AddedScore > 0)
+        {
+            score += AddedScore;
             Debug.Log("Score: " + score);
         }
     }
