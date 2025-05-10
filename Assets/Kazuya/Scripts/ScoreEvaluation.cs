@@ -20,6 +20,8 @@ public class ScoreEvaluation : MonoBehaviour
     public InputField inputField;
     public Text nameText;
 
+    List<int> ranc = new List<int>();
+
     [SerializeField] int ResltScore;
     [SerializeField] int evaluationA;
     [SerializeField] int evaluationB;
@@ -33,16 +35,18 @@ public class ScoreEvaluation : MonoBehaviour
     {
         //InputFieldの取得
         inputField = inputField.GetComponent<InputField>();
-        //nameText = inputField.GetComponent<Text>();
-        if (ResltScore <= evaluationC)
+        inputField.Select();//入力のタイミングで呼び出す
+
+        //スコアによるランク判定
+        if (ResltScore < evaluationC)
         {
             evaluation = Evaluation.D;
         }
-        else if (ResltScore <= evaluationB)
+        else if (ResltScore < evaluationB)
         {
             evaluation = Evaluation.C;
         }
-        else if(ResltScore <= evaluationA)
+        else if(ResltScore < evaluationA)
         {
             evaluation = Evaluation.B;
         }
@@ -52,9 +56,9 @@ public class ScoreEvaluation : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
     void Update()
     {
+        //ランクの表示
         switch (evaluation)
         {
             case Evaluation.A:
