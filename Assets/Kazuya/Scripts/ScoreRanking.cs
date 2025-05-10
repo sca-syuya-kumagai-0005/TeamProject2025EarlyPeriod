@@ -5,8 +5,9 @@ using System.IO;
 
 public class ScoreRanking : MonoBehaviour
 {
-    [SerializeField] 
+    [SerializeField] int score;
 
+    int[] Scores;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -21,7 +22,15 @@ public class ScoreRanking : MonoBehaviour
             foreach(string line in lines)
             {
                 string[] values = line.Split(',');
+                for (int i = 0; i < 10; i++)
+                {
+                    Scores[i] = int.Parse(values[1]);
+                    Debug.Log(Scores[i]);
+                }
             }
+
+
+
         }
         else
         {
@@ -32,7 +41,7 @@ public class ScoreRanking : MonoBehaviour
 
         ///
         /// ランキングの手順
-        /// データの読み込み
+        /// データの読み込み 〇
         /// 現在のデータと読み込んだデータを比較してtop10に入るかを確認する
         /// 名前の入力
         /// ランキングの変動
