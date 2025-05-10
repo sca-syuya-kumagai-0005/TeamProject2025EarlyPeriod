@@ -1,8 +1,8 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+
 public class SceneFade : MonoBehaviour
 {
     [Header("フェード用Image")]
@@ -11,21 +11,52 @@ public class SceneFade : MonoBehaviour
     [Header("次のシーン名 (フェードアウト時のみ使用)")]
     public string nextSceneName;
 
-    [Header("フェードの所要時間(秒)")]
-    public float fadeDuration = 1.0f;
+    [Header("フェードインの所要時間(秒)")]
+    public float fadeInDuration = 1.0f;
+
+    [Header("フェードアウトの所要時間(秒)")]
+    public float fadeOutDuration = 1.0f;
 
     private bool isFading = false;
 
-    void Update()
+    void Start()
     {
-        // マウス左クリックでフェードアウト実行
-        if (Input.GetMouseButtonDown(0) && !isFading)
+        // シーン開始時にフェードインを実行
+        StartCoroutine(FadeIn());
+    }
+
+    // ボタンから呼び出せる（フェードアウト→シーン遷移）
+    public void FadeOutStart()
+    {
+        if (!isFading)
         {
-            StartCoroutine(FadeOut(nextSceneName));
+            StartCoroutine(FadeOut());
         }
     }
 
-    public IEnumerator FadeOut(string sceneName)
+    private IEnumerator FadeIn()
+    {
+        isFading = true;
+
+        float time = 0f;
+        Color color = fadeImage.color;
+        color.a = 1f;
+        fadeImage.color = color;
+
+        while (time < fadeInDuration)
+        {
+            time += Time.deltaTime;
+            color.a = Mathf.Lerp(1f, 0f, time / fadeInDuration);
+            fadeImage.color = color;
+            yield return null;
+        }
+
+        color.a = 0f;
+        fadeImage.color = color;
+        isFading = false;
+    }
+
+    private IEnumerator FadeOut()
     {
         isFading = true;
 
@@ -34,21 +65,20 @@ public class SceneFade : MonoBehaviour
         color.a = 0f;
         fadeImage.color = color;
 
-        while (time < fadeDuration)
+        while (time < fadeOutDuration)
         {
             time += Time.deltaTime;
-            color.a = Mathf.Lerp(0f, 1f, time / fadeDuration);
+            color.a = Mathf.Lerp(0f, 1f, time / fadeOutDuration);
             fadeImage.color = color;
             yield return null;
         }
 
         color.a = 1f;
         fadeImage.color = color;
-        isFading = false;
 
-        if (!string.IsNullOrEmpty(sceneName))
+        if (!string.IsNullOrEmpty(nextSceneName))
         {
-            SceneManager.LoadScene(sceneName);
+            SceneManager.LoadScene(nextSceneName);
         }
     }
 }
