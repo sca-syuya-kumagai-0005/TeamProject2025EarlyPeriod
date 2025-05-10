@@ -17,15 +17,23 @@ public class SceneFade : MonoBehaviour
     [Header("フェードアウトの所要時間(秒)")]
     public float fadeOutDuration = 1.0f;
 
+    [Header("フェードアウト用のボタン (ドラッグ＆ドロップで設定)")]
+    public Button fadeButton;
+
     private bool isFading = false;
 
     void Start()
     {
-        // シーン開始時にフェードインを実行
+        // フェードイン実行
         StartCoroutine(FadeIn());
+
+        // ボタンが設定されていれば、イベントを登録
+        if (fadeButton != null)
+        {
+            fadeButton.onClick.AddListener(FadeOutStart);
+        }
     }
 
-    // ボタンから呼び出せる（フェードアウト→シーン遷移）
     public void FadeOutStart()
     {
         if (!isFading)
