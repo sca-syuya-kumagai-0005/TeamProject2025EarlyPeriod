@@ -10,6 +10,7 @@ public class ScoreRanking : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+
         //StreamingAssetsフォルダのCSVファイルのパスを取得
         string filePath = Path.Combine(Application.streamingAssetsPath, "ScoreRanking.csv");
         
@@ -20,7 +21,6 @@ public class ScoreRanking : MonoBehaviour
             foreach(string line in lines)
             {
                 string[] values = line.Split(',');
-                Debug.Log("Name:" + values[0] + "Score:" + values[1]);
             }
         }
         else
@@ -30,9 +30,17 @@ public class ScoreRanking : MonoBehaviour
 
 
 
-    }
+        ///
+        /// ランキングの手順
+        /// データの読み込み
+        /// 現在のデータと読み込んだデータを比較してtop10に入るかを確認する
+        /// 名前の入力
+        /// ランキングの変動
+        /// 変動したランキングをCSVファイルに保存
+        ///
 
-    // Update is called once per frame
+
+    }
     void Update()
     {
         
