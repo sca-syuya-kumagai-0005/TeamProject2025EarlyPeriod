@@ -2,56 +2,104 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 public class ScoreRanking : MonoBehaviour
 {
-    [SerializeField] int score;
+    [SerializeField] int score;//現在のプレイヤーのスコア
 
+    List<(string name,int score)> rankingList = new List<(string name,int score)> ();
+    string filePath;
     int[] Scores;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    [SerializeField]string Playername;//名前の入力
+
+    ScoreEvaluation scoreEvaluation;
     void Start()
     {
-
-        //StreamingAssetsフォルダのCSVファイルのパスを取得
-        string filePath = Path.Combine(Application.streamingAssetsPath, "ScoreRanking.csv");
-        
-        //ファイルの読み込み    
-        if(File.Exists(filePath))
-        {
-            string[] lines = File.ReadAllLines(filePath);
-            foreach(string line in lines)
-            {
-                string[] values = line.Split(',');
-                for (int i = 0; i < 10; i++)
-                {
-                    Scores[i] = int.Parse(values[1]);
-                    Debug.Log(Scores[i]);
-                }
-            }
-
-
-
-        }
-        else
-        {
-            Debug.LogError("CSVファイルが見つかりません:"+filePath);
-        }
-
-
-
-        ///
+        scoreEvaluation = GetComponent<ScoreEvaluation>();
+        score = scoreEvaluation.ResltScore;
         /// ランキングの手順
-        /// データの読み込み 〇
+        //StreamingAssetsフォルダのCSVファイルのパスを取得
+        filePath = Path.Combine(Application.streamingAssetsPath, "ScoreRanking.csv");
+        /// データの読み込み 
+        LoadRanking();
         /// 現在のデータと読み込んだデータを比較してtop10に入るかを確認する
-        /// 名前の入力
-        /// ランキングの変動
-        /// 変動したランキングをCSVファイルに保存
         ///
 
 
     }
     void Update()
     {
-        
+        if (IsHighScore(score))
+        {
+            /// 名前の入力
+            InsertScore(name, score);
+            Playername = scoreEvaluation.PlayerName;
+            if(Playername != null)
+            {
+                SaveRanking();
+            }
+
+        }
+    }
+
+    /// <summary>
+    /// ランキングの読み込み
+    /// </summary>
+    void LoadRanking()
+    {
+
+        //ファイルの読み込み    
+        if (File.Exists(filePath))
+        {
+            string[] lines = File.ReadAllLines(filePath);
+            foreach (string line in lines)
+            {
+                string[] values = line.Split(',');
+
+                if (values.Length >= 2 && int.TryParse(values[1], out int parsedScore))
+                    {
+                    rankingList.Add((values[0], parsedScore));
+                }
+            }
+        }
+        else
+        {
+            Debug.LogWarning("ランキングファイルが見つかりません" + filePath);
+        }
+    }
+    //Top10に入るかどうかの判定
+    bool IsHighScore(int newScore)
+    {
+        if(rankingList.Count<10)return true;
+        return newScore > rankingList.Min(entry =>entry.score);
+    }
+    /// ランキングの変動
+    //スコアをランキングに追加して並び替え
+    void InsertScore(string name,int nreScore)
+    {
+        rankingList.Add((name,nreScore));
+        //スコアを並び替えて上位を保持
+        rankingList = rankingList
+        .OrderByDescending(entry => entry.score)
+        .Take(10)
+        .ToList();
+
+        Debug.Log("新しいスコアをランキングに追加");
+        for(int i = 0;i < rankingList.Count; i++)
+        {
+            Debug.Log($"{i + 1}位:{rankingList[i].name},{rankingList[i].score}");
+        }
+    }
+    /// 変動したランキングをCSVファイルに保存
+    void SaveRanking()
+    {
+        List<string> lines = new List<string>();
+        foreach(var entry in rankingList)
+        {
+            lines.Add($"{entry.name},{entry.score}");
+        }
+        File.WriteAllLines(filePath,lines);
+        Debug.Log("ランキングの保存");
     }
 }

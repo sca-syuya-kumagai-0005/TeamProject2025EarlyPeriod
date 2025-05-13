@@ -19,10 +19,11 @@ public class ScoreEvaluation : MonoBehaviour
     Evaluation evaluation;
     public InputField inputField;
     public Text nameText;
+    public string PlayerName;
 
     List<int> ranc = new List<int>();
 
-    [SerializeField] int ResltScore;
+    [SerializeField] public int ResltScore;
     [SerializeField] int evaluationA;
     [SerializeField] int evaluationB;
     [SerializeField] int evaluationC;
@@ -79,5 +80,6 @@ public class ScoreEvaluation : MonoBehaviour
     public void InputText()
     {
         nameText.text = inputField.text;
+        PlayerName = inputField.text.ToString();
     }
 }

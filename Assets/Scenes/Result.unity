@@ -915,14 +915,15 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1761502358}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6211aaa67d767c640b8e5e1e3bc211f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   inputField: {fileID: 1990025034}
   nameText: {fileID: 1238435632}
-  ResltScore: 100
+  PlayerName: "\u304A\u8A71"
+  ResltScore: 500
   evaluationA: 100
   evaluationB: 50
   evaluationC: 30
@@ -938,6 +939,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4925569e8b6de9543a86fbaa00bc483a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  score: 0
+  Playername: 
 --- !u!1 &1969223658
 GameObject:
   m_ObjectHideFlags: 0
