@@ -8,24 +8,69 @@ public class Mouse : MonoBehaviour
     int score;
     Collider2D circleCollider;
 
+    public Transform cameraCenter;
+
+    bool canMove = true; // ← 追加：移動できるかどうか
     void Start()
     {
         score = 0;
         circleCollider = GetComponent<Collider2D>();
+
+        if (cameraCenter == null)
+        {
+            cameraCenter = transform.Find("CameraCenter");
+        }
     }
 
     void Update()
     {
-        // マウス座標からワールド座標へ変換し位置を更新
-        mousePos = Input.mousePosition;
-        pos = Camera.main.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, 10f));
-        transform.position = pos;
-
-        // マウス左クリックでスコア計算
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && canMove)
         {
             AddScore();
+            StartCoroutine(DisableMovementForSeconds(3f));
+
         }
+        if (canMove)
+        {
+            // マウス座標からワールド座標へ変換
+            mousePos = Input.mousePosition;
+            Vector3 desiredWorldPos = Camera.main.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, 10f));
+
+            Vector3 offset = cameraCenter.position - transform.position;
+            Vector3 desiredCameraCenterPos = desiredWorldPos + offset;
+            Vector3 clampedCameraCenterPos = ClampToScreenBounds(desiredCameraCenterPos);
+
+            transform.position = clampedCameraCenterPos - offset;
+        }
+    }
+
+    IEnumerator DisableMovementForSeconds(float seconds)
+    {
+        canMove = false;
+        yield return new WaitForSeconds(seconds);
+        canMove = true;
+    }
+
+    Vector3 ClampToScreenBounds(Vector3 worldPos)
+    {
+        Vector3 screenPos = Camera.main.WorldToScreenPoint(worldPos);
+
+        float marginX = 0f;
+        float marginY = 0f;
+
+        if (cameraCenter.TryGetComponent<SpriteRenderer>(out SpriteRenderer sr))
+        {
+            Vector3 extents = sr.bounds.extents;
+            Vector3 screenExtents = Camera.main.WorldToScreenPoint(extents + cameraCenter.position) - Camera.main.WorldToScreenPoint(cameraCenter.position);
+
+            marginX = screenExtents.x;
+            marginY = screenExtents.y;
+        }
+
+        screenPos.x = Mathf.Clamp(screenPos.x, marginX, Screen.width - marginX);
+        screenPos.y = Mathf.Clamp(screenPos.y, marginY, Screen.height - marginY);
+
+        return Camera.main.ScreenToWorldPoint(new Vector3(screenPos.x, screenPos.y, screenPos.z));
     }
 
     void AddScore()
@@ -33,42 +78,38 @@ public class Mouse : MonoBehaviour
         Collider2D[] colliders = GameObject.FindObjectsOfType<Collider2D>();
         int nAddPoints = 0;
         int tAddPoints = 0;
-
         int AddedScore = 0;
 
         foreach (var col in colliders)
         {
             if (col.CompareTag("nEye") && IsFullyInside(circleCollider.bounds, col.bounds))
             {
-                nAddPoints++; //ノーマルの目、1もしくは2追加される
+                nAddPoints++;
             }
             else if (col.CompareTag("tEye") && IsFullyInside(circleCollider.bounds, col.bounds))
             {
-                tAddPoints++; //脅かしの目、2もしくは5追加される
+                tAddPoints++;
             }
         }
 
-        // ノーマル目のスコア処理
-        if (nAddPoints == 1) //ノーマルの目:1つの時
+        if (nAddPoints == 1)
         {
             AddedScore += 1;
         }
-        else if(nAddPoints == 2) //ノーマルの目:2つの時
+        else if (nAddPoints == 2)
         {
             AddedScore += 2;
         }
-            
-        // 脅かし目のスコア処理
-        if (tAddPoints == 1) //脅かしの目:1つの時
+
+        if (tAddPoints == 1)
         {
             AddedScore += 2;
         }
-        else if (tAddPoints == 2) //脅かしの目:1つの時
+        else if (tAddPoints == 2)
         {
             AddedScore += 5;
         }
 
-        // スコア加算と表示
         if (AddedScore > 0)
         {
             score += AddedScore;
