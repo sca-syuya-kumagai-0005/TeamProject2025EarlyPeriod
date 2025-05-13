@@ -7,11 +7,12 @@ using System.Linq;
 public class ScoreRanking : MonoBehaviour
 {
     [SerializeField] int score;//現在のプレイヤーのスコア
+    [SerializeField] InputField nameInputField;//名前入力のUI
+    [SerializeField] Button subitButton;//名前送信ボタン
 
-    List<(string name,int score)> rankingList = new List<(string name,int score)> ();
+
+    List<(string name, int score)> rankingList = new List<(string name, int score)>();
     string filePath;
-    int[] Scores;
-    [SerializeField]string Playername;//名前の入力
 
     ScoreEvaluation scoreEvaluation;
     void Start()
@@ -24,24 +25,35 @@ public class ScoreRanking : MonoBehaviour
         /// データの読み込み 
         LoadRanking();
         /// 現在のデータと読み込んだデータを比較してtop10に入るかを確認する
-        ///
+        if (IsHighScore(score))
+        {
+            //名前入力を有効か
+            nameInputField.gameObject.SetActive(true);
+            subitButton.gameObject.SetActive(true);
 
+            //ボタンにイベントの登録
+            subitButton.onClick.AddListener(OnSubmitName);
+        }
 
     }
     void Update()
     {
-        if (IsHighScore(score))
-        {
-            /// 名前の入力
-            InsertScore(name, score);
-            Playername = scoreEvaluation.PlayerName;
-            if(Playername != null)
-            {
-                SaveRanking();
-            }
 
-        }
     }
+
+
+    void OnSubmitName()
+    {
+        string playerName = nameInputField.text.Trim();
+        if (string.IsNullOrEmpty(playerName))
+        {
+            Debug.LogWarning("名前が入力されていません");
+            return;
+        }
+        /// 名前の入力
+        InsertScore(playerName, score);
+        SaveRanking();
+    } 
 
     /// <summary>
     /// ランキングの読み込み

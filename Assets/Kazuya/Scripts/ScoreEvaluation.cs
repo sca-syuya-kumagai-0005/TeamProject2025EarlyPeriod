@@ -17,9 +17,6 @@ public class ScoreEvaluation : MonoBehaviour
         D
     }
     Evaluation evaluation;
-    public InputField inputField;
-    public Text nameText;
-    public string PlayerName;
 
     List<int> ranc = new List<int>();
 
@@ -34,9 +31,6 @@ public class ScoreEvaluation : MonoBehaviour
 
     void Start()
     {
-        //InputFieldの取得
-        inputField = inputField.GetComponent<InputField>();
-        inputField.Select();//入力のタイミングで呼び出す
 
         //スコアによるランク判定
         if (ResltScore < evaluationC)
@@ -75,11 +69,5 @@ public class ScoreEvaluation : MonoBehaviour
                 Debug.Log("評価外");
                 break;
         }
-    }
-
-    public void InputText()
-    {
-        nameText.text = inputField.text;
-        PlayerName = inputField.text.ToString();
     }
 }
