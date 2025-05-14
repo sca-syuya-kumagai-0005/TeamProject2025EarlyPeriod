@@ -19,17 +19,18 @@ public class SpawnManager : MonoBehaviour
     void Update()
     {
         EnemySpawner();
+        EnemySearch();
     }
 
     private void EnemySpawner()
     {
         int rand=Random.Range(0,1000);//毎フレームrandを取得
-        if(enemies.Length>=5||rand<999)//敵が5体以上もしくは99.9%の確率でreturn
+        //if(enemies.Length>=5||rand<999)//敵が5体以上もしくは99.9%の確率でreturn
+        if(enemies.Length>=5)//テスト用　敵が５体以上ならreturn
         {
             return;
         }
         Instantiate(enemy,transform.position,Quaternion.identity,enemyParent.transform);//ここのポジションをランダムに変更してね
-        EnemySearch();
     }
 
     private void EnemySearch()
