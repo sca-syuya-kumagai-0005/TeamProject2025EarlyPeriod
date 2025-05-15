@@ -42,7 +42,7 @@ public class HitManager : MonoBehaviour
         }
     }
 
-    private void OnTriggerStay2D(Collider2D collision)
+   /* private void OnTriggerStay2D(Collider2D collision)
     {
         bool haveEnemy = false;
         for (int i = 0; i < hitEnemies.Count; ++i)
@@ -71,5 +71,5 @@ public class HitManager : MonoBehaviour
         }
         collider.enabled = false;
         
-    }
+    }*/
 }

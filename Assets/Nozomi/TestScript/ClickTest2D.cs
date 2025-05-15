@@ -41,7 +41,7 @@ public class ClickTest2D : MonoBehaviour
         }
         spriteRenderer.color = new Color(1,1,1, alphaTimer);
         
-        //if (Input.GetMouseButtonDown(0))
+      /*  //if (Input.GetMouseButtonDown(0))
         //{
         //    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         //    RaycastHit2D hit2d = Physics2D.Raycast((Vector2)ray.origin, (Vector2)ray.direction);
@@ -56,9 +56,14 @@ public class ClickTest2D : MonoBehaviour
         //      
         //    }
 
-        //}
+        //}*/
     }
-    
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        alphaStart = false;
+    }
+
+
     IEnumerator DestroyTimer(GameObject obj)
     {
         yield return new WaitForSeconds(timer);
