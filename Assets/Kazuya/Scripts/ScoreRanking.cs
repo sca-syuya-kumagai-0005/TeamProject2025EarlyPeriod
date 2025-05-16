@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 
 public class ScoreRanking : MonoBehaviour
 {
@@ -34,10 +35,6 @@ public class ScoreRanking : MonoBehaviour
             //ボタンにイベントの登録
             subitButton.onClick.AddListener(OnSubmitName);
         }
-
-    }
-    void Update()
-    {
 
     }
 
@@ -83,14 +80,16 @@ public class ScoreRanking : MonoBehaviour
     //Top10に入るかどうかの判定
     bool IsHighScore(int newScore)
     {
+        //ランキングが10未満ならスコアを追加する
         if(rankingList.Count<10)return true;
-        return newScore > rankingList.Min(entry =>entry.score);
+        //最低スコア(10位)より新しいスコアが高ければ追加する
+        return newScore > rankingList.Last().score;
     }
     /// ランキングの変動
     //スコアをランキングに追加して並び替え
-    void InsertScore(string name,int nreScore)
+    void InsertScore(string name,int newScore)
     {
-        rankingList.Add((name,nreScore));
+        rankingList.Add((name,newScore));
         //スコアを並び替えて上位を保持
         rankingList = rankingList
         .OrderByDescending(entry => entry.score)
@@ -107,11 +106,22 @@ public class ScoreRanking : MonoBehaviour
     void SaveRanking()
     {
         List<string> lines = new List<string>();
+
+        if(File.Exists(filePath))
+        {
+            //ファイルから既存のデータを読み込む(ヘッダー行を除く)
+            lines.AddRange(File.ReadAllLines(filePath).Skip(1));
+        }
+        else
+        {
+            //新規ファイルの場合はヘッダー行を追加
+            lines.Add("名前,スコア");
+        }
         foreach(var entry in rankingList)
         {
             lines.Add($"{entry.name},{entry.score}");
         }
-        File.WriteAllLines(filePath,lines);
+        File.WriteAllLines(filePath,lines,Encoding.UTF8);
         Debug.Log("ランキングの保存");
     }
 }
