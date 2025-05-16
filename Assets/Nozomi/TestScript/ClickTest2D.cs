@@ -60,7 +60,11 @@ public class ClickTest2D : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        alphaStart = false;
+        if(collision.CompareTag("PlayerCamera"))
+        {
+            alphaStart = true;
+        }
+    
     }
 
 

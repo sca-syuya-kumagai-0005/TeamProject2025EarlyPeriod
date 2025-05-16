@@ -24,13 +24,13 @@ public class HitMove : MonoBehaviour
         //ワールド座標をゲームオブジェクトの座標に設定する
         transform.position = objPos;
 
-        rightTopPos = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, depth));
-        leftBottomPos = Camera.main.ScreenToWorldPoint(new Vector3(0, 0, depth));
+        rightTopPos = Camera.main.ViewportToWorldPoint(new Vector3(1,1,10.0f));
+        leftBottomPos = Camera.main.ViewportToWorldPoint(new Vector3(0, 0, 10.0f));
 
         //オブジェクトがスクリーンからはみ出さないようにするやつ
-        if (objPos.x >= rightTopPos.x) 
+        /*if (objPos.x > rightTopPos.x) 
         {
             objPos.x = rightTopPos.x;
-        }
+        }*/
     }
 }

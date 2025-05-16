@@ -23,6 +23,7 @@ public class HitManager : MonoBehaviour
     SpawnManager spawnManager;
     private bool shoot;
     private Collider2D collider;
+    bool clickFarst;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -30,15 +31,26 @@ public class HitManager : MonoBehaviour
         GameObject obj=GameObject.Find("SpawnManager");
         spawnManager = obj.GetComponent<SpawnManager>();
         shoot=false;
+        clickFarst=true;
         collider = GetComponent<Collider2D>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0))
         {
-            collider.enabled = true;//コライダーを有効化
+            if (clickFarst)
+            {
+                collider.enabled = true;//コライダーを有効化
+                clickFarst = false;
+            }
+           // collider.enabled = false;
+        }
+        else 
+        {
+            collider.enabled = false;
+            clickFarst = true;
         }
     }
 
