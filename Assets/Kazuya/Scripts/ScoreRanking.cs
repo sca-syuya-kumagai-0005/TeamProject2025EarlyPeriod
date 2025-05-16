@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Unity.Android.Gradle;
 
 public class ScoreRanking : MonoBehaviour
 {
@@ -106,18 +107,8 @@ public class ScoreRanking : MonoBehaviour
     void SaveRanking()
     {
         List<string> lines = new List<string>();
-
-        if(File.Exists(filePath))
-        {
-            //ファイルから既存のデータを読み込む(ヘッダー行を除く)
-            lines.AddRange(File.ReadAllLines(filePath).Skip(1));
-        }
-        else
-        {
-            //新規ファイルの場合はヘッダー行を追加
-            lines.Add("名前,スコア");
-        }
-        foreach(var entry in rankingList)
+       lines.Add("名前,スコア");
+        foreach (var entry in rankingList)
         {
             lines.Add($"{entry.name},{entry.score}");
         }
