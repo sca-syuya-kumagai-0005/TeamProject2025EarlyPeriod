@@ -7,6 +7,8 @@ TagManager:
   - Enemy
   - Eye
   - PlayerCamera
+  - nEye
+  - tEye
   layers:
   - Default
   - TransparentFX
