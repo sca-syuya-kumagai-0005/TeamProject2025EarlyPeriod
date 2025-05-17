@@ -469,7 +469,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9c9bf29eefef104085ddd8a4bbae8b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetImage: {fileID: 858043778}
+  targetImages: []
   nextSceneName: Title
   targetScale: {x: 6.4, y: 6.4, z: 6.4}
   tolerance: 0.01
