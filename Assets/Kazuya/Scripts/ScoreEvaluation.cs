@@ -1,9 +1,7 @@
 using UnityEngine;
-using Unity.UI;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
-
+using TMPro;
 public class ScoreEvaluation : MonoBehaviour
 {
     /// <summary>
@@ -17,9 +15,6 @@ public class ScoreEvaluation : MonoBehaviour
         D
     }
     Evaluation evaluation;
-    public InputField inputField;
-    public Text nameText;
-    public string PlayerName;
 
     List<int> ranc = new List<int>();
 
@@ -27,6 +22,7 @@ public class ScoreEvaluation : MonoBehaviour
     [SerializeField] int evaluationA;
     [SerializeField] int evaluationB;
     [SerializeField] int evaluationC;
+    [SerializeField] Text scoretext;
 
 
 
@@ -34,9 +30,6 @@ public class ScoreEvaluation : MonoBehaviour
 
     void Start()
     {
-        //InputField‚Ìæ“¾
-        inputField = inputField.GetComponent<InputField>();
-        inputField.Select();//“ü—Í‚Ìƒ^ƒCƒ~ƒ“ƒO‚ÅŒÄ‚Ño‚·
 
         //ƒXƒRƒA‚É‚æ‚éƒ‰ƒ“ƒN”»’è
         if (ResltScore < evaluationC)
@@ -63,23 +56,19 @@ public class ScoreEvaluation : MonoBehaviour
         switch (evaluation)
         {
             case Evaluation.A:
-                Debug.Log("•]‰¿A");
+               // Debug.Log("•]‰¿A");
                 break;
             case Evaluation.B:
-                Debug.Log("•]‰¿B");
+              //  Debug.Log("•]‰¿B");
                 break;
             case Evaluation.C:
-                Debug.Log("•]‰¿C");
+              //  Debug.Log("•]‰¿C");
                 break;
             default:
-                Debug.Log("•]‰¿ŠO");
+              //  Debug.Log("•]‰¿ŠO");
                 break;
         }
-    }
 
-    public void InputText()
-    {
-        nameText.text = inputField.text;
-        PlayerName = inputField.text.ToString();
+        scoretext.text = ResltScore.ToString();
     }
 }

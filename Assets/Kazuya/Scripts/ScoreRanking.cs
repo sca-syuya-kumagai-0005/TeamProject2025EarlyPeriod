@@ -3,15 +3,18 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 
 public class ScoreRanking : MonoBehaviour
 {
     [SerializeField] int score;//現在のプレイヤーのスコア
+    [SerializeField] InputField nameInputField;//名前入力のUI
+    [SerializeField] Button subitButton;//名前送信ボタン
+    [SerializeField] Text[] rankingText = new Text[10];
 
-    List<(string name,int score)> rankingList = new List<(string name,int score)> ();
+
+    List<(string name, int score)> rankingList = new List<(string name, int score)>();
     string filePath;
-    int[] Scores;
-    [SerializeField]string Playername;//名前の入力
 
     ScoreEvaluation scoreEvaluation;
     void Start()
@@ -23,25 +26,35 @@ public class ScoreRanking : MonoBehaviour
         filePath = Path.Combine(Application.streamingAssetsPath, "ScoreRanking.csv");
         /// データの読み込み 
         LoadRanking();
+        //ランキングの表示
+        UpdateRankingDisplay();
         /// 現在のデータと読み込んだデータを比較してtop10に入るかを確認する
-        ///
-
-
-    }
-    void Update()
-    {
         if (IsHighScore(score))
         {
-            /// 名前の入力
-            InsertScore(name, score);
-            Playername = scoreEvaluation.PlayerName;
-            if(Playername != null)
-            {
-                SaveRanking();
-            }
+            //名前入力を有効か
+            nameInputField.gameObject.SetActive(true);
+            subitButton.gameObject.SetActive(true);
 
+            //ボタンにイベントの登録
+            subitButton.onClick.AddListener(OnSubmitName);
         }
+
     }
+
+
+    void OnSubmitName()
+    {
+        string playerName = nameInputField.text.Trim();
+        if (string.IsNullOrEmpty(playerName))
+        {
+            Debug.LogWarning("名前が入力されていません");
+            return;
+        }
+        /// 名前の入力
+        InsertScore(playerName, score);
+        SaveRanking();
+        UpdateRankingDisplay();
+    } 
 
     /// <summary>
     /// ランキングの読み込み
@@ -68,17 +81,38 @@ public class ScoreRanking : MonoBehaviour
             Debug.LogWarning("ランキングファイルが見つかりません" + filePath);
         }
     }
+
+    //csvファイルで持ってきたデータをテキストに置換
+    void UpdateRankingDisplay()
+    {
+        for(int i = 0;i < rankingList.Count; i++)
+        {
+            if(i < rankingList.Count)
+            {
+                rankingText[i].text = $"{i + 1}位:{rankingList[i].name}-{rankingList[i].score}";
+            }
+            else
+            {
+                rankingText[i].text = $"{i+1}位; ---";
+            }
+
+        }
+
+    }
+
     //Top10に入るかどうかの判定
     bool IsHighScore(int newScore)
     {
+        //ランキングが10未満ならスコアを追加する
         if(rankingList.Count<10)return true;
-        return newScore > rankingList.Min(entry =>entry.score);
+        //最低スコア(10位)より新しいスコアが高ければ追加する
+        return newScore > rankingList.Last().score;
     }
     /// ランキングの変動
     //スコアをランキングに追加して並び替え
-    void InsertScore(string name,int nreScore)
+    void InsertScore(string name,int newScore)
     {
-        rankingList.Add((name,nreScore));
+        rankingList.Add((name,newScore));
         //スコアを並び替えて上位を保持
         rankingList = rankingList
         .OrderByDescending(entry => entry.score)
@@ -95,11 +129,12 @@ public class ScoreRanking : MonoBehaviour
     void SaveRanking()
     {
         List<string> lines = new List<string>();
-        foreach(var entry in rankingList)
+       lines.Add("名前,スコア");
+        foreach (var entry in rankingList)
         {
             lines.Add($"{entry.name},{entry.score}");
         }
-        File.WriteAllLines(filePath,lines);
+        File.WriteAllLines(filePath,lines,Encoding.UTF8);
         Debug.Log("ランキングの保存");
     }
 }
