@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Unity.Android.Gradle;
 
 public class ScoreRanking : MonoBehaviour
 {
     [SerializeField] int score;//現在のプレイヤーのスコア
     [SerializeField] InputField nameInputField;//名前入力のUI
     [SerializeField] Button subitButton;//名前送信ボタン
+    [SerializeField] Text[] rankingText = new Text[10];
 
 
     List<(string name, int score)> rankingList = new List<(string name, int score)>();
@@ -26,6 +26,8 @@ public class ScoreRanking : MonoBehaviour
         filePath = Path.Combine(Application.streamingAssetsPath, "ScoreRanking.csv");
         /// データの読み込み 
         LoadRanking();
+        //ランキングの表示
+        UpdateRankingDisplay();
         /// 現在のデータと読み込んだデータを比較してtop10に入るかを確認する
         if (IsHighScore(score))
         {
@@ -51,6 +53,7 @@ public class ScoreRanking : MonoBehaviour
         /// 名前の入力
         InsertScore(playerName, score);
         SaveRanking();
+        UpdateRankingDisplay();
     } 
 
     /// <summary>
@@ -78,6 +81,25 @@ public class ScoreRanking : MonoBehaviour
             Debug.LogWarning("ランキングファイルが見つかりません" + filePath);
         }
     }
+
+    //csvファイルで持ってきたデータをテキストに置換
+    void UpdateRankingDisplay()
+    {
+        for(int i = 0;i < rankingList.Count; i++)
+        {
+            if(i < rankingList.Count)
+            {
+                rankingText[i].text = $"{i + 1}位:{rankingList[i].name}-{rankingList[i].score}";
+            }
+            else
+            {
+                rankingText[i].text = $"{i+1}位; ---";
+            }
+
+        }
+
+    }
+
     //Top10に入るかどうかの判定
     bool IsHighScore(int newScore)
     {

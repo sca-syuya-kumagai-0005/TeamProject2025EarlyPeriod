@@ -1,9 +1,7 @@
 using UnityEngine;
-using Unity.UI;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
-
+using TMPro;
 public class ScoreEvaluation : MonoBehaviour
 {
     /// <summary>
@@ -24,6 +22,7 @@ public class ScoreEvaluation : MonoBehaviour
     [SerializeField] int evaluationA;
     [SerializeField] int evaluationB;
     [SerializeField] int evaluationC;
+    [SerializeField] Text scoretext;
 
 
 
@@ -57,17 +56,19 @@ public class ScoreEvaluation : MonoBehaviour
         switch (evaluation)
         {
             case Evaluation.A:
-                Debug.Log("•]‰¿A");
+               // Debug.Log("•]‰¿A");
                 break;
             case Evaluation.B:
-                Debug.Log("•]‰¿B");
+              //  Debug.Log("•]‰¿B");
                 break;
             case Evaluation.C:
-                Debug.Log("•]‰¿C");
+              //  Debug.Log("•]‰¿C");
                 break;
             default:
-                Debug.Log("•]‰¿ŠO");
+              //  Debug.Log("•]‰¿ŠO");
                 break;
         }
+
+        scoretext.text = ResltScore.ToString();
     }
 }
