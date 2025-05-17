@@ -1,0 +1,86 @@
+public class ScoreRanking : MonoBehaviour
+{
+    [SerializeField] Text[] rankTexts = new Text[10];
+    [SerializeField] float rotateSpeed = 300f; // 回転速度
+    [SerializeField] float delayBetweenTexts = 0.3f; // 表示間隔
+
+    // 既存の UpdateRankingDisplay() をコルーチンに置き換え
+    IEnumerator AnimateRankingDisplay()
+    {
+        for (int i = 0; i < rankTexts.Length; i++)
+        {
+            if (i < rankingList.Count)
+            {
+                rankTexts[i].text = $"{i + 1}位: {rankingList[i].name} - {rankingList[i].score}";
+            }
+            else
+            {
+                rankTexts[i].text = $"{i + 1}位: ---";
+            }
+
+            rankTexts[i].gameObject.SetActive(true); // 表示する
+            yield return StartCoroutine(RotateIn(rankTexts[i].transform)); // 回転しながら表示
+            yield return new WaitForSeconds(delayBetweenTexts);
+        }
+    }
+
+    IEnumerator RotateIn(Transform target)
+    {
+        float duration = 0.5f;
+        float elapsed = 0f;
+        Quaternion startRotation = Quaternion.Euler(0, 90, 0); // 最初は90度横向き
+        Quaternion endRotation = Quaternion.identity;
+
+        target.rotation = startRotation;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            target.rotation = Quaternion.Slerp(startRotation, endRotation, elapsed / duration);
+            yield return null;
+        }
+
+        target.rotation = endRotation;
+    }
+
+
+
+    void Start()
+{
+    LoadRanking();
+
+    // 一旦全て非表示
+    foreach (var text in rankTexts)
+    {
+        text.gameObject.SetActive(false);
+    }
+
+    StartCoroutine(AnimateRankingDisplay());
+
+    if (IsHighScore(score))
+    {
+        nameInputField.gameObject.SetActive(true);
+        subitButton.gameObject.SetActive(true);
+        subitButton.onClick.AddListener(OnSubmitName);
+    }
+}
+
+void OnSubmitName()
+{
+    string playerName = nameInputField.text.Trim();
+    if (string.IsNullOrEmpty(playerName))
+    {
+        Debug.LogWarning("名前が入力されていません");
+        return;
+    }
+
+    InsertScore(playerName, score);
+    SaveRanking();
+
+    foreach (var text in rankTexts)
+    {
+        text.gameObject.SetActive(false);
+    }
+
+    StartCoroutine(AnimateRankingDisplay());
+}
