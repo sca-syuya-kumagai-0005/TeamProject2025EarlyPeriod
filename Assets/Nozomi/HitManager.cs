@@ -1,7 +1,5 @@
 using UnityEngine;
 using System.Collections.Generic;
-using UnityEngine.Rendering.Universal;
-using Unity.VisualScripting;
 
 //二回目以降の消去でエラーが発生する模様。（仮修正済み）
 /*エラー原因とソースの問題、解決案（堀越先生から）
