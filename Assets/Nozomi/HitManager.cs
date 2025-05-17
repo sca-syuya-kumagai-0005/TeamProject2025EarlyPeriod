@@ -36,23 +36,10 @@ public class HitManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            if (clickFarst)
-            {
-                collider.enabled = true;//コライダーを有効化
-                clickFarst = false;
-            }
-           // collider.enabled = false;
-        }
-        else 
-        {
-            collider.enabled = false;
-            clickFarst = true;
-        }
+        collider.enabled=Input.GetMouseButton(0);
     }
 
-   /* private void OnTriggerStay2D(Collider2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
         bool haveEnemy = false;
         for (int i = 0; i < hitEnemies.Count; ++i)
@@ -68,18 +55,11 @@ public class HitManager : MonoBehaviour
             hitEnemies.Add(collision.gameObject);
         }
 
-        for(int i = 0;i < hitEnemies.Count; i++)
+        for (int i = 0; i < hitEnemies.Count; i++)
         {
-            //エラーの仮修正。あまりよろしくないのでプログラムの再調整がひつよう（詳細は上）
-            if (hitEnemies[i] == null)
-            {
-                continue;
-            }
-
-            ClickTest2D clickTest = hitEnemies[i].GetComponent<ClickTest2D>();
+            HitCheak clickTest = hitEnemies[i].GetComponent<HitCheak>();
             clickTest.AlphaStart = true;
         }
-        collider.enabled = false;
-        
-    }*/
+         hitEnemies=new List<GameObject>();
+    }
 }

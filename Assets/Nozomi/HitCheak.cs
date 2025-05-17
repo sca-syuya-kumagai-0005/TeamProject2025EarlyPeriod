@@ -41,7 +41,10 @@ public class HitCheak : MonoBehaviour
         {
             alphaStart = true;
         }
-
+        for(int i=0;i<colliders.Length; i++)
+        {
+            colliders[i].enabled=false;
+        }
     }
 
     IEnumerator DestroyTimer(GameObject obj)
