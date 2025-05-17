@@ -22,7 +22,8 @@ public class HitManager : MonoBehaviour
     private bool shoot;
     private Collider2D collider;
     bool clickFarst;
-    
+    bool modeChange;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -30,13 +31,25 @@ public class HitManager : MonoBehaviour
         spawnManager = obj.GetComponent<SpawnManager>();
         shoot=false;
         clickFarst=true;
+        modeChange = true;
         collider = GetComponent<Collider2D>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        collider.enabled=Input.GetMouseButton(0);
+        if (Input.GetKey(KeyCode.A))
+        { 
+            modeChange = true;
+        }
+        if (Input.GetKey(KeyCode.D))
+        {
+            modeChange = false;
+        }
+        if (modeChange) 
+        {
+            collider.enabled = Input.GetMouseButton(0);
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
