@@ -12,7 +12,6 @@ public class ScoreRanking : MonoBehaviour
     [SerializeField] Button subitButton;//名前送信ボタン
     [SerializeField] Text[] rankingText = new Text[10];
 
-
     List<(string name, int score)> rankingList = new List<(string name, int score)>();
     string filePath;
 
