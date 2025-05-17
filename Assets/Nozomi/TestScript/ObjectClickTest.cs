@@ -2,6 +2,8 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+//3D用クリック消去
+
 public class ObjectClickTest : MonoBehaviour
 {
     //クリックされたゲームオブジェクトを代入する変数
