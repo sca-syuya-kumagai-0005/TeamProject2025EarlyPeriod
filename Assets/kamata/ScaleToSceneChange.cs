@@ -2,10 +2,10 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class ScaleToSceneChange : MonoBehaviour
+public class MultiScaleToSceneChange : MonoBehaviour
 {
-    [Header("対象のImage")]
-    public Image targetImage;
+    [Header("対象のImageリスト")]
+    public Image[] targetImages;
 
     [Header("遷移先シーン名")]
     public string nextSceneName;
@@ -21,15 +21,22 @@ public class ScaleToSceneChange : MonoBehaviour
     void Update()
     {
         if (hasSceneChanged) return;
-        if (targetImage == null || string.IsNullOrEmpty(nextSceneName)) return;
+        if (targetImages == null || targetImages.Length == 0 || string.IsNullOrEmpty(nextSceneName)) return;
 
-        Vector3 currentScale = targetImage.rectTransform.localScale;
-
-        // 誤差範囲を含めてスケールを比較
-        if (Vector3.Distance(currentScale, targetScale) <= tolerance)
+        // 全てのImageが目標スケールに達しているかチェック
+        foreach (Image img in targetImages)
         {
-            hasSceneChanged = true;
-            SceneManager.LoadScene(nextSceneName);
+            if (img == null) continue;
+
+            Vector3 currentScale = img.rectTransform.localScale;
+            if (Vector3.Distance(currentScale, targetScale) > tolerance)
+            {
+                return; // 1つでも未達成があれば抜ける
+            }
         }
+
+        // 全て達成していたらシーン遷移
+        hasSceneChanged = true;
+        SceneManager.LoadScene(nextSceneName);
     }
 }
