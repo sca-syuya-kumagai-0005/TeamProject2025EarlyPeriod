@@ -1,11 +1,10 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 public class MultiScaleToSceneChange : MonoBehaviour
 {
-    [Header("対象のImageリスト")]
-    public Image[] targetImages;
+    [Header("対象のSpriteRendererリスト")]
+    public SpriteRenderer[] targetSprites;
 
     [Header("遷移先シーン名")]
     public string nextSceneName;
@@ -21,21 +20,21 @@ public class MultiScaleToSceneChange : MonoBehaviour
     void Update()
     {
         if (hasSceneChanged) return;
-        if (targetImages == null || targetImages.Length == 0 || string.IsNullOrEmpty(nextSceneName)) return;
+        if (targetSprites == null || targetSprites.Length == 0 || string.IsNullOrEmpty(nextSceneName)) return;
 
-        // 全てのImageが目標スケールに達しているかチェック
-        foreach (Image img in targetImages)
+        foreach (SpriteRenderer sr in targetSprites)
         {
-            if (img == null) continue;
+            if (sr == null) continue;
 
-            Vector3 currentScale = img.rectTransform.localScale;
+            Vector3 currentScale = sr.transform.localScale;
+
             if (Vector3.Distance(currentScale, targetScale) > tolerance)
             {
-                return; // 1つでも未達成があれば抜ける
+                return; // 1つでも未達成ならシーン切り替えしない
             }
         }
 
-        // 全て達成していたらシーン遷移
+        // すべてスケール到達 → シーン切り替え
         hasSceneChanged = true;
         SceneManager.LoadScene(nextSceneName);
     }
