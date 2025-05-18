@@ -13,7 +13,7 @@ EditorBuildSettings:
     guid: 06db3e01dd63c7543b84696b65c054b0
   - enabled: 1
     path: Assets/souma/stage/stage2.unity
-    guid: 3e494e341dddce645b4047d73ed108e5
+    guid: a0c2526ce070506409d2bafadac80b58
   - enabled: 0
     path: Assets/Scenes/Title2.unity
     guid: 6275ef908d5434146af1db35535ab3e0

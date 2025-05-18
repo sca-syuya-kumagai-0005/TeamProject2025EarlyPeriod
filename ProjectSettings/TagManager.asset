@@ -9,6 +9,7 @@ TagManager:
   - PlayerCamera
   - nEye
   - tEye
+  - Item
   layers:
   - Default
   - TransparentFX

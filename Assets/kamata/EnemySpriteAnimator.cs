@@ -17,6 +17,15 @@ public class EnemySpriteAnimator : MonoBehaviour
     [Header("一時停止する秒数")]
     public float pauseDuration = 3.0f;
 
+    [Header("スケール拡大を有効にするか")]
+    public bool enableScaling = true;
+
+    [Header("拡大後の目標スケール")]
+    public Vector3 targetScale = new Vector3(2f, 2f, 1f);
+
+    [Header("拡大にかける秒数")]
+    public float scaleDuration = 5.0f;
+
     private SpriteRenderer spriteRenderer;
     private int currentFrame = 0;
     private bool isPlaying = false;
@@ -29,6 +38,11 @@ public class EnemySpriteAnimator : MonoBehaviour
         if (playOnStart)
         {
             StartAnimation();
+        }
+
+        if (enableScaling)
+        {
+            StartScaling();
         }
     }
 
@@ -82,5 +96,29 @@ public class EnemySpriteAnimator : MonoBehaviour
 
         spriteRenderer.sprite = originalSprite;
         isPaused = false;
+    }
+
+    /// <summary>
+    /// スケールを徐々に大きくする
+    /// </summary>
+    public void StartScaling()
+    {
+        StopCoroutine("ScaleOverTime");
+        StartCoroutine(ScaleOverTime(targetScale, scaleDuration));
+    }
+
+    private System.Collections.IEnumerator ScaleOverTime(Vector3 target, float duration)
+    {
+        Vector3 initialScale = transform.localScale;
+        float time = 0f;
+
+        while (time < duration)
+        {
+            time += Time.deltaTime;
+            transform.localScale = Vector3.Lerp(initialScale, target, time / duration);
+            yield return null;
+        }
+
+        transform.localScale = target;
     }
 }
