@@ -707,11 +707,15 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 62444548877aeac4dbac0fc003c67149, type: 3}
   frameDuration: 0.1
   playOnStart: 1
-  temporarySprite: {fileID: 21300000, guid: e474cd77f05f1e5498b590ca78864b40, type: 3}
+  specialAnimationFrames:
+  - {fileID: 21300000, guid: e474cd77f05f1e5498b590ca78864b40, type: 3}
+  - {fileID: 21300000, guid: ed254fbfa6dc402468b53ea89849a177, type: 3}
+  specialFrameDuration: 0.1
   pauseDuration: 3
   enableScaling: 1
   targetScale: {x: 6.4, y: 6.4, z: 1}
-  scaleDuration: 5
+  scaleDuration: 20
+  targetImageName: a
 --- !u!212 &1879832839
 SpriteRenderer:
   m_ObjectHideFlags: 0

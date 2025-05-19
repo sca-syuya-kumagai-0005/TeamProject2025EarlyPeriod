@@ -1,4 +1,7 @@
 using UnityEngine;
+using UnityEngine.UI;
+using System.Collections;
+
 
 public class EnemySpriteAnimator : MonoBehaviour
 {
@@ -11,8 +14,11 @@ public class EnemySpriteAnimator : MonoBehaviour
     [Header("再生開始時にアニメーションするか")]
     public bool playOnStart = true;
 
-    [Header("一時表示するスプライト（例: 出現時）")]
-    public Sprite temporarySprite;
+    [Header("特殊スプライト一覧（表示 & 生成用）")]
+    public Sprite[] specialAnimationFrames;
+
+    [Header("特殊表示の1枚あたり時間（秒）")]
+    public float specialFrameDuration = 0.1f;
 
     [Header("一時停止する秒数")]
     public float pauseDuration = 3.0f;
@@ -26,10 +32,15 @@ public class EnemySpriteAnimator : MonoBehaviour
     [Header("拡大にかける秒数")]
     public float scaleDuration = 5.0f;
 
+    [Header("出現を検知するImage名")]
+    public string targetImageName = "FlashImage";
+
     private SpriteRenderer spriteRenderer;
     private int currentFrame = 0;
     private bool isPlaying = false;
     private bool isPaused = false;
+    private bool isScalingPaused = false;
+    private Coroutine scalingCoroutine;
 
     void Start()
     {
@@ -42,7 +53,50 @@ public class EnemySpriteAnimator : MonoBehaviour
 
         if (enableScaling)
         {
-            StartScaling();
+            scalingCoroutine = StartCoroutine(ScaleOverTime(targetScale, scaleDuration));
+        }
+
+        // 無限に監視
+        StartCoroutine(MonitorImage());
+    }
+
+    void Update()
+    {
+        // アニメーション再開処理は PauseAndShowSpecialAnimation に任せる
+    }
+
+    private IEnumerator MonitorImage()
+    {
+        while (true)
+        {
+            GameObject foundImage = GameObject.Find(targetImageName);
+            if (foundImage != null && foundImage.GetComponent<Image>() != null)
+            {
+                OnTargetImageDetected(foundImage.transform.position);
+                yield return new WaitForSeconds(1f); // 連続検出防止の小休止
+            }
+            yield return null;
+        }
+    }
+
+    private void OnTargetImageDetected(Vector3 spawnPosition)
+    {
+        // 自分の動作一時停止
+        StartCoroutine(PauseAndShowSpecialAnimation());
+
+        // 外部に生成（アニメーション付き）
+        if (specialAnimationFrames != null && specialAnimationFrames.Length > 0)
+        {
+            GameObject go = new GameObject("GeneratedSpecialSprite");
+            go.transform.position = spawnPosition;
+            SpriteRenderer sr = go.AddComponent<SpriteRenderer>();
+
+            EnemySpriteAnimator animator = go.AddComponent<EnemySpriteAnimator>();
+            animator.animationFrames = specialAnimationFrames;
+            animator.frameDuration = specialFrameDuration;
+            animator.playOnStart = true;
+
+            animator.enableScaling = false; // 外部生成は拡大不要
         }
     }
 
@@ -61,7 +115,7 @@ public class EnemySpriteAnimator : MonoBehaviour
         StopAllCoroutines();
     }
 
-    private System.Collections.IEnumerator PlayAnimation()
+    private IEnumerator PlayAnimation()
     {
         while (isPlaying)
         {
@@ -74,51 +128,45 @@ public class EnemySpriteAnimator : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 指定されたタグのオブジェクトが出現したら一時停止処理
-    /// </summary>
-    public void OnTaggedObjectAppeared()
-    {
-        StartCoroutine(PauseAndShowTemporarySprite());
-    }
-
-    private System.Collections.IEnumerator PauseAndShowTemporarySprite()
+    private IEnumerator PauseAndShowSpecialAnimation()
     {
         isPaused = true;
+        isScalingPaused = true;
 
         Sprite originalSprite = spriteRenderer.sprite;
-        if (temporarySprite != null)
+
+        if (specialAnimationFrames != null && specialAnimationFrames.Length > 0)
         {
-            spriteRenderer.sprite = temporarySprite;
+            for (int i = 0; i < specialAnimationFrames.Length; i++)
+            {
+                spriteRenderer.sprite = specialAnimationFrames[i];
+                yield return new WaitForSeconds(specialFrameDuration);
+            }
         }
 
         yield return new WaitForSeconds(pauseDuration);
 
         spriteRenderer.sprite = originalSprite;
         isPaused = false;
+        isScalingPaused = false;
     }
 
-    /// <summary>
-    /// スケールを徐々に大きくする
-    /// </summary>
-    public void StartScaling()
-    {
-        StopCoroutine("ScaleOverTime");
-        StartCoroutine(ScaleOverTime(targetScale, scaleDuration));
-    }
-
-    private System.Collections.IEnumerator ScaleOverTime(Vector3 target, float duration)
+    private IEnumerator ScaleOverTime(Vector3 target, float duration)
     {
         Vector3 initialScale = transform.localScale;
         float time = 0f;
 
         while (time < duration)
         {
-            time += Time.deltaTime;
-            transform.localScale = Vector3.Lerp(initialScale, target, time / duration);
+            if (!isScalingPaused)
+            {
+                time += Time.deltaTime;
+                transform.localScale = Vector3.Lerp(initialScale, target, time / duration);
+            }
             yield return null;
         }
 
         transform.localScale = target;
+        scalingCoroutine = null;
     }
 }
