@@ -38,6 +38,5 @@ public class SoundPlayer : SoundManager
         {
             StartCoroutine(DestroySE(obj, clip.length));
         }
-
     }
 }
