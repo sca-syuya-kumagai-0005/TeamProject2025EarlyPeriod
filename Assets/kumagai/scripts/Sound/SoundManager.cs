@@ -2,15 +2,16 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using UnityEditor;
 
 public class SoundManager : MonoBehaviour
 {
     const string frontPath = "Assets/Resources";
-    const string bgmPath = "/BGM/";
+    protected const string bgmPath = "Sound/BGM/";
+    protected const string sePath="Sound/SE/";
     const string soundExtension = ".mp3";
     const string bgmPlayerName = "BGMPlayer";
-    string[] bgmNames = Directory.GetFiles(frontPath + bgmPath);
+    protected const string seAudioSource = "Sound/SEAuidoSource";
+
     [SerializeField] List<string> soundName = new List<string>();
     AudioClip clip;
     [SerializeField] AudioSource bgmPlayer;
@@ -27,20 +28,19 @@ public class SoundManager : MonoBehaviour
     /// <param name="name">Assetの中から検索するファイルの名前</param>
     protected AudioClip SetSound(string name,string fileName)
     {
-        foreach (string bgmName in bgmNames)
+        string[] soundNames = Directory.GetFiles(frontPath + "/" + fileName);
+        Debug.Log(soundNames.Length);
+        foreach (string soundName in soundNames)
         {
-            if (bgmName.Substring(name.Length - 4) == soundExtension)
+            if(soundName.Length<=soundExtension.Length)break;
+            if (soundName.Substring(soundName.Length - soundExtension.Length) == soundExtension)
             {
-                soundName.Add(name);
+                this.soundName.Add(soundName);
             }
         }
-
-        if (name.Substring(name.Length - 4) == soundExtension)
+        if (Resources.Load<AudioClip>(fileName) == null)//ファイル内に指定したmp3ファイルがなければ
         {
-            Debug.LogError("関数SetBGMの引数nameは.mp3を必要としません");
-        }
-        if (Resources.Load<AudioClip>(fileName + name) == null)//ファイル内に指定したmp3ファイルがなければ
-        {
+            Debug.Log("nullだったので");
             string str = CheckName(name,fileName);//一致度の高いmp3を検索
             if(str=="")//一定以上の一致するmp3ファイルを見つけられなければ
             {
@@ -68,13 +68,18 @@ public class SoundManager : MonoBehaviour
     {
         string str = "";//最終的に返す文字列
         float maxRatio = 0.0f;
-        float clearLine = 0.6f;
-        if (soundName.Count == 0) { return str; }
+        float clearLine = 0.0f;
+        if (soundName.Count == 0)
+            {
+                return str; 
+            }
         for (int i = 0; i < soundName.Count; i++)
         {
-            string sound = soundName[i].Substring((frontPath + bgmPath).Length, soundName[i].Length - (frontPath + fileName).Length - soundExtension.Length);//soundNameに代入すると、soundNameの要素全てに代入されてしまうため回避用の変数を作成
-            if (name.Substring(name.Length - soundExtension.Length) == soundExtension)
+            string sound = soundName[i].Substring((frontPath + bgmPath).Length, soundName[i].Length - (frontPath + fileName).Length - soundExtension.Length-1);//soundNameに代入すると、soundNameの要素全てに代入されてしまうため回避用の変数を作成
+            if (name.Length < soundExtension.Length) {  }
+            else if (name.Substring(name.Length - soundExtension.Length) == soundExtension)
             {
+                Debug.Log(name);
                 name = name.Substring(0, name.Length - soundExtension.Length);
                 Debug.Log(name);
             }
@@ -111,6 +116,7 @@ public class SoundManager : MonoBehaviour
             }
 
         }
+        Debug.Log(str);
         soundName=new List<string>();
         return str;
 

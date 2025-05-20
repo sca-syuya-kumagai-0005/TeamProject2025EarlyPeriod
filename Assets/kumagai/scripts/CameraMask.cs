@@ -16,7 +16,6 @@ public class CameraMask :SoundPlayer
     [SerializeField]private GameObject lens;
     private string enemyTag="Enemy";
     private string backGroundTag="BackGround";
-    AudioClip clip;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -25,7 +24,7 @@ public class CameraMask :SoundPlayer
         enemies=(GameObject.FindGameObjectsWithTag(enemyTag));
         mask.transform.position = new Vector3(0, 0, 0);
         Cursor.visible = false;
-        SEPlayer(clip,false);
+     
 
     }
 
