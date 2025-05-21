@@ -9,6 +9,7 @@ public class AssetsSearch : SoundPlayer
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        //SEÄ¶ƒeƒXƒg
         SEPlayer("Tet",false);
     }
 

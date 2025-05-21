@@ -10,11 +10,11 @@ public class SoundManager : MonoBehaviour
     protected const string sePath="Sound/SE/";
     const string soundExtension = ".mp3";
     const string bgmPlayerName = "BGMPlayer";
-    protected const string seAudioSource = "Sound/SEAuidoSource";
+    protected const string seAudioSource = "Sound/SEPlayer";
 
-    [SerializeField] List<string> soundName = new List<string>();
+    List<string> soundName = new List<string>();
     AudioClip clip;
-    [SerializeField] AudioSource bgmPlayer;
+    AudioSource bgmPlayer;
 
     protected IEnumerator DestroySE(GameObject se, float time)
     {
@@ -28,15 +28,11 @@ public class SoundManager : MonoBehaviour
     /// <param name="name">Assetの中から検索するファイルの名前</param>
     protected AudioClip SetSound(string name,string fileName)
     {
-        string[] soundNames = Directory.GetFiles(frontPath + "/" + fileName);
+        string[] soundNames = Directory.GetFiles(frontPath + "/" + fileName,"*"+soundExtension);
         Debug.Log(soundNames.Length);
         foreach (string soundName in soundNames)
         {
-            if(soundName.Length<=soundExtension.Length)break;
-            if (soundName.Substring(soundName.Length - soundExtension.Length) == soundExtension)
-            {
                 this.soundName.Add(soundName);
-            }
         }
         if (Resources.Load<AudioClip>(fileName) == null)//ファイル内に指定したmp3ファイルがなければ
         {
