@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Collections;
+using Unity.VisualScripting;
 
 //二回目以降の消去でエラーが発生する模様。（仮修正済み）
 /*エラー原因とソースの問題、解決案（堀越先生から）
@@ -21,27 +23,96 @@ public class HitManager : MonoBehaviour
     SpawnManager spawnManager;
     private bool shoot;
     private Collider2D collider;
-    bool clickFarst;
-    
+    [SerializeField]bool click;
+    public bool Click {  get { return click; }  }
+    bool modeChange;
+    bool coolTimeUp;
+    public bool CoolTimeUp {get{return coolTimeUp;} }
+    [SerializeField] float coolTime;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         GameObject obj=GameObject.Find("SpawnManager");//敵を生成するスポナーを検索して代入
         spawnManager = obj.GetComponent<SpawnManager>();//spawnManagerに、上で検索したオブジェクトのInspectorからSpawnManagerを取得
         shoot=false;
-        clickFarst=true;
+        click=false;
+        modeChange = true;
+        coolTimeUp = true;
+       coolTime = 3.0f;
         collider = GetComponent<Collider2D>();
     }
 
+ 
     // Update is called once per frame
     void Update()
     {
-        collider.enabled=Input.GetMouseButton(0);//マウスを押したらコライダーを有効化
+       
+        if (Input.GetKey(KeyCode.A))
+        {
+            modeChange = true;
+        }
+        if (Input.GetKey(KeyCode.D))
+        {
+            modeChange = false;
+        }
+        if (modeChange&& coolTimeUp)
+        {
+               
+            if (Input.GetMouseButtonDown(0))
+            {
+                click = true;
+                StartCoroutine(CoolTimeCoroutine());
+
+            }
+            
+        }
+        Debug.Log(collider.enabled);
+    }
+    private void LateUpdate()
+    {
+        //if(coolTimeUp) collider.enabled = false;
     }
 
-    ///Unityで用意されている関数　当たり判定　用途に応じて使う関数が違うから注意　詳しくは自分で調べて
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (!click||!collision.CompareTag("Enemy"))
+        {
+            return;
+        }
+        Debug.Log("Stay通過");
+        bool haveEnemy = false;
+        for (int i = 0; i < hitEnemies.Count; ++i)
+        {
+            
+            if (hitEnemies[i] == collision.gameObject)
+            {
+                haveEnemy = true;//すでに同じオブジェクトを取得しているかどうか
+            }
+        }
+
+        Debug.Log(collision);
+        if (!haveEnemy)//すでに取得しているオブジェクトを除外
+        {
+                hitEnemies.Add(collision.gameObject); 
+        }
+
+        for (int i = 0; i < hitEnemies.Count; i++)
+        {
+            HitCheakBIbiri clickTest = hitEnemies[i].GetComponent<HitCheakBIbiri>();//各敵についているHitCheckScriptを取得
+            //HitCheakOdokasi clickTest2 = hitEnemies[i].GetComponent<HitCheakOdokasi>();
+            clickTest.AlphaStart = true;//HitCheckScriptのAlphaStartをTrueに変更
+           // clickTest2.AlphaStart = true;
+        }
+    }
+    /////Unityで用意されている関数 当たり判定 用途に応じて使う関数が違うから注意 詳しくは自分で調べて
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (!click || !collision.CompareTag("Enemy"))
+        {
+            return;
+        }
+        Debug.Log("通過");
         bool haveEnemy = false;
         for (int i = 0; i < hitEnemies.Count; ++i)
         {
@@ -53,14 +124,26 @@ public class HitManager : MonoBehaviour
 
         if (!haveEnemy)//すでに取得しているオブジェクトを除外
         {
-            hitEnemies.Add(collision.gameObject);//まだ追加していないオブジェクトならListに追加する
+            hitEnemies.Add(collision.gameObject); //まだ追加していないオブジェクトならListに追加する
         }
 
         for (int i = 0; i < hitEnemies.Count; i++)
         {
-            HitCheak clickTest = hitEnemies[i].GetComponent<HitCheak>();//各敵についているHitCheckScriptを取得
+            HitCheakBIbiri clickTest = hitEnemies[i].GetComponent<HitCheakBIbiri>();//各敵についているHitCheckScriptを取得
+            HitCheakOdokasi clickTest2 = hitEnemies[i].GetComponent<HitCheakOdokasi>();
             clickTest.AlphaStart = true;//HitCheckScriptのAlphaStartをTrueに変更
+            clickTest2.AlphaStart = true;
         }
-         hitEnemies=new List<GameObject>();//hitEnemiesを初期化
+        // hitEnemies = new List<GameObject>();//hitEnemiesを初期化
+    }
+
+    IEnumerator CoolTimeCoroutine()
+    {
+        yield return 3;
+        coolTimeUp = false;
+        yield return new WaitForSeconds(coolTime);
+        hitEnemies = new List<GameObject>();
+        Debug.Log("クールタイム終わり（カメラ）");
+        coolTimeUp = true;
     }
 }

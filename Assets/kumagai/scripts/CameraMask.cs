@@ -23,7 +23,7 @@ public class CameraMask :SoundPlayer
         backGround=GameObject.Find(backGroundTag).gameObject;
       
         mask.transform.position = new Vector3(0, 0, 0);
-        Cursor.visible = false;
+        //Cursor.visible = false;
      
 
     }
@@ -50,7 +50,7 @@ public class CameraMask :SoundPlayer
     {
         if (Input.GetMouseButtonDown(0))
         {
-            Debug.Log("DEBUG");
+            
             GameObject[] enemies;
             photo = Instantiate(photo, photoStorage.transform);
             photo.name = "photo";
@@ -76,7 +76,7 @@ public class CameraMask :SoundPlayer
 
     void SavePhoto()
     {
-        Debug.Log("SavePhoto");
+        
         //GameObject obj=Instantiate(photo,new Vector3(0,0,0), Quaternion.identity, photoStorage.transform);
        
     }
