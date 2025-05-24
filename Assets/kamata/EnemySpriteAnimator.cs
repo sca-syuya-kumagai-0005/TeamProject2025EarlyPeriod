@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 
-
 public class EnemySpriteAnimator : MonoBehaviour
 {
     [Header("アニメーション用スプライト一覧")]
@@ -19,6 +18,9 @@ public class EnemySpriteAnimator : MonoBehaviour
 
     [Header("特殊表示の1枚あたり時間（秒）")]
     public float specialFrameDuration = 0.1f;
+
+    [Header("特殊スプライトの生存時間（秒）")]
+    public float generatedLifetime = 3.0f;
 
     [Header("一時停止する秒数")]
     public float pauseDuration = 3.0f;
@@ -56,13 +58,7 @@ public class EnemySpriteAnimator : MonoBehaviour
             scalingCoroutine = StartCoroutine(ScaleOverTime(targetScale, scaleDuration));
         }
 
-        // 無限に監視
         StartCoroutine(MonitorImage());
-    }
-
-    void Update()
-    {
-        // アニメーション再開処理は PauseAndShowSpecialAnimation に任せる
     }
 
     private IEnumerator MonitorImage()
@@ -73,7 +69,7 @@ public class EnemySpriteAnimator : MonoBehaviour
             if (foundImage != null && foundImage.GetComponent<Image>() != null)
             {
                 OnTargetImageDetected(foundImage.transform.position);
-                yield return new WaitForSeconds(1f); // 連続検出防止の小休止
+                yield return new WaitForSeconds(1f); // 過検出防止
             }
             yield return null;
         }
@@ -81,22 +77,22 @@ public class EnemySpriteAnimator : MonoBehaviour
 
     private void OnTargetImageDetected(Vector3 spawnPosition)
     {
-        // 自分の動作一時停止
         StartCoroutine(PauseAndShowSpecialAnimation());
 
-        // 外部に生成（アニメーション付き）
         if (specialAnimationFrames != null && specialAnimationFrames.Length > 0)
         {
             GameObject go = new GameObject("GeneratedSpecialSprite");
             go.transform.position = spawnPosition;
-            SpriteRenderer sr = go.AddComponent<SpriteRenderer>();
 
+            SpriteRenderer sr = go.AddComponent<SpriteRenderer>();
             EnemySpriteAnimator animator = go.AddComponent<EnemySpriteAnimator>();
             animator.animationFrames = specialAnimationFrames;
             animator.frameDuration = specialFrameDuration;
             animator.playOnStart = true;
+            animator.enableScaling = false; // 生成された方は拡大無効
 
-            animator.enableScaling = false; // 外部生成は拡大不要
+            // 自動削除用スクリプト追加
+            go.AddComponent<AutoDestroy>().lifetime = generatedLifetime;
         }
     }
 
@@ -167,6 +163,5 @@ public class EnemySpriteAnimator : MonoBehaviour
         }
 
         transform.localScale = target;
-        scalingCoroutine = null;
     }
 }
