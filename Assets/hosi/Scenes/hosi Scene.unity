@@ -794,7 +794,7 @@ MonoBehaviour:
   bottomTarget: {x: 0, y: -270}
   leftTarget: {x: -480, y: 0}
   rightTarget: {x: 480, y: 0}
-  duration: 0.2
+  duration: 0.3
 --- !u!4 &315900630
 Transform:
   m_ObjectHideFlags: 0

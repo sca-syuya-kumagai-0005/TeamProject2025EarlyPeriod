@@ -85,9 +85,9 @@ public class Mouse : MonoBehaviour
     void AddScore()
     {
         Collider2D[] colliders = GameObject.FindObjectsOfType<Collider2D>();
-        int nAddPoints = 0;
-        int tAddPoints = 0;
-        int AddedScore = 0;
+        int nAddPoints = 0; //ノーマルの目
+        int tAddPoints = 0; //脅かしの目
+        int totalEyesScore = 0; //ノーマル +　脅かしのスコア
 
         //各コライダーが判定枠内に入っているかのチェック
         foreach (var col in colliders)
@@ -102,28 +102,67 @@ public class Mouse : MonoBehaviour
             }
         }
 
+        //ノーマルの目のポイントの加算
         if (nAddPoints == 1)
         {
-            AddedScore += 1;
+            totalEyesScore += 1;
         }
         else if (nAddPoints == 2)
         {
-            AddedScore += 2;
+            totalEyesScore += 2;
         }
 
+        //脅かしの目のポイントの加算
         if (tAddPoints == 1)
         {
-            AddedScore += 2;
+            totalEyesScore += 2;
         }
         else if (tAddPoints == 2)
         {
-            AddedScore += 5;
+            totalEyesScore += 5;
         }
+
+        int totalEyes = nAddPoints + tAddPoints; //最終的に判定される目の数
+        int bonus = GetBonusPoint(totalEyes); //判定された目の数によるボーナス
+
+         int AddedScore = totalEyesScore + bonus; //最終スコア
 
         if (AddedScore > 0)
         {
             score += AddedScore;
+
+            Debug.Log("TotalEyesScore:" + totalEyesScore);
+            Debug.Log("BonusScore:" + bonus);
             Debug.Log("Score: " + score);
+        }
+    }
+
+    //ボーナススコアの配点 case:目の数 return:取得スコア
+    int GetBonusPoint(int eyes)
+    {
+        switch (eyes)
+        {
+            case 1:
+            case 2:
+                return 0;
+            case 3:
+                return 5;
+            case 4:
+                return 10;
+            case 5:
+                return 20;
+            case 6:
+                return 50;
+            case 7:
+                return 100;
+            case 8:
+                return 250;
+            case 9:
+                return 300;
+            case 10:
+                return 500;
+            default:
+                return 0;
         }
     }
 
