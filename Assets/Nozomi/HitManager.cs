@@ -26,8 +26,8 @@ public class HitManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        GameObject obj=GameObject.Find("SpawnManager");
-        spawnManager = obj.GetComponent<SpawnManager>();
+        GameObject obj=GameObject.Find("SpawnManager");//敵を生成するスポナーを検索して代入
+        spawnManager = obj.GetComponent<SpawnManager>();//spawnManagerに、上で検索したオブジェクトのInspectorからSpawnManagerを取得
         shoot=false;
         clickFarst=true;
         collider = GetComponent<Collider2D>();
@@ -36,9 +36,10 @@ public class HitManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        collider.enabled=Input.GetMouseButton(0);
+        collider.enabled=Input.GetMouseButton(0);//マウスを押したらコライダーを有効化
     }
 
+    ///Unityで用意されている関数　当たり判定　用途に応じて使う関数が違うから注意　詳しくは自分で調べて
     private void OnTriggerEnter2D(Collider2D collision)
     {
         bool haveEnemy = false;
@@ -46,20 +47,20 @@ public class HitManager : MonoBehaviour
         {
             if (hitEnemies[i] == collision.gameObject)
             {
-                haveEnemy = true;
+                haveEnemy = true;//すでに同じオブジェクトを取得しているかどうか
             }
         }
 
-        if (!haveEnemy)//すでに取得しているObjectを除外
+        if (!haveEnemy)//すでに取得しているオブジェクトを除外
         {
-            hitEnemies.Add(collision.gameObject);
+            hitEnemies.Add(collision.gameObject);//まだ追加していないオブジェクトならListに追加する
         }
 
         for (int i = 0; i < hitEnemies.Count; i++)
         {
-            HitCheak clickTest = hitEnemies[i].GetComponent<HitCheak>();
-            clickTest.AlphaStart = true;
+            HitCheak clickTest = hitEnemies[i].GetComponent<HitCheak>();//各敵についているHitCheckScriptを取得
+            clickTest.AlphaStart = true;//HitCheckScriptのAlphaStartをTrueに変更
         }
-         hitEnemies=new List<GameObject>();
+         hitEnemies=new List<GameObject>();//hitEnemiesを初期化
     }
 }
