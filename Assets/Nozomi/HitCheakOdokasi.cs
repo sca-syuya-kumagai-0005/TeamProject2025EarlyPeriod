@@ -9,10 +9,13 @@ public class HitCheakOdokasi : MonoBehaviour
     public bool AlphaStart { set { alphaStart = value; } }//alphaStartを他でいじれるようにするセッター。あんまり使わない方がいい
     [SerializeField] Collider2D[] colliders;
     [SerializeField] SpriteRenderer spriteRenderer;
+    [SerializeField]HitManager hitManager;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        Debug.Log(GameObject.Find("Hit").gameObject.GetComponent<HitManager>());
+        hitManager = GameObject.Find("Hit").gameObject.GetComponent<HitManager>();  
         alphaStart = false;
         alphaTimer = 1.0f;
         colliders = GetComponents<Collider2D>();
@@ -40,6 +43,7 @@ public class HitCheakOdokasi : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        Debug.Log("ENTER");
         if (collision.CompareTag("PlayerCamera"))
         {
             alphaStart = true;

@@ -1,15 +1,14 @@
 using UnityEngine;
 using System.Collections;
 
-public class HitCheakBIbiri : MonoBehaviour
+public class HitCheakBibiri : MonoBehaviour
 {
     const float timer = 3.0f;
     [SerializeField] float alphaTimer;
-   [SerializeField] bool alphaStart;//透明化の開始判定フラグ　trueで開始
+    [SerializeField] bool alphaStart;//透明化の開始判定フラグ　trueで開始
     public bool AlphaStart { set { alphaStart = value; } }//alphaStartを他でいじれるようにするセッター。あんまり使わない方がいい
     [SerializeField] Collider2D[] colliders;
     [SerializeField] SpriteRenderer spriteRenderer;
-
     void Start()
     {
         alphaStart = false;
@@ -36,32 +35,36 @@ public class HitCheakBIbiri : MonoBehaviour
     }
 
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.CompareTag("PlayerCamera"))
-        {
-            Debug.Log("ENTER");
-            alphaStart = true;
-        }
-        for (int i = 0; i < colliders.Length; i++)
-        {
-            colliders[i].enabled = false;
-        }
-    }
+    //private void OnTriggerEnter2D(Collider2D collision)
+    //{
+    //    if(!hitManager.CoolTimeUp)
+    //    {
+    //        return;
+    //    }
+    //    if (collision.CompareTag("PlayerCamera"))
+    //    {
+    //        Debug.Log("ENTER");
+    //        alphaStart = true;
+    //    }
+    //    for (int i = 0; i < colliders.Length; i++)
+    //    {
+    //        colliders[i].enabled = false;
+    //    }
+    //}
 
-    private void OnTriggerStay2D(Collider2D collision)
-    {
-
-        if (collision.CompareTag("PlayerCamera"))
-        {
-            Debug.Log("STAY");
-            alphaStart = true;
-        }
-        for (int i = 0; i < colliders.Length; i++)
-        {
-            colliders[i].enabled = false;
-        }
-    }
+    //private void OnTriggerStay2D(Collider2D collision)
+    //{
+       
+    //    if (collision.CompareTag("PlayerCamera"))
+    //    {
+    //        Debug.Log("STAY");
+    //        alphaStart = true;
+    //    }
+    //    for (int i = 0; i < colliders.Length; i++)
+    //    {
+    //        colliders[i].enabled = false;
+    //    }
+    //}
     IEnumerator DestroyTimer(GameObject obj)
     {
         yield return new WaitForSeconds(timer);
