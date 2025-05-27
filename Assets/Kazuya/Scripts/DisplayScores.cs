@@ -11,20 +11,22 @@ public class DisplayScores : MonoBehaviour
     [SerializeField] Text AddScore;//累計Point
 
     int Eyse = 100;
-    int Type = 4;
-    int Raritys;
-    int BonusPointss;
+    int Coward = 50;
+    int Furious = 4;
+    int Raritys = 8;
+    int BonusPointss = 30;
     int Scores;
     void Start()
     {
+        Scores = Eyse + Coward + Furious + Raritys + BonusPointss;
     }
 
     void Update()
     {
-        NumberEyes.text     =$"枠内のお化けの目の数:       {Eyse}";
-        GostType.text       =$"お化けの種類:               {Type}";
-        Rarity.text         =$"レア度:{Raritys}" ;
-        BonusPoints.text    =$"ボーナス得点:{BonusPointss}";
-        AddScore.text       =$"合計得点:{Scores}";
+        NumberEyes.text     =$"{Eyse}つ";
+        GostType.text       =$"{Coward}体　{Furious}体";
+        Rarity.text         =$"{Raritys}" ;
+        BonusPoints.text    =$"{BonusPointss}";
+        AddScore.text       =$"{Scores}";
     }
 }
