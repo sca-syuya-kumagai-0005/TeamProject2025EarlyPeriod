@@ -4,7 +4,6 @@ using System.Collections;
 
 public class Flash : MonoBehaviour
 {
-    bool modeChange;
     bool flashOn;
     float flashTimer;
     float imageAlpha = 1;
@@ -12,12 +11,12 @@ public class Flash : MonoBehaviour
     [SerializeField] Image Image;
     bool getFirst;
     bool flashCool;
-    [SerializeField] SpriteRenderer spriteRenderer;
+   // [SerializeField] SpriteRenderer spriteRenderer;
+    [SerializeField] HitManager hitManager;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         //spriteRenderer = Image.GetComponent<SpriteRenderer>();
-        modeChange = false;
         flashTimer = 120.0f;
         coolTime = 240.0f;
         flashOn = false;
@@ -29,15 +28,8 @@ public class Flash : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKey(KeyCode.A))
-        {
-            modeChange = false;
-        }
-        if (Input.GetKey(KeyCode.D))
-        {
-            modeChange = true;
-        }
-        if (modeChange)
+        
+        if (hitManager.Mode == HitManager.modeChange.flashMode)
         {
 
             if (Input.GetMouseButton(0))

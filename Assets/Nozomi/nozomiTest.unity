@@ -436,9 +436,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hitEnemies: []
   click: 0
-  modeChange: 0
   coolTimeUp: 0
-  coolTime: 1
+  coolTime: 3
+  mode: 0
 --- !u!50 &653423602
 Rigidbody2D:
   serializedVersion: 5
@@ -887,7 +887,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Image: {fileID: 1755194999}
-  spriteRenderer: {fileID: 0}
+  hitManager: {fileID: 653423601}
 --- !u!4 &1439307488
 Transform:
   m_ObjectHideFlags: 0

@@ -10,6 +10,7 @@ public class HitCheakOdokasi : MonoBehaviour
     [SerializeField] Collider2D[] colliders;
     [SerializeField] SpriteRenderer spriteRenderer;
     [SerializeField]HitManager hitManager;
+    bool flashHit;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -20,24 +21,33 @@ public class HitCheakOdokasi : MonoBehaviour
         alphaTimer = 1.0f;
         colliders = GetComponents<Collider2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        flashHit = false;
+
     }
 
     // Update is called once per frame
     void Update()
     {
         //GameObject clickedGameObject;//クリックされたゲームオブジェクトを代入する変数
+        if (!flashHit) 
+        {
+            
+        }
+        else
+        {
+            if (alphaStart)
+            {
+                alphaTimer -= Time.deltaTime / timer;//透明化
+                StartCoroutine(DestroyTimer(this.gameObject));//一定時間後に破壊
+            }
+            for (int i = 0; i < colliders.Length; i++)
+            {
+                colliders[i].enabled = !alphaStart;//colliderのオンオフをalphaStartの反対に設定
+            }
+            spriteRenderer.color = new Color(1, 1, 1, alphaTimer);//透明化を反映
+                                                                  //spriteRenderer.color = new Color(1, 1, 1, 0);
+        }
 
-        if (alphaStart)
-        {
-            alphaTimer -= Time.deltaTime / timer;//透明化
-            StartCoroutine(DestroyTimer(this.gameObject));//一定時間後に破壊
-        }
-        for (int i = 0; i < colliders.Length; i++)
-        {
-            colliders[i].enabled = !alphaStart;//colliderのオンオフをalphaStartの反対に設定
-        }
-        spriteRenderer.color = new Color(1, 1, 1, alphaTimer);//透明化を反映
-        //spriteRenderer.color = new Color(1, 1, 1, 0);
     }
 
 
@@ -46,7 +56,14 @@ public class HitCheakOdokasi : MonoBehaviour
         Debug.Log("ENTER");
         if (collision.CompareTag("PlayerCamera"))
         {
-            alphaStart = true;
+            if(hitManager.Mode == HitManager.modeChange.cameraMode)
+            {
+                alphaStart = true;
+            }
+            if (hitManager.Mode == HitManager.modeChange.flashMode)
+            {
+                flashHit = true;
+            }
         }
         for (int i = 0; i < colliders.Length; i++)
         {

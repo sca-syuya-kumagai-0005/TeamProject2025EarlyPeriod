@@ -1,22 +1,9 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
-using System.ComponentModel;
 
-//二回目以降の消去でエラーが発生する模様。（仮修正済み）
-/*エラー原因とソースの問題、解決案（堀越先生から）
- 原因
-    hitEnemies(List)の要素数がEnemyを消した時に減らない。
-    53行目のfor文を回した時に想定よりも多く回る→nullでエラー
-ソースの問題
-    上を解決するにはEnemyを消す時に要素数も消す必要がある
-    ただ、現時点のソースだと要素数の消す場所を指定できない
-    理由：Enemyを消しているのがHitManagerではなくClickTest2Dだから
-    これだとEnemyの種類を増やした時やListの端以外を消した時に困る
-解決案
-    Enemy消去をClickTest2DではなくHitManagerに任せる
-    ClickTest2Dでフラグを立て、HitManagerで消去とListのremoveをする
- */
+
+
 public class HitManager : MonoBehaviour
 {
     [SerializeField]private List<GameObject> hitEnemies=new List<GameObject>();
@@ -25,9 +12,16 @@ public class HitManager : MonoBehaviour
     private Collider2D collider;
     [SerializeField]bool click;
     public bool Click {  get { return click; }  }
-    [SerializeField]bool modeChange;
     [SerializeField]bool coolTimeUp;
     [SerializeField] float coolTime;
+    public enum modeChange{
+        cameraMode,
+        flashMode,
+    };
+    [SerializeField] modeChange mode;
+    public modeChange Mode { get{return mode;} }
+
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -36,7 +30,7 @@ public class HitManager : MonoBehaviour
         spawnManager = obj.GetComponent<SpawnManager>();//spawnManagerに、上で検索したオブジェクトのInspectorからSpawnManagerを取得
         shoot=false;
         click=false;
-        modeChange = true;
+        //(modeChange) = 1;
         coolTimeUp = true;
         collider = GetComponent<Collider2D>();
     }
@@ -46,13 +40,13 @@ public class HitManager : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.A))
         {
-            modeChange = true;
+            mode = modeChange.cameraMode;
         }
         if (Input.GetKey(KeyCode.D))
         {
-            modeChange = false;
+            mode = modeChange.flashMode;
         }
-        if (modeChange && coolTimeUp)
+        if ((mode == modeChange.cameraMode) && coolTimeUp)
         {
             if (Input.GetMouseButton(0))
             {
@@ -102,7 +96,6 @@ public class HitManager : MonoBehaviour
     //Unityで用意されている関数 当たり判定 用途に応じて使う関数が違うから注意 詳しくは自分で調べて
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log("通過");
         bool haveEnemy = false;
         for (int i = 0; i < hitEnemies.Count; ++i)
         {
@@ -131,8 +124,8 @@ public class HitManager : MonoBehaviour
     IEnumerator CoolTimeCoroutine()
     {
         collider.enabled = false;
-        Debug.Log("a");
         yield return new WaitForSeconds(coolTime);
+        Debug.Log("クールタイム終了（撮影）");
         coolTimeUp = true;
     }
 }

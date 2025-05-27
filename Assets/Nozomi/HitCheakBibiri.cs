@@ -9,12 +9,15 @@ public class HitCheakBibiri : MonoBehaviour
     public bool AlphaStart { set { alphaStart = value; } }//alphaStartを他でいじれるようにするセッター。あんまり使わない方がいい
     [SerializeField] Collider2D[] colliders;
     [SerializeField] SpriteRenderer spriteRenderer;
+    bool flashHit;
+
     void Start()
     {
         alphaStart = false;
         alphaTimer = 1.0f;
         colliders = GetComponents<Collider2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        flashHit = false;
     }
 
     void Update()
