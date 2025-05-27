@@ -435,7 +435,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hitEnemies: []
-  coolTime: 0
+  click: 0
+  modeChange: 0
+  coolTimeUp: 0
+  coolTime: 1
 --- !u!50 &653423602
 Rigidbody2D:
   serializedVersion: 5
