@@ -1,43 +1,57 @@
-using UnityEngine;
-using UnityEngine.UI;
-using System.Collections;
+ï»¿using UnityEngine;
 
 public class MouseManager : MonoBehaviour
 {
-    [SerializeField] Material click_Mat;
-    float alpha;
-    
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    [Header("Material ã¨ Mask ã®å‚ç…§")]
+    [SerializeField] private Material click_Mat;
+    [SerializeField] private GameObject maskObj;
+
+    [Header("Alpha å€¤ï¼ˆMaterialç”¨ï¼‰")]
+    [SerializeField] private float min_Mat = -0.2f;
+    [SerializeField] private float max_Mat = 0.5f;
+
+    [Header("Scale å€¤ï¼ˆmaskObjç”¨ï¼‰")]
+    [SerializeField] private float min_Mask = 0.0f;
+    [SerializeField] private float max_Mask = 2.85f;
+
+    [Header("ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«ã‚¹ãƒ”ãƒ¼ãƒ‰")]
+    [SerializeField] private float scrollSpeed = 5f;
+
+    [Header("è£œæ­£ã‚«ãƒ¼ãƒ–ï¼ˆã‚¹ã‚±ãƒ¼ãƒ«èª¿æ•´ç”¨ï¼‰")]
+    [SerializeField] private AnimationCurve scaleCurve = AnimationCurve.EaseInOut(0, 1, 1, 0);
+
+    private float alpha;
+
     void Start()
     {
-        
+        alpha = click_Mat.GetFloat("_Alpha");
     }
 
-    // Update is called once per frame
     void Update()
     {
-        //ƒXƒNƒ[ƒ‹‚ÌŒŸ’m
-        var scroll = Input.mouseScrollDelta.y * Time.deltaTime * 5;
-        alpha = click_Mat.GetFloat("_Alpha");
-        
-        if (alpha <= 0.5 )
-        {
-            Debug.Log("ƒY[ƒ€‚Í‚¶‚ß");
-            click_Mat.SetFloat("_Alpha", alpha@+=@scroll);          
-        }
+        float scrollInput = Input.mouseScrollDelta.y;
+        float scrollAmount = scrollInput * Time.deltaTime * scrollSpeed;
 
-        //Šg‘åk¬‚ÌMax_Min‚Ì”»’è
-        if (alpha > 0.5)
-        {
-            Debug.Log("k¬‚µ‚·‚¬II");
-            alpha = 0.5f;
-            click_Mat.SetFloat("_Alpha", alpha);
-        }
-        if (alpha < -0.2)
-        {
-            Debug.Log("Šg‘å‚µ‚·‚¬II");
-            alpha = -0.2f;
-            click_Mat.SetFloat("_Alpha", alpha);
-        }
+        // alpha æ›´æ–°
+        alpha = Mathf.Clamp(alpha + scrollAmount, min_Mat, max_Mat);
+        click_Mat.SetFloat("_Alpha", alpha);
+
+        // æ­£è¦åŒ– (0ã€œ1)
+        float t = Mathf.InverseLerp(min_Mat, max_Mat, alpha);
+
+        // ã‚«ãƒ¼ãƒ–è£œæ­£ï¼ˆé€†è»¢å«ã‚€ï¼‰
+        float curvedT = scaleCurve.Evaluate(t); // â† ã‚«ãƒ¼ãƒ–ã§è£œæ­£ï¼ˆt=0ãªã‚‰1, t=1ãªã‚‰0ãªã‚‰é€†è»¢ï¼‰
+
+        // ã‚¹ã‚±ãƒ¼ãƒ«è¨ˆç®—
+        float targetScale = Mathf.Lerp(min_Mask, max_Mask, curvedT);
+
+        ApplyScale(targetScale);
+
+        Debug.Log($"Alpha: {alpha:F4}, t: {t:F3}, CurvedT: {curvedT:F3}, Scale: {targetScale:F3}");
+    }
+
+    void ApplyScale(float scale)
+    {
+        maskObj.transform.localScale = new Vector3(scale, scale, scale);
     }
 }
