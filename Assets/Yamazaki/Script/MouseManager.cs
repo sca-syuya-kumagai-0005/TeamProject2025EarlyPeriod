@@ -29,6 +29,11 @@ public class MouseManager : MonoBehaviour
 
     void Update()
     {
+        ZoomProcessing();
+    }
+    
+    void ZoomProcessing()
+    {
         float scrollInput = Input.mouseScrollDelta.y;
         float scrollAmount = scrollInput * Time.deltaTime * scrollSpeed;
 
