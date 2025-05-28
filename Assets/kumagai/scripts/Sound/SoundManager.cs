@@ -3,15 +3,19 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 
+//メモ
+//一度一致した文字列は次回からhitを加算しないようにする
+//連続して文字が一致してたらhitを加算
+
 public class SoundManager : MonoBehaviour
 {
     const string frontPath = "Assets/Resources";
     protected const string bgmPath = "Sound/BGM/";
     protected const string sePath="Sound/SE/";
-    const string soundExtension = ".mp3";
-    const string bgmPlayerName = "BGMPlayer";
+    protected const string soundExtension = ".mp3";
+    protected const string bgmAudioSource= "Sound/BGMPlayer";
     protected const string seAudioSource = "Sound/SEPlayer";
-
+    
     List<string> soundName = new List<string>();
     AudioClip clip;
     AudioSource bgmPlayer;
@@ -28,15 +32,15 @@ public class SoundManager : MonoBehaviour
     /// <param name="name">Assetの中から検索するファイルの名前</param>
     protected AudioClip SetSound(string name,string fileName)
     {
+
         string[] soundNames = Directory.GetFiles(frontPath + "/" + fileName,"*"+soundExtension);
-        Debug.Log(soundNames.Length);
         foreach (string soundName in soundNames)
         {
                 this.soundName.Add(soundName);
         }
+
         if (Resources.Load<AudioClip>(fileName) == null)//ファイル内に指定したmp3ファイルがなければ
         {
-            Debug.Log("nullだったので");
             string str = CheckName(name,fileName);//一致度の高いmp3を検索
             if(str=="")//一定以上の一致するmp3ファイルを見つけられなければ
             {
@@ -65,6 +69,8 @@ public class SoundManager : MonoBehaviour
         string str = "";//最終的に返す文字列
         float maxRatio = 0.0f;
         float clearLine = 0.0f;
+        int charCount = 0;
+        int maxCharCount=0;
         if (soundName.Count == 0)
             {
                 return str; 
@@ -75,9 +81,7 @@ public class SoundManager : MonoBehaviour
             if (name.Length < soundExtension.Length) {  }
             else if (name.Substring(name.Length - soundExtension.Length) == soundExtension)
             {
-                Debug.Log(name);
                 name = name.Substring(0, name.Length - soundExtension.Length);
-                Debug.Log(name);
             }
             float ratio = 0;//一致度
             float hit = 0;//文字列の一致数 
@@ -102,17 +106,28 @@ public class SoundManager : MonoBehaviour
                 ratio = hit / name.Length;
             }
 
-            if (ratio > clearLine)
+            if (ratio >= clearLine)
             {
                 if (ratio > maxRatio)
                 {
+                    charCount=Mathf.Abs(name.Length-sound.Length);
                     str = sound;
                     maxRatio = ratio;
+                    maxCharCount = charCount;
+                }
+                else if(ratio==maxRatio)
+                {
+                    charCount = Mathf.Abs(name.Length - sound.Length);
+                    if(charCount<maxCharCount)
+                    {
+                        str = sound;
+                        maxRatio = ratio;
+                        maxCharCount = charCount;
+                    }
                 }
             }
 
         }
-        Debug.Log(str);
         soundName=new List<string>();
         return str;
 

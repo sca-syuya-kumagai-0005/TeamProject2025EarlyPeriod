@@ -1,9 +1,5 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
+
 using UnityEngine;
-using JetBrains.Annotations;
 public class SoundPlayer : SoundManager
 {
     /// <summary>
@@ -13,9 +9,11 @@ public class SoundPlayer : SoundManager
     /// <param name="loop">再生後ループするかどうか</param>
     protected void SEPlayer(string name, bool loop)
     {
+      
         AudioClip clip = SetSound(name,sePath);
-        Debug.Log(clip);
-        if (clip == null)
+
+       
+;        if (clip == null)//遊んだ痕跡　エラーログをカラフルに表示する
         {
             string[] color = new string[4] { "cyan", "yellow", "lime", "fuchsia" };
             string check = this.gameObject.name + "で呼ばれているSEPlayerに対応するSEが代入されていません。";
@@ -27,56 +25,35 @@ public class SoundPlayer : SoundManager
             Debug.LogError(output);
             return;
         }
-        GameObject seObj = Resources.Load<GameObject>(seAudioSource);
-        GameObject obj = Instantiate(seObj);
+        GameObject seObj = Resources.Load<GameObject>(seAudioSource);//Resourcesフォルダーに入っているSE用のオーディオソースを取得
+        GameObject obj = Instantiate(seObj);//取得したものを生成して、生成したオブジェクトを取得
         
-        AudioSource se = obj.GetComponent<AudioSource>();
-        se.clip = clip;
-        se.loop = loop;
+        AudioSource se = obj.GetComponent<AudioSource>();//生成したオブジェクトからAudioSourceコンポーネントを取得
+
+        se.clip = clip;//取得したAudioSourceに引数で渡したオーディオファイルを代入
+        se.loop = loop;//ループするかどうかを設定
 
         se.Stop();
         se.Play();
+        float length=se.clip.length;
         if (!loop)
         {
             StartCoroutine(DestroySE(obj, clip.length));
         }
     }
 
-    /// <summary>
-    /// SEを再生する関数
-    /// </summary>
-    /// <param name="name"></param>
-    /// <param name="loop"></param>
-    /// <param name="length"></param>
-    protected void SEPlayer(string name, bool loop,float length)
+    protected void BGMPlayer()
     {
-        AudioClip clip = SetSound(name, sePath);
-        Debug.Log(clip);
-
-
-        if (clip == null)
+        GameObject obj;
+        obj = GameObject.Find("BGMPlayer").gameObject;
+        if (obj==null)
         {
-            string[] color = new string[4] { "cyan", "yellow", "lime", "fuchsia" };
-            string check = this.gameObject.name + "で呼ばれているSEPlayerに対応するSEが代入されていません。";
-            string output = null;
-            for (int i = 0; i < name.Length; i++)
-            {
-                output += $"<color={color[i % color.Length]}>{name[i]}</color>";
-            }
-            Debug.LogError(output);
-            return;
+            obj=(GameObject)Instantiate(Resources.Load(bgmAudioSource));
         }
-        GameObject seObj = Resources.Load<GameObject>(seAudioSource);
-        GameObject obj = Instantiate(seObj);
-
-        AudioSource se = obj.GetComponent<AudioSource>();
-        se.clip = clip;
-        se.loop = loop;
-
-        se.Stop();
-        se.Play();
-        StartCoroutine(DestroySE(obj, clip.length));
+        AudioClip clip = SetSound(name,bgmPath);
+        AudioSource bgm=obj.GetComponent<AudioSource>();
+        bgm.clip = clip;
+        bgm.Stop();
+        bgm.Play();
     }
-
-
 }
