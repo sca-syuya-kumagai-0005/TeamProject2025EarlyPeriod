@@ -2,61 +2,125 @@
 
 public class MouseManager : MonoBehaviour
 {
-    [Header("Material と Mask の参照")]
-    [SerializeField] private Material click_Mat;
+    [Header("マウスクリック時にフラッシュ表示する SpriteRenderer")]
+    [SerializeField] private SpriteRenderer cameraFlash;
+
+    [Header("マテリアルとマスク")]
+    [SerializeField] private Material clickMat;
     [SerializeField] private GameObject maskObj;
 
-    [Header("Alpha 値（Material用）")]
-    [SerializeField] private float min_Mat = -0.2f;
-    [SerializeField] private float max_Mat = 0.5f;
+    [Header("Material の Alpha 範囲")]
+    [SerializeField] private float minMat = -0.2f;
+    [SerializeField] private float maxMat = 0.5f;
 
-    [Header("Scale 値（maskObj用）")]
-    [SerializeField] private float min_Mask = 0.0f;
-    [SerializeField] private float max_Mask = 2.85f;
+    [Header("マスクの Scale 範囲")]
+    [SerializeField] private float minMask = 0f;
+    [SerializeField] private float maxMask = 2.85f;
 
-    [Header("スクロールスピード")]
+    [Header("マウスホイール感度")]
     [SerializeField] private float scrollSpeed = 5f;
 
-    [Header("補正カーブ（スケール調整用）")]
+    [Header("スケール補正カーブ")]
     [SerializeField] private AnimationCurve scaleCurve = AnimationCurve.EaseInOut(0, 1, 1, 0);
 
+    [Header("カメラと出力先")]
+    [SerializeField] private Camera targetCamera;
+    [SerializeField] private RenderTexture renderTexture;
+    [SerializeField] private SpriteRenderer targetSpriteRenderer;
+
     private float alpha;
+    private bool canMouseClick = true;
 
     void Start()
     {
-        alpha = click_Mat.GetFloat("_Alpha");
+        alpha = clickMat.GetFloat("_Alpha");
+        cameraFlash.enabled = false;
     }
 
     void Update()
     {
-        ZoomProcessing();
+        HandleMouseClick();
+        HandleZoom();
     }
-    
-    void ZoomProcessing()
+
+    void HandleMouseClick()
     {
-        float scrollInput = Input.mouseScrollDelta.y;
-        float scrollAmount = scrollInput * Time.deltaTime * scrollSpeed;
+        if (Input.GetMouseButtonDown(0) && canMouseClick)
+        {
+            TakeSnapshot();
+            canMouseClick = false;
+            cameraFlash.enabled = true;
+            cameraFlash.color = Color.white;
 
-        // alpha 更新
-        alpha = Mathf.Clamp(alpha + scrollAmount, min_Mat, max_Mat);
-        click_Mat.SetFloat("_Alpha", alpha);
+            
+        }
 
-        // 正規化 (0〜1)
-        float t = Mathf.InverseLerp(min_Mat, max_Mat, alpha);
+        // フラッシュ演出
+        if (cameraFlash.enabled)
+        {
+            cameraFlash.color = Color.Lerp(cameraFlash.color, Color.clear, Time.deltaTime * 5f);
 
-        // カーブ補正（逆転含む）
-        float curvedT = scaleCurve.Evaluate(t); // ← カーブで補正（t=0なら1, t=1なら0なら逆転）
-
-        // スケール計算
-        float targetScale = Mathf.Lerp(min_Mask, max_Mask, curvedT);
-
-        ApplyScale(targetScale);
-
-        Debug.Log($"Alpha: {alpha:F4}, t: {t:F3}, CurvedT: {curvedT:F3}, Scale: {targetScale:F3}");
+            // αが十分小さくなったらフラッシュ終了
+            if (cameraFlash.color.a <= 0.01f)
+            {
+                cameraFlash.enabled = false;
+                canMouseClick = true;
+            }
+        }
     }
 
-    void ApplyScale(float scale)
+    void HandleZoom()
     {
-        maskObj.transform.localScale = new Vector3(scale, scale, scale);
+        float scroll = Input.mouseScrollDelta.y * Time.deltaTime * scrollSpeed;
+        alpha = Mathf.Clamp(alpha + scroll, minMat, maxMat);
+        clickMat.SetFloat("_Alpha", alpha);
+
+        float t = Mathf.InverseLerp(minMat, maxMat, alpha);
+        float curvedT = scaleCurve.Evaluate(t);
+        float scale = Mathf.Lerp(minMask, maxMask, curvedT);
+
+        maskObj.transform.localScale = Vector3.one * scale;
     }
+
+    void TakeSnapshot()
+    {
+        if (targetCamera == null || renderTexture == null || targetSpriteRenderer == null)
+        {
+            Debug.LogError("設定が不完全です");
+            return;
+        }
+
+        Texture2D tex = new Texture2D(renderTexture.width, renderTexture.height, TextureFormat.RGB24, false);
+
+        var prevRT = RenderTexture.active;
+        RenderTexture.active = renderTexture;
+
+        targetCamera.targetTexture = renderTexture;
+        targetCamera.Render();
+
+        tex.ReadPixels(new Rect(0, 0, renderTexture.width, renderTexture.height), 0, 0);
+        tex.Apply();
+
+        targetCamera.targetTexture = null;
+        RenderTexture.active = prevRT;
+
+        Sprite snapshot = Sprite.Create(
+            tex,
+            new Rect(0, 0, tex.width, tex.height),
+            new Vector2(0.5f, 0.5f),
+            100f, // pixelsPerUnit
+            0,
+            SpriteMeshType.FullRect
+        );
+
+        targetSpriteRenderer.sprite = snapshot;
+        targetSpriteRenderer.enabled = true;
+        targetSpriteRenderer.color = Color.white;
+        // 例えば pixelsPerUnit はTextureの解像度と見合う値に設定する
+       
+
+        Debug.Log("Snapshot set to SpriteRenderer: " + snapshot.name);
+    }
+
+
 }
