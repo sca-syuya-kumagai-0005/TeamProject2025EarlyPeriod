@@ -28,6 +28,9 @@ public class MouseManager : MonoBehaviour
     [SerializeField] private RenderTexture renderTexture;
     [SerializeField] private SpriteRenderer targetSpriteRenderer;
 
+    [Header("撮影写真の親オブジェクト")]
+    [SerializeField] private GameObject snapshot_Obj;
+
     private float alpha;
     private bool canMouseClick = true;
 
@@ -35,6 +38,7 @@ public class MouseManager : MonoBehaviour
     {
         alpha = clickMat.GetFloat("_Alpha");
         cameraFlash.enabled = false;
+        snapshot_Obj.SetActive(false);
     }
 
     void Update()
@@ -64,7 +68,9 @@ public class MouseManager : MonoBehaviour
             if (cameraFlash.color.a <= 0.01f)
             {
                 cameraFlash.enabled = false;
-                canMouseClick = true;
+                //canMouseClick = true;
+                snapshot_Obj.SetActive(true);
+                Debug.Log("ここからアニメーションの入れる感じ");
             }
         }
     }
