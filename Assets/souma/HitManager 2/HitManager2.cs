@@ -19,23 +19,28 @@ using System.ComponentModel;
  */
 public class HitManager : MonoBehaviour
 {
-    [SerializeField]private List<GameObject> hitEnemies=new List<GameObject>();
+    [SerializeField] private List<GameObject> hitEnemies = new List<GameObject>();
     SpawnManager spawnManager;
     private bool shoot;
     private Collider2D collider;
-    [SerializeField]bool click;
-    public bool Click {  get { return click; }  }
-    [SerializeField]bool modeChange;
-    [SerializeField]bool coolTimeUp;
+    [SerializeField] bool click;
+    public bool Click { get { return click; } }
+    [SerializeField] bool modeChange;
+    [SerializeField] bool coolTimeUp;
     [SerializeField] float coolTime;
+
+    [SerializeField] private GameObject imageObject; // 表示・非表示を切り替える対象
+    [SerializeField] private GameObject blueRectangle; // Canvas配下の青い四角
+
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        GameObject obj=GameObject.Find("SpawnManager");//敵を生成するスポナーを検索して代入
+        GameObject obj = GameObject.Find("SpawnManager");//敵を生成するスポナーを検索して代入
         spawnManager = obj.GetComponent<SpawnManager>();//spawnManagerに、上で検索したオブジェクトのInspectorからSpawnManagerを取得
-        shoot=false;
-        click=false;
+        shoot = false;
+        click = false;
         modeChange = true;
         coolTimeUp = true;
         collider = GetComponent<Collider2D>();
@@ -63,10 +68,40 @@ public class HitManager : MonoBehaviour
         }
         hitEnemies = new List<GameObject>();
     }
-        // Update is called once per frame
+    // Update is called once per frame
     void Update()
     {
-        if(collider.enabled) 
+
+        {
+            // Dキーで画像表示
+            if (Input.GetKeyDown(KeyCode.D))
+            {
+                imageObject.SetActive(true);
+            }
+
+            // Aキーで画像非表示（元に戻す）
+            if (Input.GetKeyDown(KeyCode.A))
+            {
+                imageObject.SetActive(false);
+            }
+
+            if (Input.GetKeyDown(KeyCode.A))
+            {
+                // Aキーで表示
+                blueRectangle.SetActive(true);
+            }
+
+            if (Input.GetKeyDown(KeyCode.D))
+            {
+                // Dキーで非表示
+                blueRectangle.SetActive(false);
+            }
+
+        }
+
+
+
+        if (collider.enabled)
         {
             StartCoroutine(CoolTimeCoroutine());
         }
@@ -120,8 +155,8 @@ public class HitManager : MonoBehaviour
         for (int i = 0; i < hitEnemies.Count; i++)
         {
             HitCheakBibiri clickTest = hitEnemies[i].GetComponent<HitCheakBibiri>();//各敵についているHitCheckScriptを取得
-           // HitCheakOdokasi clickTest2 = hitEnemies[i].GetComponent<HitCheakOdokasi>();
-            if (clickTest != null) { clickTest.AlphaStart = true;}
+                                                                                    // HitCheakOdokasi clickTest2 = hitEnemies[i].GetComponent<HitCheakOdokasi>();
+            if (clickTest != null) { clickTest.AlphaStart = true; }
             //clickTest2.AlphaStart = true;
         }
         // collider.enabled = false;
@@ -136,3 +171,4 @@ public class HitManager : MonoBehaviour
         coolTimeUp = true;
     }
 }
+
