@@ -31,14 +31,19 @@ public class MouseManager : MonoBehaviour
     [Header("撮影写真の親オブジェクト")]
     [SerializeField] private GameObject snapshot_Obj;
 
+    [Header("タイトルの親オブジェクト")]
+    [SerializeField] private GameObject titleObj;
+
     private float alpha;
     private bool canMouseClick = true;
+    Animation animationScript;
 
     void Start()
     {
         alpha = clickMat.GetFloat("_Alpha");
         cameraFlash.enabled = false;
         snapshot_Obj.SetActive(false);
+        animationScript = GetComponent<Animation>();
     }
 
     void Update()
@@ -71,6 +76,8 @@ public class MouseManager : MonoBehaviour
                 //canMouseClick = true;
                 snapshot_Obj.SetActive(true);
                 Debug.Log("ここからアニメーションの入れる感じ");
+                animationScript.GetSetProperty = 1;
+                titleObj.SetActive(false);
             }
         }
     }
@@ -122,7 +129,7 @@ public class MouseManager : MonoBehaviour
         targetSpriteRenderer.sprite = snapshot;
         targetSpriteRenderer.enabled = true;
         targetSpriteRenderer.color = Color.white;
-        // 例えば pixelsPerUnit はTextureの解像度と見合う値に設定する
+        //Textureの解像度と見合う値に設定する
        
 
         Debug.Log("Snapshot set to SpriteRenderer: " + snapshot.name);
