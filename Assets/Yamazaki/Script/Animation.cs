@@ -121,4 +121,8 @@ public class Animation : MonoBehaviour
         Debug.Log("扉開閉アニメーション");
     }
 
+    private IEnumerator Anime_2()
+    {
+        yield return null; 
+    }
 }
