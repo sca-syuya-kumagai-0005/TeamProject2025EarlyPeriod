@@ -12,8 +12,8 @@ public class HitMove : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
-        rightTopPos = Camera.main.ViewportToWorldPoint(new Vector3(1,1,10.0f));
+
+        rightTopPos = Camera.main.ViewportToWorldPoint(new Vector3(1, 1, 10.0f));
         leftBottomPos = Camera.main.ViewportToWorldPoint(new Vector3(0, 0, 10.0f));
 
     }

@@ -6,30 +6,31 @@ using System.Collections;
 
 public class HitManager : MonoBehaviour
 {
-    [SerializeField]private List<GameObject> hitEnemies=new List<GameObject>();
+    [SerializeField] private List<GameObject> hitEnemies = new List<GameObject>();
     SpawnManager spawnManager;
     private bool shoot;
     private Collider2D collider;
-    [SerializeField]bool click;
-    public bool Click {  get { return click; }  }
-    [SerializeField]bool coolTimeUp;
+    [SerializeField] bool click;
+    public bool Click { get { return click; } }
+    [SerializeField] bool coolTimeUp;
     [SerializeField] float coolTime;
-    public enum modeChange{
+    public enum modeChange
+    {
         cameraMode,
         flashMode,
     };
     [SerializeField] modeChange mode;
-    public modeChange Mode { get{return mode;} }
+    public modeChange Mode { get { return mode; } }
 
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        GameObject obj=GameObject.Find("SpawnManager");//敵を生成するスポナーを検索して代入
+        GameObject obj = GameObject.Find("SpawnManager");//敵を生成するスポナーを検索して代入
         spawnManager = obj.GetComponent<SpawnManager>();//spawnManagerに、上で検索したオブジェクトのInspectorからSpawnManagerを取得
-        shoot=false;
-        click=false;
+        shoot = false;
+        click = false;
         //(modeChange) = 1;
         coolTimeUp = true;
         collider = GetComponent<Collider2D>();
@@ -57,10 +58,10 @@ public class HitManager : MonoBehaviour
         }
         hitEnemies = new List<GameObject>();
     }
-        // Update is called once per frame
+    // Update is called once per frame
     void Update()
     {
-        if(collider.enabled) 
+        if (collider.enabled)
         {
             StartCoroutine(CoolTimeCoroutine());
         }
@@ -113,8 +114,8 @@ public class HitManager : MonoBehaviour
         for (int i = 0; i < hitEnemies.Count; i++)
         {
             HitCheakBibiri clickTest = hitEnemies[i].GetComponent<HitCheakBibiri>();//各敵についているHitCheckScriptを取得
-           // HitCheakOdokasi clickTest2 = hitEnemies[i].GetComponent<HitCheakOdokasi>();
-            if (clickTest != null) { clickTest.AlphaStart = true;}
+                                                                                    // HitCheakOdokasi clickTest2 = hitEnemies[i].GetComponent<HitCheakOdokasi>();
+            if (clickTest != null) { clickTest.AlphaStart = true; }
             //clickTest2.AlphaStart = true;
         }
         // collider.enabled = false;

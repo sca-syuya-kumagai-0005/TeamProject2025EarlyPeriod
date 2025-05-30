@@ -30,9 +30,9 @@ public class HitCheakBibiri : MonoBehaviour
             StartCoroutine(DestroyTimer(this.gameObject));//一定時間後に破壊
         }
         for (int i = 0; i < colliders.Length; i++)
-         {
-             colliders[i].enabled = !alphaStart;//colliderのオンオフをalphaStartの反対に設定
-         }
+        {
+            colliders[i].enabled = !alphaStart;//colliderのオンオフをalphaStartの反対に設定
+        }
         spriteRenderer.color = new Color(1, 1, 1, alphaTimer);//透明化を反映
         //spriteRenderer.color = new Color(1, 1, 1, 0);
     }
@@ -57,7 +57,7 @@ public class HitCheakBibiri : MonoBehaviour
 
     //private void OnTriggerStay2D(Collider2D collision)
     //{
-       
+
     //    if (collision.CompareTag("PlayerCamera"))
     //    {
     //        Debug.Log("STAY");

@@ -1,6 +1,10 @@
 using UnityEngine;
 using System.Collections;
 
+//エラー出してるので、使用しない
+//エラー原因：５５行目の(hitManager.Mode == HitManager.modeChange.cameraMode)がnull
+//hitmanagerをインスペクターから導入できない　Enemyがプレハブだから？（要確認）
+
 public class HitCheakOdokasi : MonoBehaviour
 {
     const float timer = 3.0f;
@@ -9,13 +13,13 @@ public class HitCheakOdokasi : MonoBehaviour
     public bool AlphaStart { set { alphaStart = value; } }//alphaStartを他でいじれるようにするセッター。あんまり使わない方がいい
     [SerializeField] Collider2D[] colliders;
     [SerializeField] SpriteRenderer spriteRenderer;
-    [SerializeField]HitManager hitManager;
+    [SerializeField] HitManager hitManager;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         Debug.Log(GameObject.Find("Hit").gameObject.GetComponent<HitManager>());
-        hitManager = GameObject.Find("Hit").gameObject.GetComponent<HitManager>();  
+        hitManager = GameObject.Find("Hit").gameObject.GetComponent<HitManager>();
         alphaStart = false;
         alphaTimer = 1.0f;
         colliders = GetComponents<Collider2D>();
@@ -27,19 +31,19 @@ public class HitCheakOdokasi : MonoBehaviour
     void Update()
     {
         //GameObject clickedGameObject;//クリックされたゲームオブジェクトを代入する変数
-     
-            if (alphaStart)
-            {
-                alphaTimer -= Time.deltaTime / timer;//透明化
-                StartCoroutine(DestroyTimer(this.gameObject));//一定時間後に破壊
-            }
-            for (int i = 0; i < colliders.Length; i++)
-            {
-                colliders[i].enabled = !alphaStart;//colliderのオンオフをalphaStartの反対に設定
-            }
-            spriteRenderer.color = new Color(1, 1, 1, alphaTimer);//透明化を反映
-                                                                  //spriteRenderer.color = new Color(1, 1, 1, 0);
-      
+
+        if (alphaStart)
+        {
+            alphaTimer -= Time.deltaTime / timer;//透明化
+            StartCoroutine(DestroyTimer(this.gameObject));//一定時間後に破壊
+        }
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            colliders[i].enabled = !alphaStart;//colliderのオンオフをalphaStartの反対に設定
+        }
+        spriteRenderer.color = new Color(1, 1, 1, alphaTimer);//透明化を反映
+                                                              //spriteRenderer.color = new Color(1, 1, 1, 0);
+
 
     }
 
@@ -49,13 +53,13 @@ public class HitCheakOdokasi : MonoBehaviour
         Debug.Log("ENTER");
         if (collision.CompareTag("PlayerCamera"))
         {
-            if(hitManager.Mode == HitManager.modeChange.cameraMode)
+            if (hitManager.Mode == HitManager.modeChange.cameraMode)
             {
                 alphaStart = true;
             }
             if (hitManager.Mode == HitManager.modeChange.flashMode)
             {
-               
+
             }
         }
         for (int i = 0; i < colliders.Length; i++)
