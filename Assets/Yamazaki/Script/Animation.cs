@@ -2,32 +2,33 @@ using UnityEngine;
 using System.Collections;
 public class Animation : MonoBehaviour
 {
+    //アニメーション1で私用する
     [Header("Canvas上のUIオブジェクト")]
     [SerializeField] private RectTransform uiObject;
-
     [Header("目的位置 (UIのローカル座標)")]
     [SerializeField] private Vector3 targetUIPosition;
-
     [Header("メインカメラ")]
     [SerializeField] private Camera targetCamera;
-
     [Header("カメラの目標X回転角")]
     [SerializeField] private float targetCameraXAngle = 30f;
-
     [Header("移動にかける時間")]
     [SerializeField] private float duration = 1.5f;
-
     [Header("最後に切り替えるスプライト")]
     [SerializeField] SpriteRenderer spriteRenderer;
     [SerializeField] Sprite newSprite;
 
+    //アニメーション2で使用する
+    [SerializeField] private Material noise_Mat;
+
     [Header("スプライトをフェードする秒数")]
     public float fadeDuration = 1f;
+
+
 
     [Header("アニメーションの親格納(使用時表示)")]
     [SerializeField] GameObject[] titleAnimeObj;
 
-    int anime_num;
+    int anime_num;//アニメーションの数
     public int GetSetProperty
     {
         get { return anime_num; }
@@ -51,6 +52,11 @@ public class Animation : MonoBehaviour
              case 1:
                 titleAnimeObj[0].SetActive(true);
                 StartCoroutine(Anime_1());
+                anime_num = 0;
+                break;
+            case 2:
+                titleAnimeObj[1].SetActive(true);
+                StartCoroutine(Anime_2());
                 anime_num = 0;
                 break;
             default:
@@ -123,6 +129,25 @@ public class Animation : MonoBehaviour
 
     private IEnumerator Anime_2()
     {
+        yield return new WaitForSeconds(1f);
+        for (int i= 0; i<2;i++)
+        {
+            
+            noise_Mat.SetFloat("_Alpha", 0.4f);
+            yield return new WaitForSeconds(0.1f);
+            noise_Mat.SetFloat("_Alpha", 0f);
+            yield return new WaitForSeconds(0.3f);
+        }
+        noise_Mat.SetFloat("_Alpha", 0.4f);
+        yield return new WaitForSeconds(0.1f);
+        noise_Mat.SetFloat("_Alpha", 1f);
+        yield return new WaitForSeconds(1f);
+        noise_Mat.SetFloat("_Alpha", 0.4f);
+        yield return new WaitForSeconds(0.2f);
+        noise_Mat.SetFloat("_Alpha", 0.8f);
+        yield return new WaitForSeconds(0.2f);
+        noise_Mat.SetFloat("_Alpha", 1.2f);
+        yield return new WaitForSeconds(0.7f);
         yield return null; 
     }
 }
