@@ -10,7 +10,6 @@ public class HitCheakOdokasi : MonoBehaviour
     [SerializeField] Collider2D[] colliders;
     [SerializeField] SpriteRenderer spriteRenderer;
     [SerializeField]HitManager hitManager;
-    bool flashHit;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -21,7 +20,6 @@ public class HitCheakOdokasi : MonoBehaviour
         alphaTimer = 1.0f;
         colliders = GetComponents<Collider2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        flashHit = false;
 
     }
 
@@ -29,12 +27,7 @@ public class HitCheakOdokasi : MonoBehaviour
     void Update()
     {
         //GameObject clickedGameObject;//クリックされたゲームオブジェクトを代入する変数
-        if (!flashHit) 
-        {
-            
-        }
-        else
-        {
+     
             if (alphaStart)
             {
                 alphaTimer -= Time.deltaTime / timer;//透明化
@@ -46,7 +39,7 @@ public class HitCheakOdokasi : MonoBehaviour
             }
             spriteRenderer.color = new Color(1, 1, 1, alphaTimer);//透明化を反映
                                                                   //spriteRenderer.color = new Color(1, 1, 1, 0);
-        }
+      
 
     }
 
@@ -62,7 +55,7 @@ public class HitCheakOdokasi : MonoBehaviour
             }
             if (hitManager.Mode == HitManager.modeChange.flashMode)
             {
-                flashHit = true;
+               
             }
         }
         for (int i = 0; i < colliders.Length; i++)
