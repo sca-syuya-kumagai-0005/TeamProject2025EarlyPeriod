@@ -2,12 +2,12 @@ using UnityEngine;
 
 public class SpawnManager : MonoBehaviour
 {
-    [SerializeField]private GameObject[] enemies;
-    public int EnemyCount { get { return enemies.Length; } }   
-    [SerializeField]private GameObject[] hitEnemy;
-    [SerializeField]private GameObject enemyParent;
-    [SerializeField]private GameObject enemy;
-    const float time=3.0f;
+    [SerializeField] private GameObject[] enemies;
+    public int EnemyCount { get { return enemies.Length; } }
+    [SerializeField] private GameObject[] hitEnemy;
+    [SerializeField] private GameObject enemyParent;
+    [SerializeField] private GameObject enemy;
+    const float time = 3.0f;
     //Vector2 position;
     //Vector3 camLeftDown;
     //Vector3 camRightUp;
@@ -30,18 +30,18 @@ public class SpawnManager : MonoBehaviour
 
     private void EnemySpawner()
     {
-        int rand=Random.Range(0,1000);//毎フレームrandを取得
+        int rand = Random.Range(0, 1000);//毎フレームrandを取得
         //if(enemies.Length>=5||rand<999)//敵が5体以上もしくは99.9%の確率でreturn
-        if(enemies.Length>=5)//テスト用　敵が５体以上ならreturn
+        if (enemies.Length >= 5)//テスト用　敵が５体以上ならreturn
         {
             return;
         }
-        Instantiate(enemy, PositionRand(), Quaternion.identity,enemyParent.transform);//ここのポジションをランダムに変更してね
+        Instantiate(enemy, PositionRand(), Quaternion.identity, enemyParent.transform);//ここのポジションをランダムに変更してね
     }
 
     private void EnemySearch()
     {
-        enemies=GameObject.FindGameObjectsWithTag("Enemy");
+        enemies = GameObject.FindGameObjectsWithTag("Enemy");
     }
 
     private Vector2 PositionRand()

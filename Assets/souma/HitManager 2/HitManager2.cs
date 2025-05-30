@@ -17,7 +17,7 @@ using System.ComponentModel;
     EnemyÁ‹‚ğClickTest2D‚Å‚Í‚È‚­HitManager‚É”C‚¹‚é
     ClickTest2D‚Åƒtƒ‰ƒO‚ğ—§‚ÄAHitManager‚ÅÁ‹‚ÆList‚Ìremove‚ğ‚·‚é
  */
-public class HitManager : MonoBehaviour
+public class HitManager2 : MonoBehaviour
 {
     [SerializeField] private List<GameObject> hitEnemies = new List<GameObject>();
     SpawnManager spawnManager;

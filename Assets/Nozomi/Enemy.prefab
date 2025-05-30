@@ -169,4 +169,3 @@ MonoBehaviour:
   alphaStart: 0
   colliders: []
   spriteRenderer: {fileID: 0}
-  hitManager: {fileID: 0}
