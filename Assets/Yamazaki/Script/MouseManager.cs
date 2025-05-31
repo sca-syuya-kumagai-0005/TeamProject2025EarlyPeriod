@@ -76,7 +76,7 @@ public class MouseManager : MonoBehaviour
                 //canMouseClick = true;
                 snapshot_Obj.SetActive(true);
                 Debug.Log("ここからアニメーションの入れる感じ");
-                animationScript.GetSetProperty = 2;
+                animationScript.GetSetProperty = 3;
                 titleObj.SetActive(false);
             }
         }
@@ -130,8 +130,8 @@ public class MouseManager : MonoBehaviour
         targetSpriteRenderer.enabled = true;
         targetSpriteRenderer.color = Color.white;
         //Textureの解像度と見合う値に設定する
-       
 
+        //StartCoroutine(animationScript.SlideAndFadeIn());
         Debug.Log("Snapshot set to SpriteRenderer: " + snapshot.name);
     }
 
