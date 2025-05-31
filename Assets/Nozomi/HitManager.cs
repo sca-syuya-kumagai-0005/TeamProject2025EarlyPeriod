@@ -21,7 +21,8 @@ public class HitManager : MonoBehaviour
     };
     [SerializeField] modeChange mode;
     public modeChange Mode { get { return mode; } }
-
+    [SerializeField] private GameObject imageObject; // 表示・非表示を切り替える対象
+    [SerializeField] private GameObject blueRectangle; // Canvas配下の青い四角
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -42,10 +43,15 @@ public class HitManager : MonoBehaviour
         if (Input.GetKey(KeyCode.A))
         {
             mode = modeChange.cameraMode;
+            imageObject.SetActive(false);
+            blueRectangle.SetActive(true);
+
         }
         if (Input.GetKey(KeyCode.D))
         {
             mode = modeChange.flashMode;
+            imageObject.SetActive(true);
+            blueRectangle.SetActive(false);
         }
         if ((mode == modeChange.cameraMode) && coolTimeUp)
         {
@@ -61,6 +67,30 @@ public class HitManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        /*// Dキーで画像表示
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            imageObject.SetActive(true);
+        }
+
+        // Aキーで画像非表示（元に戻す）
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            imageObject.SetActive(false);
+        }
+
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            // Aキーで表示
+            blueRectangle.SetActive(true);
+        }
+
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            // Dキーで非表示
+            blueRectangle.SetActive(false);
+        }*/
+
         if (collider.enabled)
         {
             StartCoroutine(CoolTimeCoroutine());
