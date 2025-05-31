@@ -19,6 +19,7 @@ public class Animation : MonoBehaviour
 
     //アニメーション2で使用する
     [SerializeField] private Material noise_Mat;
+    [SerializeField] private SpriteRenderer backGround_anim2;
 
     [Header("スプライトをフェードする秒数")]
     public float fadeDuration = 1f;
@@ -37,7 +38,8 @@ public class Animation : MonoBehaviour
 
     void Start()
     {
-        for(int i= 0;i < titleAnimeObj.Length;i++)
+        backGround_anim2.enabled = false;
+        for (int i= 0;i < titleAnimeObj.Length;i++)
         {
             titleAnimeObj[i].SetActive(false);
             Debug.Log(i);
@@ -129,25 +131,30 @@ public class Animation : MonoBehaviour
 
     private IEnumerator Anime_2()
     {
-        yield return new WaitForSeconds(1f);
-        for (int i= 0; i<2;i++)
+        yield return new WaitForSeconds(1.5f);
+        for (int i= 0; i<3;i++)
         {
             
             noise_Mat.SetFloat("_Alpha", 0.4f);
             yield return new WaitForSeconds(0.1f);
+            noise_Mat.SetFloat("_Alpha", 0.8f);
+            yield return new WaitForSeconds(0.1f);
             noise_Mat.SetFloat("_Alpha", 0f);
-            yield return new WaitForSeconds(0.3f);
+            yield return new WaitForSeconds(1f);
         }
+
         noise_Mat.SetFloat("_Alpha", 0.4f);
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.2f);
         noise_Mat.SetFloat("_Alpha", 1f);
         yield return new WaitForSeconds(1f);
-        noise_Mat.SetFloat("_Alpha", 0.4f);
+        noise_Mat.SetFloat("_Alpha", 0f);
         yield return new WaitForSeconds(0.2f);
-        noise_Mat.SetFloat("_Alpha", 0.8f);
-        yield return new WaitForSeconds(0.2f);
+        noise_Mat.SetFloat("_Alpha", 4f);
+        yield return new WaitForSeconds(0.25f);
+        backGround_anim2.enabled = true;
         noise_Mat.SetFloat("_Alpha", 1.2f);
         yield return new WaitForSeconds(0.7f);
-        yield return null; 
+        noise_Mat.SetFloat("_Alpha", 0f);
+       
     }
 }
