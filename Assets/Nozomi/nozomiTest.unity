@@ -119,37 +119,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &19662216
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 19662217}
-  m_Layer: 0
-  m_Name: PhotoStprage
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &19662217
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 19662216}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &139157560
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -225,10 +194,18 @@ PrefabInstance:
     - target: {fileID: 3470303467476942025, guid: 89c6fc7f67a510f4bab8ec26b756ca34, type: 3}
       propertyPath: photoStorage
       value: 
-      objectReference: {fileID: 19662216}
+      objectReference: {fileID: 5410587280259903048, guid: f9885860b7baadd4fab2f5953225e2c5, type: 3}
     - target: {fileID: 5220945681728991097, guid: 89c6fc7f67a510f4bab8ec26b756ca34, type: 3}
       propertyPath: m_Name
       value: CameraMask
+      objectReference: {fileID: 0}
+    - target: {fileID: 5871057429966973393, guid: 89c6fc7f67a510f4bab8ec26b756ca34, type: 3}
+      propertyPath: m_BackSortingOrder
+      value: -5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5871057429966973393, guid: 89c6fc7f67a510f4bab8ec26b756ca34, type: 3}
+      propertyPath: m_FrontSortingOrder
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 6725831795224590575, guid: 89c6fc7f67a510f4bab8ec26b756ca34, type: 3}
       propertyPath: m_Color.a
@@ -236,15 +213,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6725831795224590575, guid: 89c6fc7f67a510f4bab8ec26b756ca34, type: 3}
       propertyPath: m_Color.b
-      value: 1
+      value: 0.15180486
       objectReference: {fileID: 0}
     - target: {fileID: 6725831795224590575, guid: 89c6fc7f67a510f4bab8ec26b756ca34, type: 3}
       propertyPath: m_Color.g
-      value: 1
+      value: 0.15180486
       objectReference: {fileID: 0}
     - target: {fileID: 6725831795224590575, guid: 89c6fc7f67a510f4bab8ec26b756ca34, type: 3}
       propertyPath: m_Color.r
-      value: 1
+      value: 0.78113204
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1425,7 +1402,6 @@ SceneRoots:
   - {fileID: 1293616788}
   - {fileID: 1530340520}
   - {fileID: 1664580348}
-  - {fileID: 19662217}
   - {fileID: 139157560}
   - {fileID: 1213897232}
   - {fileID: 1439307488}
