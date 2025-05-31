@@ -12,6 +12,7 @@ TagManager:
   - Item
   - BackGround
   - FlashImage
+  - CameraFrame
   layers:
   - Default
   - TransparentFX
