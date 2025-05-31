@@ -16,10 +16,17 @@ public class CameraMask :SoundPlayer
     [SerializeField] private GameObject hit;
     private const float time=3.0f;
     [SerializeField] float timer;
-    
+    [SerializeField]GameObject photoSheet;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        if(GameObject.Find("PhotoStorage")!=null)
+        {
+            Destroy(photoSheet);
+        }
+          photoSheet = Instantiate(photoStorage,new Vector3(0,0,0), Quaternion.identity);
+          photoSheet.name= "PhotoStorage";
+          DontDestroyOnLoad(photoSheet);   
         backGround=GameObject.Find(backGroundTag).gameObject;
         timer = 0;
         mask.transform.position = new Vector3(0, 0, 0);
@@ -44,7 +51,7 @@ public class CameraMask :SoundPlayer
 
     void PointerMove()
     {
-      // transform.position=hit.transform.position;
+       transform.position=hit.transform.position;
     }
 
 
@@ -57,12 +64,11 @@ public class CameraMask :SoundPlayer
         
         if (Input.GetMouseButtonDown(0))
         {
-            GameObject[] enemies;
-            GameObject p = Instantiate(photo,photoStorage.transform);
+            GameObject p = Instantiate(photo,new Vector3(0,0,0),Quaternion.identity,photoSheet.transform);
             p.name = "photo";
             p.SetActive(false);
-            enemies = (GameObject.FindGameObjectsWithTag(enemyTag));
-            //GameObject tmpThis = Instantiate(this.gameObject, transform.position, Quaternion.identity, photo.transform);
+            GameObject tmpThis = Instantiate(this.gameObject, transform.position, Quaternion.identity, p.transform);
+            tmpThis.GetComponent<CameraMask>().enabled = false;
             GameObject hitLens = Instantiate(hit.gameObject,hit.transform.position, Quaternion.identity, p.transform);
             HitManager hitManager = hitLens.GetComponent<HitManager>();
             hitManager.enabled = false;
@@ -71,15 +77,12 @@ public class CameraMask :SoundPlayer
             GameObject tmpBackGround = Instantiate(backGround, backGround.transform.position, Quaternion.identity, p.transform);
             SpriteRenderer sr = tmpBackGround.GetComponent<SpriteRenderer>();
             sr.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
-            Instantiate(enemy,enemy.transform.position,Quaternion.identity, p.transform);
-            //for (int i = 0; i < enemies.Length; i++)
-            //{
-            //    GameObject photoEnemy;
-            //    photoEnemy = Instantiate(enemies[i], enemies[i].transform.position, Quaternion.identity);
-            //    photoEnemy.transform.parent =p.transform;
-            //    sr = photoEnemy.GetComponent<SpriteRenderer>();
-            //    sr.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
-            //}
+            GameObject enemies=Instantiate(enemy,new Vector3(0,0,0),Quaternion.identity, p.transform);
+            for (int i = 0; i < enemies.transform.childCount; i++)
+            {
+                sr = enemies.transform.GetChild(i).GetComponent<SpriteRenderer>();
+                sr.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
+            }
             SavePhoto();
             DebugFunction();
             timer = time;
@@ -103,7 +106,7 @@ public class CameraMask :SoundPlayer
         //{
         //    enemies[i].SetActive(false);
         //}
-       // photo.transform.position -= transform.position;
+        photo.transform.position -= transform.position;
        // this.gameObject.SetActive(false);
     }
 }
