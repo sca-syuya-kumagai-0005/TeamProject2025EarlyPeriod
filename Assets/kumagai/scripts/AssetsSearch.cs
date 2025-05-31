@@ -10,7 +10,7 @@ public class AssetsSearch : SoundPlayer
     void Start()
     {
         //SEÄ¶ƒeƒXƒg
-        SEPlayer("Tet",false);
+        SEPlayer("Teiit",false);
     }
 
     // Update is called once per frame

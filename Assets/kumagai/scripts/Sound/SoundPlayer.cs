@@ -13,14 +13,14 @@ public class SoundPlayer : SoundManager
         AudioClip clip = SetSound(name,sePath);
 
        
-;        if (clip == null)//遊んだ痕跡　エラーログをカラフルに表示する
+;        if (clip != null)//遊んだ痕跡　エラーログをカラフルに表示する
         {
             string[] color = new string[4] { "cyan", "yellow", "lime", "fuchsia" };
             string check = this.gameObject.name + "で呼ばれているSEPlayerに対応するSEが代入されていません。";
             string output = null;
-            for (int i = 0; i < name.Length; i++)
+            for (int i = 0; i < check.Length; i++)
             {
-                output += $"<color={color[i % color.Length]}>{name[i]}</color>";
+                output += $"<color={color[i % color.Length]}>{check[i]}</color>";
             }
             Debug.LogError(output);
             return;
