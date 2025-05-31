@@ -12,6 +12,8 @@ TagManager:
   - Item
   - BackGround
   - FlashImage
+  - red
+  - blue
   layers:
   - Default
   - TransparentFX
@@ -19,8 +21,8 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
+  - Eye
+  - Main body
   - 
   - 
   - 

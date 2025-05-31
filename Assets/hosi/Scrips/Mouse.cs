@@ -4,7 +4,7 @@ using UnityEngine;
 public class Mouse : MonoBehaviour
 {
     Vector3 mousePos, pos;
-    int score;
+    public static int score;
     Collider2D circleCollider;
 
     public Transform cameraCenter;
@@ -12,6 +12,8 @@ public class Mouse : MonoBehaviour
     bool canMove = true; //移動可能かどうか
 
     public ShutterEffect shutterEffect; //シャッターエフェクトへの参照
+
+    //public bool Touched_red = false;
 
     void Start()
     {
@@ -47,6 +49,7 @@ public class Mouse : MonoBehaviour
 
             transform.position = clampedCameraCenterPos - offset;
         }
+
     }
 
     //一定時間移動を無効
@@ -80,7 +83,21 @@ public class Mouse : MonoBehaviour
         //スクリーン座標を再びワールド座標に変換
         return Camera.main.ScreenToWorldPoint(new Vector3(screenPos.x, screenPos.y, screenPos.z));
     }
-    
+    /*
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if(collision.gameObject.tag == "red")
+        {
+            Touched_red = true;
+        }
+        
+        else
+        {
+            Touched_red = false;
+        }
+    }
+    */
+
     //スコアの加算
     void AddScore()
     {
@@ -89,12 +106,24 @@ public class Mouse : MonoBehaviour
         int tAddPoints = 0; //脅かしの目
         int totalEyesScore = 0; //ノーマル +　脅かしのスコア
 
+        int nAddRarebonus_red = 0;
+        int nAddRarebonus_blue = 0;
+
         //各コライダーが判定枠内に入っているかのチェック
         foreach (var col in colliders)
         {
             if (col.CompareTag("nEye") && IsFullyInside(circleCollider.bounds, col.bounds))
             {
                 nAddPoints++;
+                /*
+                if (CompareTag("red"))
+                {
+                    nAddRarebonus_red += 50;
+                }
+                else if (CompareTag("blue"))
+                {
+                    nAddRarebonus_blue += 100;
+                }*/
             }
             else if (col.CompareTag("tEye") && IsFullyInside(circleCollider.bounds, col.bounds))
             {
@@ -125,7 +154,9 @@ public class Mouse : MonoBehaviour
         int totalEyes = nAddPoints + tAddPoints; //最終的に判定される目の数
         int bonus = GetBonusPoint(totalEyes); //判定された目の数によるボーナス
 
-         int AddedScore = totalEyesScore + bonus; //最終スコア
+        //int Rarebonus = nAddRarebonus_red + nAddRarebonus_blue;
+
+         int AddedScore = totalEyesScore + bonus/* + Rarebonus*/; //最終スコア
 
         if (AddedScore > 0)
         {
@@ -133,6 +164,7 @@ public class Mouse : MonoBehaviour
 
             Debug.Log("TotalEyesScore:" + totalEyesScore);
             Debug.Log("BonusScore:" + bonus);
+            //Debug.Log("Rarebouns" + Rarebonus);
             Debug.Log("Score: " + score);
         }
     }
