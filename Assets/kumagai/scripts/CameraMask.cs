@@ -5,8 +5,6 @@ public class CameraMask :SoundPlayer
     [SerializeField] GameObject mask;
     [SerializeField] float lensSpeed;
     private GameObject backGround;
-    private SpriteRenderer backGroundSpriteRenderer;
-    private SpriteRenderer[] enemiesSpriteRenderer;
     [SerializeField]private GameObject photo;
     [SerializeField]private GameObject photoStorage;
     [SerializeField]private GameObject lens;

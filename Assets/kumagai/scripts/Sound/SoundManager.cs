@@ -15,6 +15,7 @@ public class SoundManager : MonoBehaviour
     protected const string soundExtension = ".mp3";
     protected const string bgmAudioSource= "Sound/BGMPlayer";
     protected const string seAudioSource = "Sound/SEPlayer";
+    List<int> isChecked= new List<int>();
     
     List<string> soundName = new List<string>();
     AudioClip clip;
@@ -39,7 +40,7 @@ public class SoundManager : MonoBehaviour
                 this.soundName.Add(soundName);
         }
 
-        if (Resources.Load<AudioClip>(fileName) == null)//ファイル内に指定したmp3ファイルがなければ
+        if (Resources.Load<AudioClip>(fileName+name) == null)//ファイル内に指定したmp3ファイルがなければ
         {
             string str = CheckName(name,fileName);//一致度の高いmp3を検索
             if(str=="")//一定以上の一致するmp3ファイルを見つけられなければ
@@ -53,12 +54,6 @@ public class SoundManager : MonoBehaviour
         clip= Resources.Load<AudioClip>(fileName + name);
         return clip;
     }
-
-    protected void SetSE(string name)
-    {
-        
-    }
-
     /// <summary>
     /// 引数で渡したnameと一致度が高いファイル名を返す関数
     /// </summary>
