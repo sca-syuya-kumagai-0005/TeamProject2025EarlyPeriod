@@ -22,7 +22,7 @@ public class EnemySpriteAnimator : MonoBehaviour
     [Header("特殊スプライトの生存時間（秒）")]
     public float generatedLifetime = 3.0f;
 
-    [Header("一時停止する秒数")]
+    [Header("一時停止する秒数（カメラ外）")]
     public float pauseDuration = 3.0f;
 
     [Header("スケール拡大を有効にするか")]
@@ -34,8 +34,11 @@ public class EnemySpriteAnimator : MonoBehaviour
     [Header("拡大にかける秒数")]
     public float scaleDuration = 5.0f;
 
-    [Header("出現を検知するImage名")]
+    [Header("フラッシュのImage名")]
     public string targetImageName = "FlashImage";
+
+    [Header("カメラフレームのCollider2D")]
+    public Collider2D cameraFrameCollider;
 
     private SpriteRenderer spriteRenderer;
     private int currentFrame = 0;
@@ -43,6 +46,8 @@ public class EnemySpriteAnimator : MonoBehaviour
     private bool isPaused = false;
     private bool isScalingPaused = false;
     private Coroutine scalingCoroutine;
+
+    private bool isLockedByCameraFrame = false;
 
     void Start()
     {
@@ -65,35 +70,54 @@ public class EnemySpriteAnimator : MonoBehaviour
     {
         while (true)
         {
-            GameObject foundImage = GameObject.Find(targetImageName);
-            if (foundImage != null && foundImage.GetComponent<Image>() != null)
+            GameObject flash = GameObject.Find(targetImageName);
+            if (flash != null && flash.GetComponent<Image>() != null)
             {
-                OnTargetImageDetected(foundImage.transform.position);
-                yield return new WaitForSeconds(1f); // 過検出防止
+                bool insideCameraFrame = IsInsideCameraFrame();
+
+                if (insideCameraFrame)
+                {
+                    Debug.Log($"[Enemy] フラッシュ検知 + カメラフレーム内 → 完全停止: {name}");
+                    LockByCameraFrame();
+                }
+                else
+                {
+                    Debug.Log($"[Enemy] フラッシュ検知 + カメラフレーム外 → 一時停止: {name}");
+                    StartCoroutine(PauseAndShowSpecialAnimation());
+                }
+
+                // 特殊エフェクト生成
+                if (specialAnimationFrames != null && specialAnimationFrames.Length > 0)
+                {
+                    GameObject go = new GameObject("GeneratedSpecialSprite");
+                    go.transform.position = transform.position;
+
+                    SpriteRenderer sr = go.AddComponent<SpriteRenderer>();
+
+                    EnemySpriteAnimator animator = go.AddComponent<EnemySpriteAnimator>();
+                    animator.animationFrames = specialAnimationFrames;
+                    animator.frameDuration = specialFrameDuration;
+                    animator.playOnStart = true;
+                    animator.enableScaling = false;
+
+                    // ←★ ここでスケールをコピーして拡大表示
+                    go.transform.localScale = transform.localScale;
+
+                    go.AddComponent<AutoDestroy>().lifetime = generatedLifetime;
+                }
+
+                yield return new WaitForSeconds(1f); // 過剰検出抑制
             }
+
             yield return null;
         }
     }
 
-    private void OnTargetImageDetected(Vector3 spawnPosition)
+    private bool IsInsideCameraFrame()
     {
-        StartCoroutine(PauseAndShowSpecialAnimation());
-
-        if (specialAnimationFrames != null && specialAnimationFrames.Length > 0)
-        {
-            GameObject go = new GameObject("GeneratedSpecialSprite");
-            go.transform.position = spawnPosition;
-
-            SpriteRenderer sr = go.AddComponent<SpriteRenderer>();
-            EnemySpriteAnimator animator = go.AddComponent<EnemySpriteAnimator>();
-            animator.animationFrames = specialAnimationFrames;
-            animator.frameDuration = specialFrameDuration;
-            animator.playOnStart = true;
-            animator.enableScaling = false; // 生成された方は拡大無効
-
-            // 自動削除用スクリプト追加
-            go.AddComponent<AutoDestroy>().lifetime = generatedLifetime;
-        }
+        if (cameraFrameCollider == null) return false;
+        Vector2 myPos = transform.position;
+        return cameraFrameCollider.OverlapPoint(myPos);
     }
 
     public void StartAnimation()
@@ -163,5 +187,35 @@ public class EnemySpriteAnimator : MonoBehaviour
         }
 
         transform.localScale = target;
+    }
+
+    public void LockByCameraFrame()
+    {
+        if (isLockedByCameraFrame) return;
+
+        isLockedByCameraFrame = true;
+        isPaused = true;
+        isScalingPaused = true;
+        StopAllCoroutines();
+        StartCoroutine(PlaySpecialAnimationLoop());
+    }
+
+    private IEnumerator PlaySpecialAnimationLoop()
+    {
+        int frame = 0;
+        while (true)
+        {
+            if (specialAnimationFrames.Length > 0)
+            {
+                spriteRenderer.sprite = specialAnimationFrames[frame];
+                frame = (frame + 1) % specialAnimationFrames.Length;
+            }
+            yield return new WaitForSeconds(specialFrameDuration);
+        }
+    }
+
+    public bool IsLockedByCameraFrame()
+    {
+        return isLockedByCameraFrame;
     }
 }
