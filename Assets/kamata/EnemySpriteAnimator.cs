@@ -1,43 +1,43 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 
 public class EnemySpriteAnimator : MonoBehaviour
 {
-    [Header("ƒAƒjƒ[ƒVƒ‡ƒ“—pƒXƒvƒ‰ƒCƒgˆê——")]
+    [Header("ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ç”¨ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆä¸€è¦§")]
     public Sprite[] animationFrames;
 
-    [Header("1–‡‚²‚Æ‚Ì•\¦ŠÔi•bj")]
+    [Header("1æšã”ã¨ã®è¡¨ç¤ºæ™‚é–“ï¼ˆç§’ï¼‰")]
     public float frameDuration = 0.1f;
 
-    [Header("Ä¶ŠJn‚ÉƒAƒjƒ[ƒVƒ‡ƒ“‚·‚é‚©")]
+    [Header("å†ç”Ÿé–‹å§‹æ™‚ã«ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã™ã‚‹ã‹")]
     public bool playOnStart = true;
 
-    [Header("“ÁêƒXƒvƒ‰ƒCƒgˆê——i•\¦ & ¶¬—pj")]
+    [Header("ç‰¹æ®Šã‚¹ãƒ—ãƒ©ã‚¤ãƒˆä¸€è¦§ï¼ˆè¡¨ç¤º & ç”Ÿæˆç”¨ï¼‰")]
     public Sprite[] specialAnimationFrames;
 
-    [Header("“Áê•\¦‚Ì1–‡‚ ‚½‚èŠÔi•bj")]
+    [Header("ç‰¹æ®Šè¡¨ç¤ºã®1æšã‚ãŸã‚Šæ™‚é–“ï¼ˆç§’ï¼‰")]
     public float specialFrameDuration = 0.1f;
 
-    [Header("“ÁêƒXƒvƒ‰ƒCƒg‚Ì¶‘¶ŠÔi•bj")]
+    [Header("ç‰¹æ®Šã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ç”Ÿå­˜æ™‚é–“ï¼ˆç§’ï¼‰")]
     public float generatedLifetime = 3.0f;
 
-    [Header("ˆê’â~‚·‚é•b”iƒJƒƒ‰ŠOj")]
+    [Header("ä¸€æ™‚åœæ­¢ã™ã‚‹ç§’æ•°ï¼ˆã‚«ãƒ¡ãƒ©å¤–ï¼‰")]
     public float pauseDuration = 3.0f;
 
-    [Header("ƒXƒP[ƒ‹Šg‘å‚ğ—LŒø‚É‚·‚é‚©")]
+    [Header("ã‚¹ã‚±ãƒ¼ãƒ«æ‹¡å¤§ã‚’æœ‰åŠ¹ã«ã™ã‚‹ã‹")]
     public bool enableScaling = true;
 
-    [Header("Šg‘åŒã‚Ì–Ú•WƒXƒP[ƒ‹")]
+    [Header("æ‹¡å¤§å¾Œã®ç›®æ¨™ã‚¹ã‚±ãƒ¼ãƒ«")]
     public Vector3 targetScale = new Vector3(2f, 2f, 1f);
 
-    [Header("Šg‘å‚É‚©‚¯‚é•b”")]
+    [Header("æ‹¡å¤§ã«ã‹ã‘ã‚‹ç§’æ•°")]
     public float scaleDuration = 5.0f;
 
-    [Header("ƒtƒ‰ƒbƒVƒ…‚ÌImage–¼")]
+    [Header("ãƒ•ãƒ©ãƒƒã‚·ãƒ¥ã®Imageå")]
     public string targetImageName = "FlashImage";
 
-    [Header("ƒJƒƒ‰ƒtƒŒ[ƒ€‚ÌCollider2D")]
+    [Header("ã‚«ãƒ¡ãƒ©ãƒ•ãƒ¬ãƒ¼ãƒ ã®Collider2D")]
     public Collider2D cameraFrameCollider;
 
     private SpriteRenderer spriteRenderer;
@@ -46,12 +46,16 @@ public class EnemySpriteAnimator : MonoBehaviour
     private bool isPaused = false;
     private bool isScalingPaused = false;
     private Coroutine scalingCoroutine;
-
     private bool isLockedByCameraFrame = false;
 
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
+
+        // âœ… æœ€åˆã«ã‚¢ãƒ«ãƒ•ã‚¡å€¤ 0.8 ã«è¨­å®š
+        Color c = spriteRenderer.color;
+        c.a = 0.8f;
+        spriteRenderer.color = c;
 
         if (playOnStart)
         {
@@ -77,16 +81,16 @@ public class EnemySpriteAnimator : MonoBehaviour
 
                 if (insideCameraFrame)
                 {
-                    Debug.Log($"[Enemy] ƒtƒ‰ƒbƒVƒ…ŒŸ’m + ƒJƒƒ‰ƒtƒŒ[ƒ€“à ¨ Š®‘S’â~: {name}");
+                    Debug.Log($"[Enemy] ãƒ•ãƒ©ãƒƒã‚·ãƒ¥æ¤œçŸ¥ + ã‚«ãƒ¡ãƒ©ãƒ•ãƒ¬ãƒ¼ãƒ å†… â†’ å®Œå…¨åœæ­¢: {name}");
                     LockByCameraFrame();
                 }
                 else
                 {
-                    Debug.Log($"[Enemy] ƒtƒ‰ƒbƒVƒ…ŒŸ’m + ƒJƒƒ‰ƒtƒŒ[ƒ€ŠO ¨ ˆê’â~: {name}");
+                    Debug.Log($"[Enemy] ãƒ•ãƒ©ãƒƒã‚·ãƒ¥æ¤œçŸ¥ + ã‚«ãƒ¡ãƒ©ãƒ•ãƒ¬ãƒ¼ãƒ å¤– â†’ ä¸€æ™‚åœæ­¢: {name}");
                     StartCoroutine(PauseAndShowSpecialAnimation());
                 }
 
-                // “ÁêƒGƒtƒFƒNƒg¶¬
+                //ç‰¹æ®Šã‚¹ãƒ—ãƒ©ã‚¤ãƒˆç”Ÿæˆï¼ˆã‚¢ãƒ«ãƒ•ã‚¡å€¤ã‚‚ã‚³ãƒ”ãƒ¼ï¼‰
                 if (specialAnimationFrames != null && specialAnimationFrames.Length > 0)
                 {
                     GameObject go = new GameObject("GeneratedSpecialSprite");
@@ -94,19 +98,23 @@ public class EnemySpriteAnimator : MonoBehaviour
 
                     SpriteRenderer sr = go.AddComponent<SpriteRenderer>();
 
+                    //ã“ã“ã§ã‚¢ãƒ«ãƒ•ã‚¡å€¤ã‚’0.8ã«ã™ã‚‹
+                    Color color = sr.color;
+                    color.a = 0.8f;
+                    sr.color = color;
+
                     EnemySpriteAnimator animator = go.AddComponent<EnemySpriteAnimator>();
                     animator.animationFrames = specialAnimationFrames;
                     animator.frameDuration = specialFrameDuration;
                     animator.playOnStart = true;
                     animator.enableScaling = false;
 
-                    // ©š ‚±‚±‚ÅƒXƒP[ƒ‹‚ğƒRƒs[‚µ‚ÄŠg‘å•\¦
                     go.transform.localScale = transform.localScale;
 
                     go.AddComponent<AutoDestroy>().lifetime = generatedLifetime;
                 }
 
-                yield return new WaitForSeconds(1f); // ‰ßèŒŸo—}§
+                yield return new WaitForSeconds(1f); // ãƒ•ãƒ©ãƒƒã‚·ãƒ¥æ¤œçŸ¥ã®é€£ç¶šå®Ÿè¡Œé˜²æ­¢
             }
 
             yield return null;
