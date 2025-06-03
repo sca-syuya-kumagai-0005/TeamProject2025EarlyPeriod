@@ -13,7 +13,11 @@ public class Mouse : MonoBehaviour
 
     public ShutterEffect shutterEffect; //シャッターエフェクトへの参照
 
-    //public bool Touched_red = false;
+    public bool Touched_nred = false;
+    public bool Touched_nblue = false;
+    
+    public bool Touched_tred = false;
+    public bool Touched_tblue = false;
 
     void Start()
     {
@@ -83,20 +87,60 @@ public class Mouse : MonoBehaviour
         //スクリーン座標を再びワールド座標に変換
         return Camera.main.ScreenToWorldPoint(new Vector3(screenPos.x, screenPos.y, screenPos.z));
     }
-    /*
-    private void OnTriggerStay2D(Collider2D collision)
+
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.gameObject.tag == "red")
+        if(collision.gameObject.tag == "nred")
         {
-            Touched_red = true;
+            Touched_nred = true;
+            Debug.Log("n赤さわる");
         }
         
-        else
+        if(collision.gameObject.tag == "nblue")
         {
-            Touched_red = false;
+            Touched_nblue = true;
+            Debug.Log("n青さわる");
+        }
+        
+        if(collision.gameObject.tag == "tred")
+        {
+            Touched_tred = true;
+            Debug.Log("t赤さわる");
+        }
+        
+        if(collision.gameObject.tag == "tblue")
+        {
+            Touched_tblue = true;
+            Debug.Log("t青さわる");
         }
     }
-    */
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "nred")
+        {
+            Touched_nred = false;
+            Debug.Log("n赤さわってない");
+        }
+        
+        if (collision.gameObject.tag == "nblue")
+        {
+            Touched_nblue = false;
+            Debug.Log("n青さわってない");
+        }
+        
+        if (collision.gameObject.tag == "tred")
+        {
+            Touched_tred = false;
+            Debug.Log("t赤さわってない");
+        }
+        
+        if (collision.gameObject.tag == "tblue")
+        {
+            Touched_tblue = false;
+            Debug.Log("t青さわってない");
+        }
+    }
 
     //スコアの加算
     void AddScore()
@@ -106,24 +150,13 @@ public class Mouse : MonoBehaviour
         int tAddPoints = 0; //脅かしの目
         int totalEyesScore = 0; //ノーマル +　脅かしのスコア
 
-        int nAddRarebonus_red = 0;
-        int nAddRarebonus_blue = 0;
-
         //各コライダーが判定枠内に入っているかのチェック
         foreach (var col in colliders)
         {
             if (col.CompareTag("nEye") && IsFullyInside(circleCollider.bounds, col.bounds))
             {
                 nAddPoints++;
-                /*
-                if (CompareTag("red"))
-                {
-                    nAddRarebonus_red += 50;
-                }
-                else if (CompareTag("blue"))
-                {
-                    nAddRarebonus_blue += 100;
-                }*/
+
             }
             else if (col.CompareTag("tEye") && IsFullyInside(circleCollider.bounds, col.bounds))
             {
@@ -151,12 +184,36 @@ public class Mouse : MonoBehaviour
             totalEyesScore += 5;
         }
 
+        int nRarebonus = 0;
+        int tRarebonus = 0;
+
+        if (nAddPoints == 1 || nAddPoints == 2)
+        {
+            if (Touched_nred)
+            {
+                nRarebonus += 50;
+            }
+            if (Touched_nblue)
+            {
+                nRarebonus += 100;
+            }
+        }
+        
+        if (tAddPoints == 1 || tAddPoints == 2)
+        {
+            if (Touched_tred)
+            {
+                tRarebonus += 70;
+            }
+            if (Touched_tblue)
+            {
+                tRarebonus += 120;
+            }
+        }
         int totalEyes = nAddPoints + tAddPoints; //最終的に判定される目の数
         int bonus = GetBonusPoint(totalEyes); //判定された目の数によるボーナス
 
-        //int Rarebonus = nAddRarebonus_red + nAddRarebonus_blue;
-
-         int AddedScore = totalEyesScore + bonus/* + Rarebonus*/; //最終スコア
+         int AddedScore = totalEyesScore + bonus + nRarebonus + tRarebonus; //最終スコア
 
         if (AddedScore > 0)
         {
@@ -164,7 +221,8 @@ public class Mouse : MonoBehaviour
 
             Debug.Log("TotalEyesScore:" + totalEyesScore);
             Debug.Log("BonusScore:" + bonus);
-            //Debug.Log("Rarebouns" + Rarebonus);
+            Debug.Log("nRarebouns" + nRarebonus);
+            Debug.Log("tRarebouns" + tRarebonus);
             Debug.Log("Score: " + score);
         }
     }
