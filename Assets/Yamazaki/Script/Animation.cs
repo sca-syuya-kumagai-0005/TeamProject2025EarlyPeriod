@@ -27,7 +27,7 @@ public class Animation : MonoBehaviour
     [Header("最後に切り替えるスプライト")]
     [SerializeField] SpriteRenderer spriteRenderer;
     [SerializeField] Sprite newSprite;
-
+    [SerializeField] ParticleSystem anime1_ParticleSystem;
     //アニメーション2で使用する
     [SerializeField] private Material noise_Mat;
     [SerializeField] private SpriteRenderer backGround_anim2;
@@ -50,6 +50,8 @@ public class Animation : MonoBehaviour
     [Header("最後に切り替えるスプライト")]
     [SerializeField] SpriteRenderer spriteRenderer_3;
     [SerializeField] Sprite newSprite_3;
+    [Header("お化け成仏jの演出")]
+    [SerializeField] ParticleSystem[] anime3_ParticleSystem;
 
 
     [Header("アニメーションの親格納(使用時表示)")]
@@ -169,6 +171,7 @@ public class Animation : MonoBehaviour
             // ---- フェードアウト処理 ----
             yield return new WaitForSeconds(0.5f);
             float fadeElapsed = 0f;
+            anime1_ParticleSystem.Play();
             while (fadeElapsed < fadeDuration)
             {
                 float fadeT = fadeElapsed / fadeDuration;
@@ -292,6 +295,7 @@ public class Animation : MonoBehaviour
             // ---- フェードアウト処理 ----
             yield return new WaitForSeconds(0.5f);
             float fadeElapsed = 0f;
+            bool aOne = false;
             while (fadeElapsed < fadeDuration)
             {
                 float fadeT = fadeElapsed / fadeDuration;
@@ -300,13 +304,26 @@ public class Animation : MonoBehaviour
                 spriteRenderer_3.color = newColor;
 
                 fadeElapsed += Time.deltaTime;
-                yield return null;
+                
+                if(fadeT < 0.3 && !aOne)
+                {
+                    // 最終的に完全に透明にする
+                   
+                    
+                    anime3_ParticleSystem[0].Play();
+                    anime3_ParticleSystem[1].Play();
+                    anime3_ParticleSystem[2].Play();
+                    aOne = true;
+                    fadeElapsed = 0;
+                    yield return null;
+                }
+                
             }
 
-            // 最終的に完全に透明にする
             Color finalColor = spriteRenderer_3.color;
             finalColor.a = 0f;
             spriteRenderer_3.color = finalColor;
+
         }
     }
 }

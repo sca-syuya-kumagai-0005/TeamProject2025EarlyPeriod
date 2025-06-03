@@ -76,7 +76,7 @@ public class MouseManager : MonoBehaviour
                 //canMouseClick = true;
                 snapshot_Obj.SetActive(true);
                 Debug.Log("ここからアニメーションの入れる感じ");
-                animationScript.GetSetProperty = 3;
+                animationScript.GetSetProperty = 2;
                 titleObj.SetActive(false);
             }
         }
