@@ -12,4 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7dcb7753227dc9a468e39a4c2bb04f1b, type: 3}
   m_Name: PointList
   m_EditorClassIdentifier: 
-  point: []
+  point:
+  - Type: 
+    eyes: 0
+    rarity: 0
+    bonus: 0
