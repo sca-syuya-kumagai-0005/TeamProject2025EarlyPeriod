@@ -11,12 +11,12 @@ public class SoundManager : MonoBehaviour
 {
     const string frontPath = "Assets/Resources";
     protected const string bgmPath = "Sound/BGM/";
-    protected const string sePath="Sound/SE/";
+    protected const string sePath = "Sound/SE/";
     protected const string soundExtension = ".mp3";
-    protected const string bgmAudioSource= "Sound/BGMPlayer";
+    protected const string bgmAudioSource = "Sound/BGMPlayer";
     protected const string seAudioSource = "Sound/SEPlayer";
-    List<int> isChecked= new List<int>();
-    
+    List<int> isChecked = new List<int>();
+
     List<string> soundName = new List<string>();
     AudioClip clip;
     AudioSource bgmPlayer;
@@ -31,19 +31,18 @@ public class SoundManager : MonoBehaviour
     /// BGMを設定する関数
     /// </summary>
     /// <param name="name">Assetの中から検索するファイルの名前</param>
-    protected AudioClip SetSound(string name,string fileName)
+    protected AudioClip SetSound(string name, string fileName)
     {
-
-        string[] soundNames = Directory.GetFiles(frontPath + "/" + fileName,"*"+soundExtension);
+        string[] soundNames = Directory.GetFiles(frontPath + "/" + fileName, "*" + soundExtension);
         foreach (string soundName in soundNames)
         {
-                this.soundName.Add(soundName);
+            this.soundName.Add(soundName);
         }
 
-        if (Resources.Load<AudioClip>(fileName+name) == null)//ファイル内に指定したmp3ファイルがなければ
+        if (Resources.Load<AudioClip>(fileName + name) == null)//ファイル内に指定したmp3ファイルがなければ
         {
-            string str = CheckName(name,fileName);//一致度の高いmp3を検索
-            if(str=="")//一定以上の一致するmp3ファイルを見つけられなければ
+            string str = CheckName(name, fileName);//一致度の高いmp3を検索
+            if (str == "")//一定以上の一致するmp3ファイルを見つけられなければ
             {
                 Debug.LogError($"指定されたmp3ファイル{name}を見つけられませんでした。ファイル名、保存場所を確認してください");
                 return null;
@@ -51,7 +50,7 @@ public class SoundManager : MonoBehaviour
             Debug.LogError($"指定されたmp3ファイル{name}を見つけられませんでした。名前の一致度が高い{str}を再生します。ファイル名、保存場所を確認してください");
             name = str;
         }
-        clip= Resources.Load<AudioClip>(fileName + name);
+        clip = Resources.Load<AudioClip>(fileName + name);
         return clip;
     }
     /// <summary>
@@ -59,21 +58,22 @@ public class SoundManager : MonoBehaviour
     /// </summary>
     /// <param name="name">検索したいファイル名</param>
     /// <returns></returns>
-    private string CheckName(string name,string fileName)
+    private string CheckName(string name, string fileName)
     {
         string str = "";//最終的に返す文字列
         float maxRatio = 0.0f;
-        float clearLine = 0.0f;
+        float clearLine = 0.8f;
+        float continuous = 0.0f;
         int charCount = 0;
-        int maxCharCount=0;
+        int maxCharCount = 0;
         if (soundName.Count == 0)
-            {
-                return str; 
-            }
+        {
+            return str;
+        }
         for (int i = 0; i < soundName.Count; i++)
         {
-            string sound = soundName[i].Substring((frontPath + bgmPath).Length, soundName[i].Length - (frontPath + fileName).Length - soundExtension.Length-1);//soundNameに代入すると、soundNameの要素全てに代入されてしまうため回避用の変数を作成
-            if (name.Length < soundExtension.Length) {  }
+            string sound = soundName[i].Substring((frontPath + bgmPath).Length, soundName[i].Length - (frontPath + fileName).Length - soundExtension.Length - 1);//soundNameに代入すると、soundNameの要素全てに代入されてしまうため回避用の変数を作成
+            if (name.Length < soundExtension.Length) { }
             else if (name.Substring(name.Length - soundExtension.Length) == soundExtension)
             {
                 name = name.Substring(0, name.Length - soundExtension.Length);
@@ -93,6 +93,12 @@ public class SoundManager : MonoBehaviour
                     if (sound[j] == name[j])
                     {
                         hit++;//位置まで一致していたらhitを更に加算
+                        hit += continuous;
+                        continuous += 0.5f;
+                    }
+                    else
+                    {
+                        continuous = 0.0f;
                     }
                 }
             }
@@ -105,15 +111,15 @@ public class SoundManager : MonoBehaviour
             {
                 if (ratio > maxRatio)
                 {
-                    charCount=Mathf.Abs(name.Length-sound.Length);
+                    charCount = Mathf.Abs(name.Length - sound.Length);
                     str = sound;
                     maxRatio = ratio;
                     maxCharCount = charCount;
                 }
-                else if(ratio==maxRatio)
+                else if (ratio == maxRatio)
                 {
                     charCount = Mathf.Abs(name.Length - sound.Length);
-                    if(charCount<maxCharCount)
+                    if (charCount < maxCharCount)
                     {
                         str = sound;
                         maxRatio = ratio;
@@ -123,7 +129,7 @@ public class SoundManager : MonoBehaviour
             }
 
         }
-        soundName=new List<string>();
+        soundName = new List<string>();
         return str;
 
     }
