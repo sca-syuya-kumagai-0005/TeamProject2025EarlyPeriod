@@ -3,8 +3,8 @@ using UnityEngine.SceneManagement;
 
 public class MultiScaleToSceneChange : MonoBehaviour
 {
-    [Header("対象のSpriteRendererリスト")]
-    public SpriteRenderer[] targetSprites;
+    [Header("エネミータグ")]
+    public string enemyTag = "Enemy";
 
     [Header("遷移先シーン名")]
     public string nextSceneName;
@@ -20,17 +20,20 @@ public class MultiScaleToSceneChange : MonoBehaviour
     void Update()
     {
         if (hasSceneChanged) return;
-        if (targetSprites == null || targetSprites.Length == 0 || string.IsNullOrEmpty(nextSceneName)) return;
+        if (string.IsNullOrEmpty(nextSceneName)) return;
 
-        foreach (SpriteRenderer sr in targetSprites)
+        GameObject[] enemies = GameObject.FindGameObjectsWithTag(enemyTag);
+        if (enemies.Length == 0) return;
+
+        foreach (GameObject enemy in enemies)
         {
-            if (sr == null) continue;
-            Debug.Log(targetSprites);
-            Vector3 currentScale = sr.transform.localScale;
+            if (enemy == null) continue;
+
+            Vector3 currentScale = enemy.transform.localScale;
 
             if (Vector3.Distance(currentScale, targetScale) > tolerance)
             {
-                return; // 1つでも未達成ならシーン切り替えしない
+                return; // 1つでもスケール未到達 → シーン切り替えしない
             }
         }
 

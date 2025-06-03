@@ -535,6 +535,7 @@ GameObject:
   - component: {fileID: 1501177198}
   - component: {fileID: 1501177197}
   - component: {fileID: 1501177201}
+  - component: {fileID: 1501177202}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -647,6 +648,23 @@ MonoBehaviour:
   - {fileID: 2856887729262867527, guid: 2b1c40c9f2a334941b5801c26c7acdc4, type: 3}
   - {fileID: 712375946935236172, guid: fc6a5398550881e409f78689c231c457, type: 3}
   nextSceneName: Title
+  targetScale: {x: 4, y: 4, z: 1}
+  tolerance: 0.01
+  hasSceneChanged: 0
+--- !u!114 &1501177202
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1501177196}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 001024fbc5493e248a54f4040c045606, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyTag: Enemy
+  nextSceneName: Result
   targetScale: {x: 4, y: 4, z: 1}
   tolerance: 0.01
 --- !u!4 &1573804612 stripped
