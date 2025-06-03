@@ -28,9 +28,12 @@ public class Animation : MonoBehaviour
     [SerializeField] SpriteRenderer spriteRenderer;
     [SerializeField] Sprite newSprite;
     [SerializeField] ParticleSystem anime1_ParticleSystem;
+
     //アニメーション2で使用する
     [SerializeField] private Material noise_Mat;
+    [SerializeField] private Material crackGround_Mat;
     [SerializeField] private SpriteRenderer backGround_anim2;
+
 
     [Header("スプライトをフェードする秒数")]
     private float fadeDuration = 1f;
@@ -193,6 +196,9 @@ public class Animation : MonoBehaviour
 
     private IEnumerator Anime_2()
     {
+        yield return new WaitForSeconds(1f);
+        crackGround_Mat.SetFloat("_Alpha", 2.5f);
+        yield return new WaitForSeconds(1f);
         noise_Mat.SetFloat("_Alpha", 0.05f);
         yield return new WaitForSeconds(1f);
         noise_Mat.SetFloat("_Alpha", 0f);
@@ -212,7 +218,7 @@ public class Animation : MonoBehaviour
             noise_Mat.SetFloat("_Alpha", 3f);
             yield return new WaitForSeconds(0.3f);
             noise_Mat.SetFloat("_Alpha", 0f);
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(0.75f);
         }
 
         noise_Mat.SetFloat("_Alpha", 0.4f);
