@@ -23,6 +23,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/souma/stage/stage02.unity
     guid: ba5b350646ecddf4990859b5b1a44866
+  - enabled: 1
+    path: Assets/Scenes/Result.unity
+    guid: a4aeb0e067d45744fa5f5fdd72a33d26
+  - enabled: 1
+    path: Assets/Scenes/RankingScene.unity
+    guid: fe5ff7631dae65a4ba0d17785a5bb657
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
