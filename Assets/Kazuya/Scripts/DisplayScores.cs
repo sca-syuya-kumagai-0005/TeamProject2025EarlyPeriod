@@ -11,6 +11,7 @@ public class DisplayScores : MonoBehaviour
     [SerializeField] Text Rarity;//レア度
     [SerializeField] Text BonusPoints;//ボーナスポイント
     [SerializeField] Text AddScore;//累計Point
+    [SerializeField]GameObject cameraMask;
 
     int Eyse;
     int Coward;
@@ -20,7 +21,7 @@ public class DisplayScores : MonoBehaviour
     int Scores;
     void Start()
     {
-
+        cameraMask = GameObject.Find("photo").gameObject;
     }
 
     void Update()
