@@ -25,7 +25,7 @@ public class MultiScaleToSceneChange : MonoBehaviour
         foreach (SpriteRenderer sr in targetSprites)
         {
             if (sr == null) continue;
-
+            Debug.Log(targetSprites);
             Vector3 currentScale = sr.transform.localScale;
 
             if (Vector3.Distance(currentScale, targetScale) > tolerance)
