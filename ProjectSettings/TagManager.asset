@@ -13,8 +13,10 @@ TagManager:
   - BackGround
   - FlashImage
   - CameraFrame
-  - red
-  - blue
+  - nred
+  - nblue
+  - tred
+  - tblue
   layers:
   - Default
   - TransparentFX
