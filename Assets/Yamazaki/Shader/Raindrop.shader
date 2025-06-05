@@ -4,6 +4,7 @@
     {
         _MainTex("Albedo (RGB)", 2D) = "white" {}
         _DropSize("Drop Size", Range(0.5, 2.0)) = 1.0
+        _DropFrequency("Drop Frequency", Range(0.0, 2.0)) = 1.0
     }
 
         SubShader
@@ -22,6 +23,7 @@
 
                 sampler2D _MainTex;
                 float _DropSize;
+                float _DropFrequency;
 
                 #define S(a, b, t) smoothstep(a, b, t)
 
@@ -48,14 +50,13 @@
                     float3 n = N13(id.x * 35.2 + id.y * 2376.1);
                     float2 st = frac(uv * grid) - float2(0.5, 0);
 
-                    // 揺れの基本構造
                     float y = UV.y * 15.0;
                     float wiggleFreq = 2.0 + n.z * 3.0;
                     float wiggleAmp = 0.25 + n.y * 0.25;
 
                     float pauseFreq = 5.0 + n.x * 10.0;
                     float pause = sin(y * pauseFreq) * 0.5 + 0.5;
-                    float pauseEffect = S(0.2, 0.8, pause); // 一瞬減速しているように見せる
+                    float pauseEffect = S(0.1, 0.8, pause);
 
                     float speed = lerp(0.3, 0.9, n.z) * (1.0 - pauseEffect * 0.5);
                     float ti = frac(t * speed + n.z);
@@ -79,7 +80,7 @@
                     float dd = length(st - float2(x, dropletY)) / _DropSize;
                     float droplets = S(0.3, 0.0, dd);
 
-                    float m = mainDrop + droplets * r * trailFront;
+                    float m = (mainDrop + droplets * r * trailFront) * _DropFrequency;
                     return float2(m, trail);
                 }
 
@@ -92,7 +93,7 @@
                     float2 p = (n.xy - 0.5) * 0.7;
                     float d = length(uv - p) / _DropSize;
                     float fade = S(0.0, 1.0, sin((t + n.z) * 6.28));
-                    return S(0.3, 0.0, d) * frac(n.z * 10.0) * fade;
+                    return S(0.3, 0.0, d) * frac(n.z * 10.0) * fade * _DropFrequency;
                 }
 
                 float2 Drops(float2 uv, float t, float l0, float l1, float l2)

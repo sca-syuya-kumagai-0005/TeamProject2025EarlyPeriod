@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 public class Animation : MonoBehaviour
 {
+    [SerializeField] private SpriteRenderer rainSpriteRenderer;
     //スナップショットで使用
     [Header("移動開始オフセット（ローカル座標）")]
     [SerializeField] private Vector3 startOffset = new Vector3(25f, 0, 0);
@@ -133,11 +134,12 @@ public class Animation : MonoBehaviour
 
     private IEnumerator Anime_1()
     {
+        rainSpriteRenderer.enabled = false;
         yield return new WaitForSeconds(0.5f);
         // ---- UI移動 ----
         Vector2 startPos = uiObject.anchoredPosition;
         float elapsed = 0f;
-
+        
         while (elapsed < duration)
         {
             float t = Mathf.SmoothStep(0, 1, elapsed / duration);
@@ -146,6 +148,7 @@ public class Animation : MonoBehaviour
             yield return null;
         }
         uiObject.anchoredPosition = targetUIPosition;
+       
         yield return new WaitForSeconds(0.5f);
         // ---- カメラ回転 ----
         Quaternion startRot = targetCamera.transform.rotation;
@@ -162,6 +165,7 @@ public class Animation : MonoBehaviour
             yield return null;
         }
         targetCamera.transform.rotation = endRot;
+        
         yield return new WaitForSeconds(0.5f);
         // ---- スプライト差し替え ----
         if (spriteRenderer != null && newSprite != null)
@@ -196,6 +200,7 @@ public class Animation : MonoBehaviour
 
     private IEnumerator Anime_2()
     {
+        rainSpriteRenderer.enabled = false;
         yield return new WaitForSeconds(1f);
         crackGround_Mat.SetFloat("_Alpha", 2.5f);
         yield return new WaitForSeconds(1f);
@@ -238,6 +243,7 @@ public class Animation : MonoBehaviour
 
     private IEnumerator Anime_3()
     {
+        rainSpriteRenderer.enabled = false;
         yield return new WaitForSeconds(1f);
         surprise.enabled = true;
         Color color = surprise.color;
