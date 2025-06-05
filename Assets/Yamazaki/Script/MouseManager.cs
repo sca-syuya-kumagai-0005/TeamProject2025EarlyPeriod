@@ -135,5 +135,4 @@ public class MouseManager : MonoBehaviour
         Debug.Log("Snapshot set to SpriteRenderer: " + snapshot.name);
     }
 
-
 }
