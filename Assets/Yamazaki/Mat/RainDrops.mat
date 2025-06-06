@@ -67,10 +67,12 @@ Material:
     m_Floats:
     - _BumpScale: 1
     - _Cutoff: 0.5
+    - _DebugDrops: 0
     - _DetailNormalMapScale: 1
+    - _DropAmount: 2
     - _DropFrequency: 0.6
     - _DropIntensity: 0.6
-    - _DropSize: 0.75
+    - _DropSize: 0.6
     - _DropSizeVariance: 1.78
     - _DstBlend: 0
     - _GlossMapScale: 1
