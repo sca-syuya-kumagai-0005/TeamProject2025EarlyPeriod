@@ -21402,6 +21402,7 @@ MonoBehaviour:
   targetSpriteRenderer: {fileID: 1261276125}
   snapshot_Obj: {fileID: 1556810748}
   titleObj: {fileID: 334303869}
+  aniNum: 3
 --- !u!114 &1259839554
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 public class Animation : MonoBehaviour
 {
     [SerializeField] private SpriteRenderer rainSpriteRenderer;
@@ -62,6 +63,9 @@ public class Animation : MonoBehaviour
     [SerializeField] GameObject[] titleAnimeObj;
 
     int anime_num;//アニメーションの数
+
+    string mainGame="nozomiTest";
+    string alpha="_Alpha";
     public int GetSetProperty
     {
         get { return anime_num; }
@@ -98,7 +102,7 @@ public class Animation : MonoBehaviour
                 anime_num = 0;
                 break;
             default:
-                Debug.Log("アニメナンバーがないよ");
+                Debug.LogError("アニメナンバーがないよ");
                 break;
         }
     }
@@ -195,50 +199,52 @@ public class Animation : MonoBehaviour
             finalColor.a = 0f;
             spriteRenderer.color = finalColor;
         }
-        Debug.Log("扉開閉アニメーション");
+        yield return new WaitForSeconds(2f);
+        SceneManager.LoadScene(mainGame);
     }
 
     private IEnumerator Anime_2()
     {
         rainSpriteRenderer.enabled = false;
         yield return new WaitForSeconds(1f);
-        crackGround_Mat.SetFloat("_Alpha", 2.5f);
+        crackGround_Mat.SetFloat(alpha, 2.5f);
         yield return new WaitForSeconds(1f);
-        noise_Mat.SetFloat("_Alpha", 0.05f);
+        noise_Mat.SetFloat(alpha, 0.05f);
         yield return new WaitForSeconds(1f);
-        noise_Mat.SetFloat("_Alpha", 0f);
+        noise_Mat.SetFloat(alpha, 0f);
         yield return new WaitForSeconds(0.5f);
-        noise_Mat.SetFloat("_Alpha", 0.05f);
+        noise_Mat.SetFloat(alpha, 0.05f);
         yield return new WaitForSeconds(0.25f);
-        noise_Mat.SetFloat("_Alpha", 0f);
+        noise_Mat.SetFloat(alpha, 0f);
         yield return new WaitForSeconds(0.25f);
 
         for (int i= 0; i<2;i++)
         {
             
-            noise_Mat.SetFloat("_Alpha", 0.4f);
+            noise_Mat.SetFloat(alpha, 0.4f);
             yield return new WaitForSeconds(0.1f);
-            noise_Mat.SetFloat("_Alpha", 0.8f);
+            noise_Mat.SetFloat(alpha, 0.8f);
             yield return new WaitForSeconds(0.02f);
-            noise_Mat.SetFloat("_Alpha", 3f);
+            noise_Mat.SetFloat(alpha, 3f);
             yield return new WaitForSeconds(0.3f);
-            noise_Mat.SetFloat("_Alpha", 0f);
+            noise_Mat.SetFloat(alpha, 0f);
             yield return new WaitForSeconds(0.75f);
         }
 
-        noise_Mat.SetFloat("_Alpha", 0.4f);
+        noise_Mat.SetFloat(alpha, 0.4f);
         yield return new WaitForSeconds(0.1f);
-        noise_Mat.SetFloat("_Alpha", 1f);
+        noise_Mat.SetFloat(alpha, 1f);
         yield return new WaitForSeconds(0.5f);
-        noise_Mat.SetFloat("_Alpha", 0f);
+        noise_Mat.SetFloat(alpha, 0f);
         yield return new WaitForSeconds(0.1f);
-        noise_Mat.SetFloat("_Alpha", 4f);
+        noise_Mat.SetFloat(alpha, 4f);
         yield return new WaitForSeconds(0.13f);
         backGround_anim2.enabled = true;
-        noise_Mat.SetFloat("_Alpha", 1.2f);
+        noise_Mat.SetFloat(alpha, 1.2f);
         yield return new WaitForSeconds(0.35f);
-        noise_Mat.SetFloat("_Alpha", 0f);
-       
+        noise_Mat.SetFloat(alpha, 0f);
+        yield return new WaitForSeconds(1f);
+        SceneManager.LoadScene(mainGame);
     }
 
     private IEnumerator Anime_3()
@@ -335,7 +341,8 @@ public class Animation : MonoBehaviour
             Color finalColor = spriteRenderer_3.color;
             finalColor.a = 0f;
             spriteRenderer_3.color = finalColor;
-
+            yield return new WaitForSeconds(2f);
+            SceneManager.LoadScene(mainGame);
         }
     }
 }

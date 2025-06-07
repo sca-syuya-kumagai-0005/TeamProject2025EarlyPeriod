@@ -29,6 +29,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/RankingScene.unity
     guid: fe5ff7631dae65a4ba0d17785a5bb657
+  - enabled: 1
+    path: Assets/Nozomi/nozomiTest.unity
+    guid: 763770a3e8236d740927c1e6d4d6d225
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
