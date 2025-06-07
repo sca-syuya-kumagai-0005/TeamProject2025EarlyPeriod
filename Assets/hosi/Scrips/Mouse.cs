@@ -13,11 +13,11 @@ public class Mouse : MonoBehaviour
 
     public ShutterEffect shutterEffect; //シャッターエフェクトへの参照
 
-    public bool Touched_nred = false;
-    public bool Touched_nblue = false;
+    //public bool Touched_nred = false;
+    //public bool Touched_nblue = false;
     
-    public bool Touched_tred = false;
-    public bool Touched_tblue = false;
+    //public bool Touched_tred = false;
+    //public bool Touched_tblue = false;
 
     void Start()
     {
@@ -88,6 +88,7 @@ public class Mouse : MonoBehaviour
         return Camera.main.ScreenToWorldPoint(new Vector3(screenPos.x, screenPos.y, screenPos.z));
     }
 
+    /*
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision.gameObject.tag == "nred")
@@ -141,85 +142,99 @@ public class Mouse : MonoBehaviour
             Debug.Log("t青さわってない");
         }
     }
+    */
 
     //スコアの加算
     void AddScore()
     {
         Collider2D[] colliders = GameObject.FindObjectsOfType<Collider2D>();
-        int nAddPoints = 0; //ノーマルの目
-        int tAddPoints = 0; //脅かしの目
-        int totalEyesScore = 0; //ノーマル +　脅かしのスコア
+        int nEye = 0; //ノーマルの目
+        int tEye = 0; //脅かしの目
+        int nRed = 0; //脅かしの目
+        int tRed = 0; //脅かしの目
+        int nBlue = 0; //脅かしの目
+        int tBlue = 0; //脅かしの目
 
-        //各コライダーが判定枠内に入っているかのチェック
-        foreach (var col in colliders)
-        {
-            if (col.CompareTag("nEye") && IsFullyInside(circleCollider.bounds, col.bounds))
-            {
-                nAddPoints++;
-
-            }
-            else if (col.CompareTag("tEye") && IsFullyInside(circleCollider.bounds, col.bounds))
-            {
-                tAddPoints++;
-            }
-        }
-
-        //ノーマルの目のポイントの加算
-        if (nAddPoints == 1)
-        {
-            totalEyesScore += 1;
-        }
-        else if (nAddPoints == 2)
-        {
-            totalEyesScore += 2;
-        }
-
-        //脅かしの目のポイントの加算
-        if (tAddPoints == 1)
-        {
-            totalEyesScore += 2;
-        }
-        else if (tAddPoints == 2)
-        {
-            totalEyesScore += 5;
-        }
+        int TotalEyesScore = 0; //ノーマル +　脅かしのスコア
 
         int nRarebonus = 0;
         int tRarebonus = 0;
 
-        if (nAddPoints == 1 || nAddPoints == 2)
+        //各コライダーが判定枠内に入っているかのチェック
+        foreach (var col in colliders)
         {
-            if (Touched_nred)
-            {
-                nRarebonus += 50;
-            }
-            if (Touched_nblue)
-            {
-                nRarebonus += 100;
-            }
-        }
-        
-        if (tAddPoints == 1 || tAddPoints == 2)
-        {
-            if (Touched_tred)
-            {
-                tRarebonus += 70;
-            }
-            if (Touched_tblue)
-            {
-                tRarebonus += 120;
-            }
-        }
-        int totalEyes = nAddPoints + tAddPoints; //最終的に判定される目の数
-        int bonus = GetBonusPoint(totalEyes); //判定された目の数によるボーナス
+            if (!IsFullyInside(circleCollider.bounds, col.bounds)) continue;
 
-         int AddedScore = totalEyesScore + bonus + nRarebonus + tRarebonus; //最終スコア
+            switch (col.tag)
+            {
+                case "nEye":
+                    nEye++;
+                    break;
+                case "tEye":
+                    tEye++;
+                    break;
+                case "nred":
+                    nRed++;
+                    nRarebonus += 50;
+                    break;
+                case "nblue":
+                    nBlue++;
+                    nRarebonus += 100;
+                    break;
+                case "tred":
+                    nRed++;
+                    nRarebonus += 70;
+                    break;
+                case "tblue":
+                    tBlue++;
+                    tRarebonus += 120;
+                    break;
+            }
+            /*
+            if (col.CompareTag("nEye") && IsFullyInside(circleCollider.bounds, col.bounds))
+            {
+                nEye++;
+
+            }
+            else if (col.CompareTag("tEye") && IsFullyInside(circleCollider.bounds, col.bounds))
+            {
+                tEye++;
+            }
+            */
+        }
+
+        //ノーマルの目のポイントの加算
+        if (nEye + nRed + nBlue == 1)
+        {
+            TotalEyesScore += 1;
+        }
+        else if (nEye + nRed + nBlue == 2)
+        {
+            TotalEyesScore += 2;
+        }
+
+        //脅かしの目のポイントの加算
+        if (tEye + tRed + tBlue == 1)
+        {
+            TotalEyesScore += 2;
+        }
+        else if (tEye + tRed + tBlue == 2)
+        {
+            TotalEyesScore += 5;
+        }
+ 
+
+        int TotalEyes = nEye + tEye + nRed + tRed + nBlue + tBlue; //最終的に判定される目の数
+
+        int bonus = GetBonusPoint(TotalEyes); //判定された目の数によるボーナス
+
+         int AddedScore = TotalEyesScore + bonus + nRarebonus + tRarebonus; //最終スコア
 
         if (AddedScore > 0)
         {
             score += AddedScore;
 
-            Debug.Log("TotalEyesScore:" + totalEyesScore);
+            Debug.Log("TotalEyesScore:" + TotalEyesScore);
             Debug.Log("BonusScore:" + bonus);
             Debug.Log("nRarebouns" + nRarebonus);
             Debug.Log("tRarebouns" + tRarebonus);
