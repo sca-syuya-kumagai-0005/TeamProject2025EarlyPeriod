@@ -78,7 +78,6 @@ public class EnemySpriteAnimator : MonoBehaviour
             if (flash != null && flash.GetComponent<Image>() != null)
             {
                 bool insideCameraFrame = IsInsideCameraFrame();
-
                 if (insideCameraFrame)
                 {
                     Debug.Log($"[Enemy] フラッシュ検知 + カメラフレーム内 → 完全停止: {name}");
@@ -91,30 +90,31 @@ public class EnemySpriteAnimator : MonoBehaviour
                 }
 
                 //特殊スプライト生成（アルファ値もコピー）
-                if (specialAnimationFrames != null && specialAnimationFrames.Length > 0)
-                {
-                    GameObject go = new GameObject("GeneratedSpecialSprite");
-                    go.transform.position = transform.position;
+                //if (specialAnimationFrames != null && specialAnimationFrames.Length > 0)
+                //{
+                //    GameObject go = new GameObject("GeneratedSpecialSprite");
+                //    go.transform.position = transform.position;
 
-                    SpriteRenderer sr = go.AddComponent<SpriteRenderer>();
+                //    SpriteRenderer sr = go.AddComponent<SpriteRenderer>();
 
-                    //ここでアルファ値を0.8にする
-                    Color color = sr.color;
-                    color.a = 0.8f;
-                    sr.color = color;
+                //    //ここでアルファ値を0.8にする
+                //    Color color = sr.color;
+                //    color.a = 0.8f;
+                //    sr.color = color;
 
-                    EnemySpriteAnimator animator = go.AddComponent<EnemySpriteAnimator>();
-                    animator.animationFrames = specialAnimationFrames;
-                    animator.frameDuration = specialFrameDuration;
-                    animator.playOnStart = true;
-                    animator.enableScaling = false;
+                //    //EnemySpriteAnimator animator = go.AddComponent<EnemySpriteAnimator>();
+                //    //animator.animationFrames = specialAnimationFrames;
+                //    //animator.frameDuration = specialFrameDuration;
+                //    //animator.playOnStart = true;
+                //    //animator.enableScaling = false;
 
-                    go.transform.localScale = transform.localScale;
+                //    go.transform.localScale = transform.localScale;
 
-                    go.AddComponent<AutoDestroy>().lifetime = generatedLifetime;
-                }
+                //    go.AddComponent<AutoDestroy>().lifetime = generatedLifetime;
+                //}
 
-                yield return new WaitForSeconds(1f); // フラッシュ検知の連続実行防止
+                yield return new WaitForSeconds(3f); // フラッシュ検知の連続実行防止
+                specialAnimationFrames=new Sprite[0];
             }
 
             yield return null;
