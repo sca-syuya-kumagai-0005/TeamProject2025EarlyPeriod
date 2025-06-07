@@ -34,6 +34,7 @@ public class MouseManager : MonoBehaviour
     [Header("タイトルの親オブジェクト")]
     [SerializeField] private GameObject titleObj;
 
+    [SerializeField] private int aniNum;
     private float alpha;
     private bool canMouseClick = true;
     Animation animationScript;
@@ -76,7 +77,8 @@ public class MouseManager : MonoBehaviour
                 //canMouseClick = true;
                 snapshot_Obj.SetActive(true);
                 Debug.Log("ここからアニメーションの入れる感じ");
-                animationScript.GetSetProperty = 1;
+                aniNum = Random.Range(1,4);
+                animationScript.GetSetProperty = aniNum;
                 titleObj.SetActive(false);
             }
         }
