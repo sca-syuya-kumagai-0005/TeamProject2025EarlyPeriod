@@ -2,53 +2,54 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using System.Collections;
 using TMPro;
-using UnityEngine.Experimental.GlobalIllumination;
 
 
 public class DisplayScores : MonoBehaviour
 {
+    [Header("スコアデータ")]
+    [SerializeField] PointList pointlist;
+
     [Header("UI表示テキスト")]
     [SerializeField] Text NumberEyes;//エネミーの目の数
     [SerializeField] Text GostType;//エネミーの種類
     [SerializeField] Text Rarity;//レア度
     [SerializeField] Text BonusPoints;//ボーナスポイント
     [SerializeField] Text AddScore;//累計Point
-    [SerializeField]GameObject cameraMask;//マスク全体のオブジェクト
-    Transform  PhotoObject;//写真のオブジェクト
     
     [Header("写真の表示の設定")]
     [SerializeField] float WholePhotoTime = 1.5f;//取った写真の表示時間
     [SerializeField] float FocusedPhoto = 1.0f;//ピント内写真の表示時間
     [SerializeField] float Information = 1.0f;//得点の詳細説明
 
-
-
-    public List<GameObject> PhotoList = new List<GameObject>();
     [Header("シーン移行")]
     public string nextSceneName = "RankingScene";//←移動先のシーン名
 
+    public List<GameObject> PhotoList = new List<GameObject>();//写真を格納するリスト
+    [SerializeField] GameObject cameraMask;//マスク全体のオブジェクト
+    Transform PhotoObject;//写真のオブジェクト
+
+    //早送り/スキップのフラグ
     private bool skipRequested = false;
     private bool fastForwardRequested = false;
 
     [Header("早送りするときの倍速度")]
     [SerializeField]float acceleration = 0.3f;
 
-
+    [Header("写真を移動するときの座標")]
+    [SerializeField]
     Vector3 MaskPosition = new Vector3((float)-4.5,1,1);
+    [SerializeField]
     Vector3 MaskScale = new Vector3((float)0.2,(float)0.2,1);
-    int Eyse;
-    int Coward;
-    int Furious;
-    int Raritys;
-    int BonusPointss;
-    int Scores;
+
+
+    private int CumulativeScore;//累計スコア
+
     private void Awake()
     {
         //シーンをまたいだオバケを取得
-        cameraMask = GameObject.Find("PhotoStorage").gameObject;
+        cameraMask = GameObject.Find("PhotoStorage");
         if(cameraMask != null )
         {
             PhotoObject = cameraMask.transform;
@@ -64,20 +65,16 @@ public class DisplayScores : MonoBehaviour
     void Start()
     {
         if (PhotoObject == null) return;
+        //UIの表示リセット
+        ResetScoreUI();
             //写真をリストを初期化し、PhotoStorageの子要素(撮影した写真)をリストに追加
             PhotoList.Clear();
             for (int i = 0; i < PhotoObject.childCount; i++)
             {
-                Transform child = PhotoObject.GetChild(i);
-                PhotoList.Add(child.gameObject);
+                PhotoList.Add(PhotoObject.GetChild(i).gameObject);
             }
-
-        //スコアを計算してUIを更新
-        CalculateAndDisplayScores();
         //写真を順番に表示するコルーチンを開始
         StartCoroutine(ProcessPhotos());
-
-        //ProcessObjects();
     }
 
     void Update()
@@ -124,19 +121,40 @@ public class DisplayScores : MonoBehaviour
     IEnumerator ProcessPhotos()
     {
         //写真リスト内の各オブジェクトに対して処理を繰り返す
-        foreach(GameObject photo in PhotoList)
+        for(int i = 0;i < PhotoList.Count;i++)
         {
+            //リストの範囲外になら終了させる
+            if(i >= pointlist.point.Count)
+            {
+                break;
+            }
+            GameObject currentPhoto = PhotoList[i];
+            var currentScoreData = pointlist.point[i];
+
+            UpdataScores(currentScoreData);
+
+            //写真の得点を累計に追加
+            int photoScore = currentScoreData.eyes + currentScoreData.rarity + currentScoreData.bonus;
+            CumulativeScore += photoScore;
+
+            AddScore.text = $"{CumulativeScore}";
             //次の写真のためのスキップ要求をリセット
             skipRequested = false;
 
             //写真を1枚表示するシーケンスコルーチン
-            yield return StartCoroutine(PhotoDisplay(photo));
+            yield return StartCoroutine(PhotoDisplay(currentPhoto));
 
-            //表示の終了orスキップされた 写真は破棄
-            if(photo != null )Destroy(photo);
+            Debug.Log(i + "枚目終了");
         }
+        //表示の終了orスキップされた 写真は破棄
+        yield return new WaitForSeconds(1.0f);
+        if(cameraMask != null)
+        {
+            Destroy(cameraMask);
+        }
+
         //すべての写真の処理が終わったら、次のシーンに遷移する
-       // SceneManager.LoadScene(nextSceneName);
+        // SceneManager.LoadScene(nextSceneName);
     }
 
     //写真1枚の表示部分
@@ -159,28 +177,33 @@ public class DisplayScores : MonoBehaviour
         yield return new WaitForSeconds(GetInterval(Information));
     }
 
-    // スコアを集計し、UIテキストを更新する
-    void CalculateAndDisplayScores()
+    //スコアの初期化
+    void ResetScoreUI()
     {
-        //if (PhotoList == null || PhotoList.point == null)
-        //{
-        //    Debug.LogError("PointListが設定されていません。");
-        //    return;
-        //}
+        NumberEyes.text = "_";
+        GostType.text = "_";
+        Rarity.text = "_";
+        BonusPoints.text = "_";
+        AddScore.text = "0";
+    }
 
-        //var enemies = PhotoList.point;
-        //int eyesTotal = enemies.Sum(e => e.eyes);
-        //int rarityTotal = enemies.Sum(e => e.rarity);
-        //int bonusTotal = enemies.Sum(e => e.bonus);
-        //int scoreTotal = eyesTotal + rarityTotal + bonusTotal;
 
-        //// UIテキストに計算結果を反映
-        //NumberEyes.text = $"{eyesTotal}つ";
-        //// ToDo: Coward, Furiousのカウント方法は元スクリプトで未定義のため、一旦0で表示
-        //GostType.text = $"0体　0体";
-        //Rarity.text = $"{rarityTotal}";
-        //BonusPoints.text = $"{bonusTotal}";
-        //AddScore.text = $"{scoreTotal}";
+
+    // スコアを集計し、UIテキストを更新する
+    void UpdataScores(EnemyData data)
+    {
+        if (PhotoList == null || pointlist.point == null)
+        {
+            Debug.LogError("PointListが設定されていません。");
+            return;
+        }
+
+        // UIテキストに計算結果を反映
+        NumberEyes.text = $"{data.eyes }つ";
+        // ToDo: Coward, Furiousのカウント方法は元スクリプトで未定義のため、一旦0で表示
+        GostType.text = $"0体　0体";
+        Rarity.text = $"{data.rarity}";
+        BonusPoints.text = $"{data.bonus}";
     }
 
 
