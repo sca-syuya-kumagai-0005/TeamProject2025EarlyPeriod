@@ -131,6 +131,8 @@ public class DisplayScores : MonoBehaviour
             GameObject currentPhoto = PhotoList[i];
             var currentScoreData = pointlist.point[i];
 
+            UpdataScores(currentScoreData);
+
             //写真の得点を累計に追加
             int photoScore = currentScoreData.eyes + currentScoreData.rarity + currentScoreData.bonus;
             CumulativeScore += photoScore;
@@ -143,9 +145,14 @@ public class DisplayScores : MonoBehaviour
             yield return StartCoroutine(PhotoDisplay(currentPhoto));
 
             Debug.Log(i + "枚目終了");
-            //表示の終了orスキップされた 写真は破棄
-            if (currentPhoto != null) Destroy(currentPhoto);
         }
+        //表示の終了orスキップされた 写真は破棄
+        yield return new WaitForSeconds(1.0f);
+        if(cameraMask != null)
+        {
+            Destroy(cameraMask);
+        }
+
         //すべての写真の処理が終わったら、次のシーンに遷移する
         // SceneManager.LoadScene(nextSceneName);
     }
@@ -183,7 +190,7 @@ public class DisplayScores : MonoBehaviour
 
 
     // スコアを集計し、UIテキストを更新する
-    void CalculateAndDisplayScores(PointObjectsData data)
+    void UpdataScores(EnemyData data)
     {
         if (PhotoList == null || pointlist.point == null)
         {
@@ -192,11 +199,11 @@ public class DisplayScores : MonoBehaviour
         }
 
         // UIテキストに計算結果を反映
-        NumberEyes.text = $"{data.Eyes }つ";
+        NumberEyes.text = $"{data.eyes }つ";
         // ToDo: Coward, Furiousのカウント方法は元スクリプトで未定義のため、一旦0で表示
         GostType.text = $"0体　0体";
-        Rarity.text = $"{data.Raritys}";
-        BonusPoints.text = $"{data.BonusPointss}";
+        Rarity.text = $"{data.rarity}";
+        BonusPoints.text = $"{data.bonus}";
     }
 
 
