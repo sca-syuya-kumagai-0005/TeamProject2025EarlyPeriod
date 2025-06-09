@@ -535,7 +535,15 @@ MonoBehaviour:
   Rarity: {fileID: 1336658038}
   BonusPoints: {fileID: 564289629}
   AddScore: {fileID: 2067535434}
+  WholePhotoTime: 1.5
+  FocusedPhoto: 1
+  Information: 1
+  nextSceneName: RankingScene
+  PhotoList: []
   cameraMask: {fileID: 0}
+  acceleration: 0.3
+  MaskPosition: {x: -4.5, y: 1, z: 1}
+  MaskScale: {x: 0.2, y: 0.2, z: 1}
 --- !u!4 &569928106
 Transform:
   m_ObjectHideFlags: 0
