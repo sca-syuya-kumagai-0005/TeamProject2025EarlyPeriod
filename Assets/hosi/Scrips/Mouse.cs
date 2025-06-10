@@ -13,12 +13,6 @@ public class Mouse : MonoBehaviour
 
     public ShutterEffect shutterEffect; //シャッターエフェクトへの参照
 
-    //public bool Touched_nred = false;
-    //public bool Touched_nblue = false;
-    
-    //public bool Touched_tred = false;
-    //public bool Touched_tblue = false;
-
     void Start()
     {
         score = 0;
@@ -88,72 +82,16 @@ public class Mouse : MonoBehaviour
         return Camera.main.ScreenToWorldPoint(new Vector3(screenPos.x, screenPos.y, screenPos.z));
     }
 
-    /*
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if(collision.gameObject.tag == "nred")
-        {
-            Touched_nred = true;
-            Debug.Log("n赤さわる");
-        }
-        
-        if(collision.gameObject.tag == "nblue")
-        {
-            Touched_nblue = true;
-            Debug.Log("n青さわる");
-        }
-        
-        if(collision.gameObject.tag == "tred")
-        {
-            Touched_tred = true;
-            Debug.Log("t赤さわる");
-        }
-        
-        if(collision.gameObject.tag == "tblue")
-        {
-            Touched_tblue = true;
-            Debug.Log("t青さわる");
-        }
-    }
-
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if (collision.gameObject.tag == "nred")
-        {
-            Touched_nred = false;
-            Debug.Log("n赤さわってない");
-        }
-        
-        if (collision.gameObject.tag == "nblue")
-        {
-            Touched_nblue = false;
-            Debug.Log("n青さわってない");
-        }
-        
-        if (collision.gameObject.tag == "tred")
-        {
-            Touched_tred = false;
-            Debug.Log("t赤さわってない");
-        }
-        
-        if (collision.gameObject.tag == "tblue")
-        {
-            Touched_tblue = false;
-            Debug.Log("t青さわってない");
-        }
-    }
-    */
-
     //スコアの加算
     void AddScore()
     {
         Collider2D[] colliders = GameObject.FindObjectsOfType<Collider2D>();
         int nEye = 0; //ノーマルの目
         int tEye = 0; //脅かしの目
-        int nRed = 0; //脅かしの目
-        int tRed = 0; //脅かしの目
-        int nBlue = 0; //脅かしの目
-        int tBlue = 0; //脅かしの目
+        int nRed = 0; //ノーマル赤の目
+        int tRed = 0; //脅かし赤の目
+        int nBlue = 0; //ノーマル青の目
+        int tBlue = 0; //脅かし青の目
 
         int TotalEyesScore = 0; //ノーマル +　脅かしのスコア
 
@@ -163,8 +101,13 @@ public class Mouse : MonoBehaviour
         //各コライダーが判定枠内に入っているかのチェック
         foreach (var col in colliders)
         {
-            if (!IsFullyInside(circleCollider.bounds, col.bounds)) continue;
+            // マウス範囲に完全に入っているか確認
+            if (!IsFullyInside(circleCollider.bounds, col.bounds))
+            {
+                continue;//完全に入っていたら次へ
+            }
 
+            //タグで目の種類を確認
             switch (col.tag)
             {
                 case "nEye":
@@ -175,65 +118,64 @@ public class Mouse : MonoBehaviour
                     break;
                 case "nred":
                     nRed++;
-                    nRarebonus += 50;
                     break;
                 case "nblue":
                     nBlue++;
-                    nRarebonus += 100;
                     break;
                 case "tred":
-                    nRed++;
-                    nRarebonus += 70;
+                    tRed++;
                     break;
                 case "tblue":
                     tBlue++;
-                    tRarebonus += 120;
                     break;
             }
-            /*
-            if (col.CompareTag("nEye") && IsFullyInside(circleCollider.bounds, col.bounds))
-            {
-                nEye++;
-
-            }
-            else if (col.CompareTag("tEye") && IsFullyInside(circleCollider.bounds, col.bounds))
-            {
-                tEye++;
-            }
-            */
         }
 
+        int nTotalEye = nEye + nRed + nBlue;
+        int nPieces = nTotalEye / 2;
+        int nSurplus = nTotalEye % 2;
         //ノーマルの目のポイントの加算
-        if (nEye + nRed + nBlue == 1)
+        for(int i = 0; i < nPieces; i++)
+        {
+            TotalEyesScore += 2;
+        }
+        if(nSurplus == 1)
         {
             TotalEyesScore += 1;
         }
-        else if (nEye + nRed + nBlue == 2)
+
+        int tTotalEye = tEye + tRed + tBlue;
+        int tPieces = tTotalEye / 2;
+        int tSurplus = tTotalEye % 2;
+
+        //脅かしの目のポイントの加算
+        for (int i = 0; i < tPieces; i++)
+        {
+            TotalEyesScore += 5;
+        }
+        if (tSurplus == 1)
         {
             TotalEyesScore += 2;
         }
 
-        //脅かしの目のポイントの加算
-        if (tEye + tRed + tBlue == 1)
-        {
-            TotalEyesScore += 2;
-        }
-        else if (tEye + tRed + tBlue == 2)
-        {
-            TotalEyesScore += 5;
-        }
- 
 
         int TotalEyes = nEye + tEye + nRed + tRed + nBlue + tBlue; //最終的に判定される目の数
 
         int bonus = GetBonusPoint(TotalEyes); //判定された目の数によるボーナス
 
-         int AddedScore = TotalEyesScore + bonus + nRarebonus + tRarebonus; //最終スコア
+        //色によるレアボーナス
+        nRarebonus += GetRerebounus(nRed, 50);
+        nRarebonus += GetRerebounus(nBlue, 100);
+        tRarebonus += GetRerebounus(tRed, 70);
+        tRarebonus += GetRerebounus(tBlue, 120);
+
+        int AddedScore = TotalEyesScore + bonus + nRarebonus + tRarebonus; //最終スコア
 
         if (AddedScore > 0)
         {
             score += AddedScore;
 
+            Debug.Log("TotalEyes:" + TotalEyes);
             Debug.Log("TotalEyesScore:" + TotalEyesScore);
             Debug.Log("BonusScore:" + bonus);
             Debug.Log("nRarebouns" + nRarebonus);
@@ -242,7 +184,11 @@ public class Mouse : MonoBehaviour
         }
     }
 
-    //ボーナススコアの配点 case:目の数 return:取得スコア
+    /// <summary>
+    /// ボーナススコアの配点
+    /// </summary>
+    /// <param name="eyes">目の数</param>
+    /// <returns>取得スコア</returns>
     int GetBonusPoint(int eyes)
     {
         switch (eyes)
@@ -269,6 +215,42 @@ public class Mouse : MonoBehaviour
             default:
                 return 0;
         }
+    }
+
+
+    /// <summary>
+    /// 色によるレアボーナスの目の数(現在５体まで)
+    /// </summary>
+    /// <param name="rEye">レアの目の数</param>
+    /// <param name="RereScore">数によるスコア</param>
+    /// <returns>一定以上の時 +0 スコア</returns>
+    int GetRerebounus(int rEye, int RereScore)
+    {
+        if (rEye == 0)
+        {
+            return 0;
+        }
+        else if (rEye <= 2)
+        {
+            return RereScore;
+        }
+        else if (rEye <= 4)
+        {
+            return RereScore * 2;
+        }
+        else if (rEye <= 6)
+        {
+            return RereScore * 3;
+        }
+        else if (rEye <= 8)
+        {
+            return RereScore * 4;
+        }
+        else if (rEye <= 10)
+        {
+            return RereScore * 5;
+        }
+        else return 0;
     }
 
     bool IsFullyInside(Bounds outer, Bounds inner)
