@@ -15,7 +15,15 @@ public class CameraMask :SoundPlayer
     private const float time=3.0f;
     [SerializeField] float timer;
     [SerializeField]GameObject photoSheet;
+    GameObject flashImage;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
+
+    private void Awake()
+    {
+        flashImage = GameObject.Find("imageObject").gameObject;
+        flashImage.SetActive(false);
+    }
+
     void Start()
     {
         if(GameObject.Find("PhotoStorage")!=null)
@@ -29,18 +37,19 @@ public class CameraMask :SoundPlayer
         timer = 0;
         mask.transform.position = new Vector3(0, 0, 0);
         //Cursor.visible = false;
-     
-
     }
 
     // Update is called once per frame
     void Update()
     {
+        if(!flashImage.activeSelf)
+        {
+            return;
+        }
         //if(photo.transform.childCount!=0)
         //{
         //    return;
         //}
-        timer -= Time.deltaTime;
         
         PointerMove();
         MakePhoto();
