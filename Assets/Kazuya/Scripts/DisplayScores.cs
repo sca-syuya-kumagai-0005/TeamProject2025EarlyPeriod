@@ -123,7 +123,7 @@ public class DisplayScores : MonoBehaviour
 
 
         //すべての写真の処理が終わったら、次のシーンに遷移する
-         SceneManager.LoadScene(nextSceneName);
+         //SceneManager.LoadScene(nextSceneName);
     }
 
     //写真1枚の表示部分

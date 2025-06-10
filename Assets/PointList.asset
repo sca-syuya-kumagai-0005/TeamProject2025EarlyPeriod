@@ -18,6 +18,6 @@ MonoBehaviour:
     rarity: 5
     bonus: 8
   - Type: 
-    eyes: 0
-    rarity: 0
-    bonus: 0
+    eyes: 30
+    rarity: 100
+    bonus: 512
