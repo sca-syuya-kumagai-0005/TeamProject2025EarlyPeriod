@@ -14,6 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   point:
   - Type: 
+    eyes: 10
+    rarity: 5
+    bonus: 8
+  - Type: 
     eyes: 0
     rarity: 0
     bonus: 0

@@ -44,7 +44,7 @@ public class DisplayScores : MonoBehaviour
     Vector3 MaskScale = new Vector3((float)0.2,(float)0.2,1);
 
 
-    private int CumulativeScore;//累計スコア
+    private int CumulativeScore = 0;//累計スコア
 
     private void Awake()
     {
@@ -82,39 +82,6 @@ public class DisplayScores : MonoBehaviour
         //ユーザー入力の受付
          HandleUserInput();
     }
-
-    /*後で消す
-    void EnemyDataUpdate()
-    {
-        NumberEyes.text = $"{Eyse}つ";
-        GostType.text = $"{Coward}体　{Furious}体";
-        Rarity.text = $"{Raritys}";
-        BonusPoints.text = $"{BonusPointss}";
-        AddScore.text = $"{Scores}";
-    }
-
-    IEnumerator ProcessObjects()
-    {
-        foreach (GameObject obj in PhotoList)
-        {
-            Debug.Log("表示開始");
-            yield return StartCoroutine(FlashObject(obj,1));
-            Destroy(obj);
-        }
-        SceneManager.LoadScene(nextSceneName);
-    }
-
-    IEnumerator FlashObject(GameObject obj, int flashCount)
-    {
-        for (int i = 0; i < flashCount; i++)
-        {
-            yield return new WaitForSeconds(WholePhotoTime);
-            obj.SetActive(true);
-            yield return new WaitForSeconds(FocusedPhoto);
-            yield return new WaitForSeconds(Information);
-        }
-
-    }*/
     //コルーチン
 
     //写真を順番に処理するメインのコルーチン
@@ -123,8 +90,9 @@ public class DisplayScores : MonoBehaviour
         //写真リスト内の各オブジェクトに対して処理を繰り返す
         for(int i = 0;i < PhotoList.Count;i++)
         {
+            Debug.Log(PhotoList.Count);
             //リストの範囲外になら終了させる
-            if(i >= pointlist.point.Count)
+            if (i >= pointlist.point.Count)
             {
                 break;
             }
@@ -144,17 +112,18 @@ public class DisplayScores : MonoBehaviour
             //写真を1枚表示するシーケンスコルーチン
             yield return StartCoroutine(PhotoDisplay(currentPhoto));
 
-            Debug.Log(i + "枚目終了");
+            if (currentPhoto != null)
+            {
+                Destroy(currentPhoto);
+            }
+            Debug.Log(i+1 + "枚目終了");
         }
         //表示の終了orスキップされた 写真は破棄
         yield return new WaitForSeconds(1.0f);
-        if(cameraMask != null)
-        {
-            Destroy(cameraMask);
-        }
+
 
         //すべての写真の処理が終わったら、次のシーンに遷移する
-        // SceneManager.LoadScene(nextSceneName);
+         SceneManager.LoadScene(nextSceneName);
     }
 
     //写真1枚の表示部分
@@ -199,7 +168,7 @@ public class DisplayScores : MonoBehaviour
         }
 
         // UIテキストに計算結果を反映
-        NumberEyes.text = $"{data.eyes }つ";
+        NumberEyes.text = $"{data.eyes}つ";
         // ToDo: Coward, Furiousのカウント方法は元スクリプトで未定義のため、一旦0で表示
         GostType.text = $"0体　0体";
         Rarity.text = $"{data.rarity}";

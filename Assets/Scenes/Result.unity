@@ -535,15 +535,15 @@ MonoBehaviour:
   Rarity: {fileID: 1336658038}
   BonusPoints: {fileID: 564289629}
   AddScore: {fileID: 2067535434}
-  WholePhotoTime: 1.5
-  FocusedPhoto: 1
-  Information: 1
+  WholePhotoTime: 10
+  FocusedPhoto: 10
+  Information: 10
   nextSceneName: RankingScene
   PhotoList: []
   cameraMask: {fileID: 0}
   acceleration: 0.3
-  MaskPosition: {x: -4.5, y: 1, z: 1}
-  MaskScale: {x: 0.2, y: 0.2, z: 1}
+  MaskPosition: {x: -4.5, y: 1, z: 80}
+  MaskScale: {x: 3, y: 3, z: 1}
 --- !u!4 &569928106
 Transform:
   m_ObjectHideFlags: 0
@@ -1415,7 +1415,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1369823390
 Transform:
   m_ObjectHideFlags: 0
