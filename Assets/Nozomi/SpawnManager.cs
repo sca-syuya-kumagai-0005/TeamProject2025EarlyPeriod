@@ -7,10 +7,8 @@ public class SpawnManager : MonoBehaviour
     [SerializeField] private GameObject[] hitEnemy;
     [SerializeField] private GameObject enemyParent;
     [SerializeField] private GameObject enemy;
+    [SerializeField] private GameObject flashImage;
     const float time = 3.0f;
-    //Vector2 position;
-    //Vector3 camLeftDown;
-    //Vector3 camRightUp;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -24,6 +22,11 @@ public class SpawnManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //if(flashImage.activeSelf)
+        //{
+        //    return;
+        //}
+      
         EnemySpawner();
         EnemySearch();
     }
@@ -36,7 +39,8 @@ public class SpawnManager : MonoBehaviour
         {
             return;
         }
-        Instantiate(enemy, PositionRand(), Quaternion.identity, enemyParent.transform);//ここのポジションをランダムに変更してね
+        if(rand==0) Instantiate(enemy, PositionRand(), Quaternion.identity, enemyParent.transform);//ここのポジションをランダムに変更してね
+ 
     }
 
     private void EnemySearch()

@@ -8,12 +8,12 @@ using System.Collections;
 public class HitCheakOdokasi : MonoBehaviour
 {
     const float timer = 3.0f;
-    [SerializeField] float alphaTimer;
+    float alphaTimer;
     bool alphaStart;//透明化の開始判定フラグ　trueで開始
     public bool AlphaStart { set { alphaStart = value; } }//alphaStartを他でいじれるようにするセッター。あんまり使わない方がいい
-    [SerializeField] Collider2D[] colliders;
-    [SerializeField] SpriteRenderer spriteRenderer;
-    [SerializeField] HitManager hitManager;
+    Collider2D[] colliders;
+    SpriteRenderer spriteRenderer;
+    HitManager hitManager;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -50,16 +50,13 @@ public class HitCheakOdokasi : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log("ENTER");
+        EnemySpriteAnimator esa = GetComponent<EnemySpriteAnimator>();  
+        if(!esa.IsScalingPaused) {return; }
         if (collision.CompareTag("PlayerCamera"))
         {
             if (hitManager.Mode == HitManager.modeChange.cameraMode)
             {
                 alphaStart = true;
-            }
-            if (hitManager.Mode == HitManager.modeChange.flashMode)
-            {
-
             }
         }
         for (int i = 0; i < colliders.Length; i++)

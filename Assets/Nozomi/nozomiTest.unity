@@ -261,6 +261,7 @@ MonoBehaviour:
   hitEnemy: []
   enemyParent: {fileID: 1293616787}
   enemy: {fileID: 1159644384196845789, guid: 3836a34b50d2e6c40a15e291c841fff0, type: 3}
+  flashImage: {fileID: 1072513612}
 --- !u!4 &268060485
 Transform:
   m_ObjectHideFlags: 0
@@ -658,7 +659,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1072513613
 RectTransform:
   m_ObjectHideFlags: 0

@@ -47,6 +47,8 @@ public class EnemySpriteAnimator : MonoBehaviour
     private bool isScalingPaused = false;
     private Coroutine scalingCoroutine;
     private bool isLockedByCameraFrame = false;
+    public bool IsScalingPaused {  get { return isScalingPaused; } }
+    
 
     void Start()
     {
@@ -69,7 +71,14 @@ public class EnemySpriteAnimator : MonoBehaviour
 
         StartCoroutine(MonitorImage());
     }
-
+    private void Update()
+    {
+        if (!this.gameObject.GetComponent<Collider2D>().enabled)
+        {
+            Debug.Log("通過");
+            isScalingPaused = true;
+        }
+    }
     private IEnumerator MonitorImage()
     {
         while (true)
