@@ -146,13 +146,21 @@ public class DisplayScores : MonoBehaviour
         if (!skipRequested)
         {
             
-            croppedPhoto.Add(FindDescendantWithTag(photo.transform, "Enemy"));
+            List<GameObject> enemiesInPhoto =  FindDescendantWithTag(photo.transform, "Enemy");
+            foreach(var enemy in enemiesInPhoto)
+            {
+                if(enemy != null)
+                {
+                    croppedPhoto.Add(enemy);
+                }
+            }
             yield return new WaitForSeconds(GetInterval(FocusedPhoto));
             foreach (var cropped in croppedPhoto)
             {
-                Instantiate(cropped, new Vector3(1.0f, 0.0f, 0.0f), Quaternion.identity);
-                StartCoroutine(CropAndDisplay(cropped));
-                if (cropped != null) cropped.SetActive(true);
+                if (cropped != null)
+                {
+                    StartCoroutine(CropAndDisplay(cropped));
+                }
             }
         }
 
@@ -238,8 +246,9 @@ public class DisplayScores : MonoBehaviour
 
     //---孫オブジェクトの参照
 
-    public GameObject FindDescendantWithTag(Transform parent, string tag)
+    public List<GameObject> FindDescendantWithTag(Transform parent, string tag)
     {
+        List<GameObject> foundObjects = new List<GameObject>();
         //paren以下のすべての子・孫以下のTransformを配列で取得
         Transform[] allChildren = parent.GetComponentsInChildren<Transform>(true);
 
@@ -252,7 +261,7 @@ public class DisplayScores : MonoBehaviour
             }
             if (child.CompareTag(tag))
             {
-                return child.gameObject;
+                foundObjects.Add(child.gameObject);
             }
         }
         //ループ終了時に見つからなければnull
