@@ -1773,7 +1773,6 @@ GameObject:
   m_Component:
   - component: {fileID: 417183258}
   - component: {fileID: 417183260}
-  - component: {fileID: 417183259}
   m_Layer: 0
   m_Name: CameraMask(Clone)
   m_TagString: Untagged
@@ -1797,27 +1796,6 @@ Transform:
   - {fileID: 1894743531}
   m_Father: {fileID: 1835483994}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &417183259
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 417183257}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0fb66a409fe63d5479fe3ce86002b0ba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mask: {fileID: 417183257}
-  lensSpeed: 5
-  photo: {fileID: 1644502394306620063, guid: a74515de833199c458f874e407ee424a, type: 3}
-  photoStorage: {fileID: 5410587280259903048, guid: f9885860b7baadd4fab2f5953225e2c5, type: 3}
-  lens: {fileID: 1894743530}
-  enemy: {fileID: 0}
-  hit: {fileID: 0}
-  timer: -0.039999984
-  photoSheet: {fileID: 1792096029}
 --- !u!331 &417183260
 SpriteMask:
   m_ObjectHideFlags: 0
@@ -2591,15 +2569,20 @@ MonoBehaviour:
   Rarity: {fileID: 1336658038}
   BonusPoints: {fileID: 564289629}
   AddScore: {fileID: 2067535434}
-  WholePhotoTime: 10
-  FocusedPhoto: 10
-  Information: 10
+  WholePhotoTime: 3
+  FocusedPhoto: 3
+  Information: 3
+  cropAreaWidth: 0.2
+  cropAreaHeight: 0.2
   nextSceneName: RankingScene
   PhotoList: []
+  croppedPhoto: []
   cameraMask: {fileID: 0}
   acceleration: 0.3
   MaskPosition: {x: -4.5, y: 1, z: 80}
   MaskScale: {x: 3, y: 3, z: 1}
+  croppedPhotoparent: {fileID: 0}
+  croppedPhotoPosition: {x: 1, y: 0, z: 0}
 --- !u!4 &569928106
 Transform:
   m_ObjectHideFlags: 0
@@ -3621,7 +3604,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1044328253}
-  - component: {fileID: 1044328255}
   - component: {fileID: 1044328254}
   m_Layer: 0
   m_Name: CameraMask(Clone) (1)
@@ -3701,27 +3683,6 @@ SpriteMask:
   m_IsCustomRangeActive: 1
   m_SpriteSortPoint: 0
   m_MaskSource: 0
---- !u!114 &1044328255
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1044328252}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0fb66a409fe63d5479fe3ce86002b0ba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mask: {fileID: 1044328252}
-  lensSpeed: 5
-  photo: {fileID: 1644502394306620063, guid: a74515de833199c458f874e407ee424a, type: 3}
-  photoStorage: {fileID: 5410587280259903048, guid: f9885860b7baadd4fab2f5953225e2c5, type: 3}
-  lens: {fileID: 1713222188}
-  enemy: {fileID: 0}
-  hit: {fileID: 0}
-  timer: -0.039999984
-  photoSheet: {fileID: 1792096029}
 --- !u!1 &1088751585
 GameObject:
   m_ObjectHideFlags: 0
@@ -3764,7 +3725,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1154384765}
   - component: {fileID: 1154384767}
-  - component: {fileID: 1154384766}
   m_Layer: 0
   m_Name: CameraMask(Clone)
   m_TagString: Untagged
@@ -3788,27 +3748,6 @@ Transform:
   - {fileID: 1254292224}
   m_Father: {fileID: 40822322}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1154384766
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1154384764}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0fb66a409fe63d5479fe3ce86002b0ba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mask: {fileID: 1154384764}
-  lensSpeed: 5
-  photo: {fileID: 1644502394306620063, guid: a74515de833199c458f874e407ee424a, type: 3}
-  photoStorage: {fileID: 5410587280259903048, guid: f9885860b7baadd4fab2f5953225e2c5, type: 3}
-  lens: {fileID: 1254292223}
-  enemy: {fileID: 0}
-  hit: {fileID: 0}
-  timer: -0.008228775
-  photoSheet: {fileID: 1792096029}
 --- !u!331 &1154384767
 SpriteMask:
   m_ObjectHideFlags: 0
@@ -5508,7 +5447,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 38.9, y: 27.4}
+  m_AnchoredPosition: {x: 37.21, y: 14.15}
   m_SizeDelta: {x: 68.291, y: 39.6505}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1662506689
