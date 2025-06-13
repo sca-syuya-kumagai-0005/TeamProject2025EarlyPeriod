@@ -1024,7 +1024,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1908909879902146667, guid: 3836a34b50d2e6c40a15e291c841fff0, type: 3}
       propertyPath: enableScaling
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1908909879902146667, guid: 3836a34b50d2e6c40a15e291c841fff0, type: 3}
       propertyPath: enableMoveForward
@@ -1034,6 +1034,10 @@ PrefabInstance:
       propertyPath: cameraFrameCollider
       value: 
       objectReference: {fileID: 268108295}
+    - target: {fileID: 5716055090503749985, guid: 3836a34b50d2e6c40a15e291c841fff0, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8810749279158439341, guid: 3836a34b50d2e6c40a15e291c841fff0, type: 3}
       propertyPath: m_LocalPosition.x
       value: -960
