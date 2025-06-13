@@ -1,4 +1,5 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 
 public class Mouse : MonoBehaviour
@@ -106,6 +107,7 @@ public class Mouse : MonoBehaviour
             {
                 continue;//完全に入っていたら次へ
             }
+
 
             //タグで目の種類を確認
             switch (col.tag)
@@ -226,27 +228,27 @@ public class Mouse : MonoBehaviour
     /// <returns>一定以上の時 +0 スコア</returns>
     int GetRerebounus(int rEye, int RereScore)
     {
-        if (rEye == 0)
+        if (rEye == 0)              //0体
         {
             return 0;
         }
-        else if (rEye <= 2)
+        else if (rEye <= 2)         //1体
         {
             return RereScore;
         }
-        else if (rEye <= 4)
+        else if (rEye <= 4)         //２体
         {
             return RereScore * 2;
         }
-        else if (rEye <= 6)
+        else if (rEye <= 6)         //3体
         {
             return RereScore * 3;
         }
-        else if (rEye <= 8)
+        else if (rEye <= 8)         //４体
         {
             return RereScore * 4;
         }
-        else if (rEye <= 10)
+        else if (rEye <= 10)        //5体
         {
             return RereScore * 5;
         }
