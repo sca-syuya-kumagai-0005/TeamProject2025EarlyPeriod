@@ -23,10 +23,13 @@ public class DisplayScores : MonoBehaviour
     [SerializeField] float FocusedPhoto = 1.0f;//ピント内写真の表示時間
     [SerializeField] float Information = 1.0f;//得点の詳細説明
 
+    [SerializeField] float cropAreaWidth = 0.2f;//切り取る領域の幅
+    [SerializeField] float cropAreaHeight = 0.2f;//切り取る高さ
     [Header("シーン移行")]
     public string nextSceneName = "RankingScene";//←移動先のシーン名
 
     public List<GameObject> PhotoList = new List<GameObject>();//写真を格納するリスト
+    public List<GameObject> croppedPhoto = new List<GameObject>();
     [SerializeField] GameObject cameraMask;//マスク全体のオブジェクト
     Transform PhotoObject;//写真のオブジェクト
 
@@ -138,12 +141,122 @@ public class DisplayScores : MonoBehaviour
         yield return new WaitForSeconds(GetInterval(WholePhotoTime));
 
         //ピンとない写真表示
-        if(skipRequested ) yield break;
-        yield return new WaitForSeconds(GetInterval(FocusedPhoto));
 
+        //--切り取り機能追加
+        if (!skipRequested)
+        {
+            
+            croppedPhoto.Add(FindDescendantWithTag(photo.transform, "Enemy"));
+            yield return new WaitForSeconds(GetInterval(FocusedPhoto));
+            foreach (var cropped in croppedPhoto)
+            {
+                Instantiate(cropped, new Vector3(1.0f, 0.0f, 0.0f), Quaternion.identity);
+                StartCoroutine(CropAndDisplay(cropped));
+                if (cropped != null) cropped.SetActive(true);
+            }
+        }
+
+        if (skipRequested ) yield break;
+        
         //得点詳細の表示
         if(skipRequested ) yield break;
         yield return new WaitForSeconds(GetInterval(Information));
+        croppedPhoto.Clear();
+    }
+
+    //---切り取り機能
+    public Transform croppedPhotoparent;
+    public Vector3 croppedPhotoPosition = new Vector3(1.0f, 0.0f, 0.0f);//Inspectorから切り取った部分の表示位置
+
+    IEnumerator CropAndDisplay(GameObject originalPhoto)
+    {
+
+        Texture originalTexture = null;
+        Rect originalRect = new Rect(0, 0, 1, 1);
+        Vector2 TextureSize = Vector2.zero;
+
+        Renderer renderer = originalPhoto.GetComponent<Renderer>();
+        RawImage rawImage = originalPhoto.GetComponent<RawImage>();
+
+        if (renderer != null && renderer.material != null && renderer.material.mainTexture != null)
+        {
+            originalTexture = renderer.material.mainTexture;
+            if (renderer is SpriteRenderer spriteRenderer && spriteRenderer.sprite != null)
+            {
+                originalRect = spriteRenderer.sprite.textureRect;
+                TextureSize = new Vector2(spriteRenderer.sprite.texture.width, spriteRenderer.sprite.texture.height);
+            }
+        }
+        else if (rawImage != null && rawImage.texture != null)
+        {
+            originalTexture = rawImage.texture;
+            originalRect = rawImage.uvRect;
+            TextureSize = new Vector2(rawImage.texture.width, rawImage.texture.height);
+        }
+        if (originalTexture != null)
+        {
+            Debug.Log("テクスチャの取得に成功。");
+            GameObject croppedObject = new GameObject("CroppedPhoto_" + originalPhoto.name);
+            RawImage croppedRawImage = croppedObject.AddComponent<RawImage>();
+            croppedRawImage.texture = originalTexture;
+
+            // 切り取る領域の中心位置 (正規化)
+            float cropCenterX = 0.5f;
+            float cropCenterY = 0.5f;
+
+            // 切り取る領域のUV座標
+            Rect cropRect = new Rect(
+                originalRect.x + cropCenterX * originalRect.width - (cropAreaWidth * 0.5f * originalRect.width),
+                originalRect.y + cropCenterY * originalRect.height - (cropAreaHeight * 0.5f * originalRect.height),
+                cropAreaWidth * originalRect.width,
+                cropAreaHeight * originalRect.height
+            );
+
+            croppedRawImage.uvRect = cropRect;
+
+            // 表示位置と親を設定
+            if (croppedPhoto != null)
+            {
+                croppedObject.transform.SetParent(croppedPhotoparent, false);
+                croppedObject.transform.localPosition = croppedPhotoPosition;
+            }
+            else
+            {
+                croppedObject.transform.position = originalPhoto.transform.position + croppedPhotoPosition;
+            }
+
+            croppedObject.transform.localScale = originalPhoto.transform.localScale; // スケールを合わせる
+
+            croppedPhoto.Add(croppedObject); // リストに追加
+        }
+        else
+        {
+            Debug.LogError("エラー:写真オブジェクトから切り抜き可能なテクスチャが見つかりませんでした。");
+        }
+        yield return null;
+    }
+
+    //---孫オブジェクトの参照
+
+    public GameObject FindDescendantWithTag(Transform parent, string tag)
+    {
+        //paren以下のすべての子・孫以下のTransformを配列で取得
+        Transform[] allChildren = parent.GetComponentsInChildren<Transform>(true);
+
+        foreach(Transform child in allChildren)
+        {
+            //取得物の中の親は除外する
+            if(child == parent)
+            {
+                continue;
+            }
+            if (child.CompareTag(tag))
+            {
+                return child.gameObject;
+            }
+        }
+        //ループ終了時に見つからなければnull
+        return null;
     }
 
     //スコアの初期化
