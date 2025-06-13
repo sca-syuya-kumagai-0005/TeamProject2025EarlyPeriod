@@ -47,8 +47,7 @@ public class EnemySpriteAnimator : MonoBehaviour
     private bool isScalingPaused = false;
     private Coroutine scalingCoroutine;
     private bool isLockedByCameraFrame = false;
-    public bool IsScalingPaused {  get { return isScalingPaused; } }
-    
+    public bool IsScalingPaused { get { return isScalingPaused; } }
 
     void Start()
     {
@@ -71,7 +70,8 @@ public class EnemySpriteAnimator : MonoBehaviour
 
         StartCoroutine(MonitorImage());
     }
-    private void Update()
+
+    void Update()
     {
         if (!this.gameObject.GetComponent<Collider2D>().enabled)
         {
@@ -79,6 +79,7 @@ public class EnemySpriteAnimator : MonoBehaviour
             isScalingPaused = true;
         }
     }
+
     private IEnumerator MonitorImage()
     {
         while (true)
@@ -98,32 +99,8 @@ public class EnemySpriteAnimator : MonoBehaviour
                     StartCoroutine(PauseAndShowSpecialAnimation());
                 }
 
-                //特殊スプライト生成（アルファ値もコピー）
-                //if (specialAnimationFrames != null && specialAnimationFrames.Length > 0)
-                //{
-                //    GameObject go = new GameObject("GeneratedSpecialSprite");
-                //    go.transform.position = transform.position;
-
-                //    SpriteRenderer sr = go.AddComponent<SpriteRenderer>();
-
-                //    //ここでアルファ値を0.8にする
-                //    Color color = sr.color;
-                //    color.a = 0.8f;
-                //    sr.color = color;
-
-                //    //EnemySpriteAnimator animator = go.AddComponent<EnemySpriteAnimator>();
-                //    //animator.animationFrames = specialAnimationFrames;
-                //    //animator.frameDuration = specialFrameDuration;
-                //    //animator.playOnStart = true;
-                //    //animator.enableScaling = false;
-
-                //    go.transform.localScale = transform.localScale;
-
-                //    go.AddComponent<AutoDestroy>().lifetime = generatedLifetime;
-                //}
-
                 yield return new WaitForSeconds(3f); // フラッシュ検知の連続実行防止
-                specialAnimationFrames=new Sprite[0];
+                specialAnimationFrames = new Sprite[0];
             }
 
             yield return null;
