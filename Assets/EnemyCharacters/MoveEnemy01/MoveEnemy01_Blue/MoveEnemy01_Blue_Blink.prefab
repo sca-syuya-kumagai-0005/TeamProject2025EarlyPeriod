@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 7615407462855595319}
   - component: {fileID: 3976525223784248409}
   - component: {fileID: 5716055090503749985}
+  - component: {fileID: -6397833984022287702}
   m_Layer: 0
   m_Name: MoveEnemy01_Blue_Blink
   m_TagString: Enemy
@@ -513,3 +514,15 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 3.4257812, y: 2.4221344}
   m_EdgeRadius: 0
+--- !u!114 &-6397833984022287702
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1159644384196845789}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fbd36b5076a4cc4aa5c1d75139e972d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -4,11 +4,11 @@ using System.Collections;
 public class HitCheakBibiri : MonoBehaviour
 {
     const float timer = 3.0f;
-    [SerializeField] float alphaTimer;
-    [SerializeField] bool alphaStart;//透明化の開始判定フラグ　trueで開始
+    float alphaTimer;
+    bool alphaStart;//透明化の開始判定フラグ　trueで開始
     public bool AlphaStart { set { alphaStart = value; } }//alphaStartを他でいじれるようにするセッター。あんまり使わない方がいい
-    [SerializeField] Collider2D[] colliders;
-    [SerializeField] SpriteRenderer spriteRenderer;
+    Collider2D[] colliders;
+    SpriteRenderer spriteRenderer;
     bool flashHit;
 
     void Start()
