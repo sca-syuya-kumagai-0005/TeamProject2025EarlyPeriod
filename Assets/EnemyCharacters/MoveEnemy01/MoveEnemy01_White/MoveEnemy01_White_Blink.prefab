@@ -80,7 +80,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 27cfc5310bf57314f9f125fa9932a05d, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.8}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -112,7 +112,6 @@ MonoBehaviour:
   specialAnimationFrames:
   - {fileID: 21300000, guid: b5146e8ba4f0daa4897720942a448ca7, type: 3}
   specialFrameDuration: 0.1
-  generatedLifetime: 3
   pauseDuration: 3
   enableScaling: 1
   targetScale: {x: 4, y: 4, z: 1}
