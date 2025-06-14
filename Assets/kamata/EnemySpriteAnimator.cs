@@ -13,14 +13,11 @@ public class EnemySpriteAnimator : MonoBehaviour
     [Header("再生開始時にアニメーションするか")]
     public bool playOnStart = true;
 
-    [Header("特殊スプライト一覧（表示 & 生成用）")]
+    [Header("特殊スプライト一覧（差し替え表示用）")]
     public Sprite[] specialAnimationFrames;
 
     [Header("特殊表示の1枚あたり時間（秒）")]
     public float specialFrameDuration = 0.1f;
-
-    [Header("特殊スプライトの生存時間（秒）")]
-    public float generatedLifetime = 3.0f;
 
     [Header("一時停止する秒数（カメラ外）")]
     public float pauseDuration = 3.0f;
@@ -47,13 +44,14 @@ public class EnemySpriteAnimator : MonoBehaviour
     private bool isScalingPaused = false;
     private Coroutine scalingCoroutine;
     private bool isLockedByCameraFrame = false;
+    private bool isSpecialAnimationRunning = false;
+
     public bool IsScalingPaused { get { return isScalingPaused; } }
 
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
 
-        // ✅ 最初にアルファ値 0.8 に設定
         Color c = spriteRenderer.color;
         c.a = 0.8f;
         spriteRenderer.color = c;
@@ -73,9 +71,8 @@ public class EnemySpriteAnimator : MonoBehaviour
 
     void Update()
     {
-        if (!this.gameObject.GetComponent<Collider2D>().enabled)
+        if (!GetComponent<Collider2D>().enabled)
         {
-            Debug.Log("通過");
             isScalingPaused = true;
         }
     }
@@ -88,6 +85,7 @@ public class EnemySpriteAnimator : MonoBehaviour
             if (flash != null && flash.GetComponent<Image>() != null)
             {
                 bool insideCameraFrame = IsInsideCameraFrame();
+
                 if (insideCameraFrame)
                 {
                     Debug.Log($"[Enemy] フラッシュ検知 + カメラフレーム内 → 完全停止: {name}");
@@ -96,11 +94,13 @@ public class EnemySpriteAnimator : MonoBehaviour
                 else
                 {
                     Debug.Log($"[Enemy] フラッシュ検知 + カメラフレーム外 → 一時停止: {name}");
-                    StartCoroutine(PauseAndShowSpecialAnimation());
+                    if (!isSpecialAnimationRunning)
+                    {
+                        StartCoroutine(PauseAndShowSpecialAnimation());
+                    }
                 }
 
-                yield return new WaitForSeconds(3f); // フラッシュ検知の連続実行防止
-                specialAnimationFrames = new Sprite[0];
+                yield return new WaitForSeconds(3f); // クールタイム
             }
 
             yield return null;
@@ -144,6 +144,7 @@ public class EnemySpriteAnimator : MonoBehaviour
 
     private IEnumerator PauseAndShowSpecialAnimation()
     {
+        isSpecialAnimationRunning = true;
         isPaused = true;
         isScalingPaused = true;
 
@@ -151,9 +152,9 @@ public class EnemySpriteAnimator : MonoBehaviour
 
         if (specialAnimationFrames != null && specialAnimationFrames.Length > 0)
         {
-            for (int i = 0; i < specialAnimationFrames.Length; i++)
+            foreach (var specialSprite in specialAnimationFrames)
             {
-                spriteRenderer.sprite = specialAnimationFrames[i];
+                spriteRenderer.sprite = specialSprite;
                 yield return new WaitForSeconds(specialFrameDuration);
             }
         }
@@ -163,6 +164,7 @@ public class EnemySpriteAnimator : MonoBehaviour
         spriteRenderer.sprite = originalSprite;
         isPaused = false;
         isScalingPaused = false;
+        isSpecialAnimationRunning = false;
     }
 
     private IEnumerator ScaleOverTime(Vector3 target, float duration)
@@ -190,7 +192,8 @@ public class EnemySpriteAnimator : MonoBehaviour
         isLockedByCameraFrame = true;
         isPaused = true;
         isScalingPaused = true;
-        StopAllCoroutines();
+
+        StopAllCoroutines(); // 通常アニメや拡大などを停止
         StartCoroutine(PlaySpecialAnimationLoop());
     }
 
@@ -206,6 +209,11 @@ public class EnemySpriteAnimator : MonoBehaviour
             }
             yield return new WaitForSeconds(specialFrameDuration);
         }
+    }
+
+    public void SetSpecialFrames(Sprite[] newFrames)
+    {
+        specialAnimationFrames = newFrames;
     }
 
     public bool IsLockedByCameraFrame()
