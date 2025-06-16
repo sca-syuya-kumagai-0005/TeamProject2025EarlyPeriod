@@ -29,7 +29,7 @@ public class DisplayScores : MonoBehaviour
     public string nextSceneName = "RankingScene";//←移動先のシーン名
 
     public List<GameObject> PhotoList = new List<GameObject>();//写真を格納するリスト
-    public List<GameObject> croppedPhoto = new List<GameObject>();
+    [SerializeField]private List<GameObject> clonedEnemies = new List<GameObject>();//複製するオバケのリスト
     [SerializeField] GameObject cameraMask;//マスク全体のオブジェクト
     Transform PhotoObject;//写真のオブジェクト
 
@@ -45,6 +45,9 @@ public class DisplayScores : MonoBehaviour
     Vector3 MaskPosition = new Vector3((float)-4.5,1,1);
     [SerializeField]
     Vector3 MaskScale = new Vector3((float)0.2,(float)0.2,1);
+
+
+    Vector3 enemyCopyDestination = new Vector3(0,0,0);
 
 
     private int CumulativeScore = 0;//累計スコア
@@ -145,23 +148,8 @@ public class DisplayScores : MonoBehaviour
         //--切り取り機能追加
         if (!skipRequested)
         {
-            
-            List<GameObject> enemiesInPhoto =  FindDescendantWithTag(photo.transform, "Enemy");
-            foreach(var enemy in enemiesInPhoto)
-            {
-                if(enemy != null)
-                {
-                    croppedPhoto.Add(enemy);
-                }
-            }
             yield return new WaitForSeconds(GetInterval(FocusedPhoto));
-            foreach (var cropped in croppedPhoto)
-            {
-                if (cropped != null)
-                {
-                    StartCoroutine(CropAndDisplay(cropped));
-                }
-            }
+            DuplicateAndMoveEnemies(photo);
         }
 
         if (skipRequested ) yield break;
@@ -169,104 +157,61 @@ public class DisplayScores : MonoBehaviour
         //得点詳細の表示
         if(skipRequested ) yield break;
         yield return new WaitForSeconds(GetInterval(Information));
-        croppedPhoto.Clear();
+        // 複製したEnemyをすべて削除
+        foreach (GameObject enemy in clonedEnemies)
+        {
+            if (enemy != null)
+            {
+                Destroy(enemy);
+            }
+        }
+        clonedEnemies.Clear(); // リストもクリア
     }
 
-    //---切り取り機能
-    public Transform croppedPhotoparent;
-    public Vector3 croppedPhotoPosition = new Vector3(1.0f, 0.0f, 0.0f);//Inspectorから切り取った部分の表示位置
+    /* void DuplicateAndMoveEnemies(GameObject photo)
+     {
+         // 子オブジェクトから"Enemy"タグのものを探す
+         Transform[] children = photo.GetComponentsInChildren<Transform>();
+         foreach (Transform child in children)
+         {
+             if (child.CompareTag("Enemy"))
+             {
+                 // 複製
+                 GameObject clone = Instantiate(child.gameObject);
 
-    IEnumerator CropAndDisplay(GameObject originalPhoto)
+                 // ワールド座標そのままで複製後、任意の位置に移動
+                 clone.transform.position = enemyCopyDestination;
+                 clone.transform.rotation = child.rotation;
+
+                 // オプション：スケールも元と同じにする
+                 clone.transform.localScale = child.lossyScale;
+                 clone.name = child.name + "_Copy";
+
+                 // ヒエラルキー整理用（任意）
+                 clone.name = child.name + "_Copy";
+             }
+         }
+     }*/
+    void DuplicateAndMoveEnemies(GameObject photo)
     {
-
-        Texture originalTexture = null;
-        Rect originalRect = new Rect(0, 0, 1, 1);
-        Vector2 TextureSize = Vector2.zero;
-
-        Renderer renderer = originalPhoto.GetComponent<Renderer>();
-        RawImage rawImage = originalPhoto.GetComponent<RawImage>();
-
-        if (renderer != null && renderer.material != null && renderer.material.mainTexture != null)
+        Transform[] children = photo.GetComponentsInChildren<Transform>();
+        foreach (Transform child in children)
         {
-            originalTexture = renderer.material.mainTexture;
-            if (renderer is SpriteRenderer spriteRenderer && spriteRenderer.sprite != null)
+            if (child.CompareTag("Enemy"))
             {
-                originalRect = spriteRenderer.sprite.textureRect;
-                TextureSize = new Vector2(spriteRenderer.sprite.texture.width, spriteRenderer.sprite.texture.height);
+                GameObject clone = Instantiate(child.gameObject);
+                clone.transform.position = enemyCopyDestination;
+                clone.transform.rotation = child.rotation;
+                clone.transform.localScale = child.lossyScale;
+                clone.name = child.name + "_Copy";
+
+                // リストに追加して後で消去
+                clonedEnemies.Add(clone);
             }
         }
-        else if (rawImage != null && rawImage.texture != null)
-        {
-            originalTexture = rawImage.texture;
-            originalRect = rawImage.uvRect;
-            TextureSize = new Vector2(rawImage.texture.width, rawImage.texture.height);
-        }
-        if (originalTexture != null)
-        {
-            Debug.Log("テクスチャの取得に成功。");
-            GameObject croppedObject = new GameObject("CroppedPhoto_" + originalPhoto.name);
-            RawImage croppedRawImage = croppedObject.AddComponent<RawImage>();
-            croppedRawImage.texture = originalTexture;
-
-            // 切り取る領域の中心位置 (正規化)
-            float cropCenterX = 0.5f;
-            float cropCenterY = 0.5f;
-
-            // 切り取る領域のUV座標
-            Rect cropRect = new Rect(
-                originalRect.x + cropCenterX * originalRect.width - (cropAreaWidth * 0.5f * originalRect.width),
-                originalRect.y + cropCenterY * originalRect.height - (cropAreaHeight * 0.5f * originalRect.height),
-                cropAreaWidth * originalRect.width,
-                cropAreaHeight * originalRect.height
-            );
-
-            croppedRawImage.uvRect = cropRect;
-
-            // 表示位置と親を設定
-            if (croppedPhoto != null)
-            {
-                croppedObject.transform.SetParent(croppedPhotoparent, false);
-                croppedObject.transform.localPosition = croppedPhotoPosition;
-            }
-            else
-            {
-                croppedObject.transform.position = originalPhoto.transform.position + croppedPhotoPosition;
-            }
-
-            croppedObject.transform.localScale = originalPhoto.transform.localScale; // スケールを合わせる
-
-            croppedPhoto.Add(croppedObject); // リストに追加
-        }
-        else
-        {
-            Debug.LogError("エラー:写真オブジェクトから切り抜き可能なテクスチャが見つかりませんでした。");
-        }
-        yield return null;
     }
 
-    //---孫オブジェクトの参照
 
-    public List<GameObject> FindDescendantWithTag(Transform parent, string tag)
-    {
-        List<GameObject> foundObjects = new List<GameObject>();
-        //paren以下のすべての子・孫以下のTransformを配列で取得
-        Transform[] allChildren = parent.GetComponentsInChildren<Transform>(true);
-
-        foreach(Transform child in allChildren)
-        {
-            //取得物の中の親は除外する
-            if(child == parent)
-            {
-                continue;
-            }
-            if (child.CompareTag(tag))
-            {
-                foundObjects.Add(child.gameObject);
-            }
-        }
-        //ループ終了時に見つからなければnull
-        return null;
-    }
 
     //スコアの初期化
     void ResetScoreUI()
