@@ -19,14 +19,13 @@ public class ScoreRanking : MonoBehaviour
     void Start()
     {
         scoreEvaluation = GetComponent<ScoreEvaluation>();
-        score = scoreEvaluation.ResltScore;
+        //score = Mouse.score;
+        score = scoreEvaluation.testScore;
         /// ランキングの手順
         //StreamingAssetsフォルダのCSVファイルのパスを取得
         filePath = Path.Combine(Application.streamingAssetsPath, "ScoreRanking.csv");
         /// データの読み込み 
         LoadRanking();
-        //ランキングの表示
-        UpdateRankingDisplay();
         /// 現在のデータと読み込んだデータを比較してtop10に入るかを確認する
         if (IsHighScore(score))
         {
@@ -36,6 +35,10 @@ public class ScoreRanking : MonoBehaviour
 
             //ボタンにイベントの登録
             subitButton.onClick.AddListener(OnSubmitName);
+        }
+        else
+        {
+            UpdateRankingDisplay();
         }
 
     }
