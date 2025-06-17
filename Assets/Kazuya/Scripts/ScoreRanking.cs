@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,22 +12,28 @@ public class ScoreRanking : MonoBehaviour
     [SerializeField] InputField nameInputField;//名前入力のUI
     [SerializeField] Button subitButton;//名前送信ボタン
     [SerializeField] Text[] rankingText = new Text[10];
+    [SerializeField] GameObject TextObject;
+
+    [Header("各種ボタン")]
+    [SerializeField] GameObject TitkeButton;
+    [SerializeField] GameObject MainGameButton;
 
     List<(string name, int score)> rankingList = new List<(string name, int score)>();
     string filePath;
+
+    bool Rankingfinish = false;
 
     ScoreEvaluation scoreEvaluation;
     void Start()
     {
         scoreEvaluation = GetComponent<ScoreEvaluation>();
-        score = scoreEvaluation.ResltScore;
+        //score = Mouse.score;
+        score = scoreEvaluation.testScore;
         /// ランキングの手順
         //StreamingAssetsフォルダのCSVファイルのパスを取得
         filePath = Path.Combine(Application.streamingAssetsPath, "ScoreRanking.csv");
         /// データの読み込み 
         LoadRanking();
-        //ランキングの表示
-        UpdateRankingDisplay();
         /// 現在のデータと読み込んだデータを比較してtop10に入るかを確認する
         if (IsHighScore(score))
         {
@@ -37,22 +44,30 @@ public class ScoreRanking : MonoBehaviour
             //ボタンにイベントの登録
             subitButton.onClick.AddListener(OnSubmitName);
         }
-
+        else
+        {
+            UpdateRankingDisplay();
+            StartCoroutine(ButtonSetUp());
+        }
     }
 
 
     void OnSubmitName()
     {
         string playerName = nameInputField.text.Trim();
-        if (string.IsNullOrEmpty(playerName))
+        if (!string.IsNullOrEmpty(playerName))
         {
-            Debug.LogWarning("名前が入力されていません");
-            return;
+            /// 名前の入力
+            InsertScore(playerName, score);
+            SaveRanking();
+            UpdateRankingDisplay();
+            nameInputField.gameObject.SetActive(false);
+            subitButton.gameObject.SetActive(false);
+            StartCoroutine(ButtonSetUp());
         }
-        /// 名前の入力
-        InsertScore(playerName, score);
-        SaveRanking();
-        UpdateRankingDisplay();
+
+        Debug.LogWarning("名前が入力されていません");
+        return;
     } 
 
     /// <summary>
@@ -84,17 +99,18 @@ public class ScoreRanking : MonoBehaviour
     //csvファイルで持ってきたデータをテキストに置換
     void UpdateRankingDisplay()
     {
-        for(int i = 0;i < rankingList.Count; i++)
+        TextObject.SetActive(true);
+        for (int i = 0;i < rankingList.Count; i++)
         {
-            if(i < rankingList.Count)
+            if (i < rankingList.Count)
             {
-                rankingText[i].text = $"{i + 1}位:{rankingList[i].name}-{rankingList[i].score}";
+                rankingText[i].text = $"{i + 1}位    :   {rankingList[i].name} :{rankingList[i].score}";
             }
             else
             {
-                rankingText[i].text = $"{i+1}位; ---";
+                rankingText[i].text = $"{i+1}位; :";
             }
-
+            TextObject.SetActive(true);
         }
 
     }
@@ -135,5 +151,12 @@ public class ScoreRanking : MonoBehaviour
         }
         File.WriteAllLines(filePath,lines,Encoding.UTF8);
         Debug.Log("ランキングの保存");
+    }
+
+    IEnumerator ButtonSetUp()
+    {
+        yield return new WaitForSeconds(1.0f);
+        TitkeButton.SetActive(true);
+        MainGameButton.SetActive(true);
     }
 }

@@ -129,7 +129,7 @@ public class DisplayScores : MonoBehaviour
 
 
         //すべての写真の処理が終わったら、次のシーンに遷移する
-         //SceneManager.LoadScene(nextSceneName);
+         SceneManager.LoadScene(nextSceneName);
     }
 
     //写真1枚の表示部分
@@ -167,31 +167,6 @@ public class DisplayScores : MonoBehaviour
         }
         clonedEnemies.Clear(); // リストもクリア
     }
-
-    /* void DuplicateAndMoveEnemies(GameObject photo)
-     {
-         // 子オブジェクトから"Enemy"タグのものを探す
-         Transform[] children = photo.GetComponentsInChildren<Transform>();
-         foreach (Transform child in children)
-         {
-             if (child.CompareTag("Enemy"))
-             {
-                 // 複製
-                 GameObject clone = Instantiate(child.gameObject);
-
-                 // ワールド座標そのままで複製後、任意の位置に移動
-                 clone.transform.position = enemyCopyDestination;
-                 clone.transform.rotation = child.rotation;
-
-                 // オプション：スケールも元と同じにする
-                 clone.transform.localScale = child.lossyScale;
-                 clone.name = child.name + "_Copy";
-
-                 // ヒエラルキー整理用（任意）
-                 clone.name = child.name + "_Copy";
-             }
-         }
-     }*/
     void DuplicateAndMoveEnemies(GameObject photo)
     {
         Transform[] children = photo.GetComponentsInChildren<Transform>();
@@ -199,9 +174,12 @@ public class DisplayScores : MonoBehaviour
         {
             if (child.CompareTag("Enemy"))
             {
+                // 複製
                 GameObject clone = Instantiate(child.gameObject);
+                // ワールド座標そのままで複製後、任意の位置に移動
                 clone.transform.position = enemyCopyDestination;
                 clone.transform.rotation = child.rotation;
+                // オプション：スケールも元と同じにする
                 clone.transform.localScale = child.lossyScale;
                 clone.name = child.name + "_Copy";
 

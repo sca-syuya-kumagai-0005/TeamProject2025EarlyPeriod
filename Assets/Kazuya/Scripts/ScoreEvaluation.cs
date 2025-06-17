@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using TMPro;
@@ -12,17 +13,26 @@ public class ScoreEvaluation : MonoBehaviour
         A,
         B,
         C,
-        D
     }
     Evaluation evaluation;
-
-    List<int> ranc = new List<int>();
-
-    [SerializeField] public int ResltScore;
+    [SerializeField]public  int testScore = 10000;
+    [Header("評価用のオブジェクト")]
+    [SerializeField] GameObject EvaluationTextA;
+    [SerializeField] GameObject EvaluationTextB;
+    [SerializeField] GameObject EvaluationTextC;
+    [Header("評価の基準となる点数")]
     [SerializeField] int evaluationA;
     [SerializeField] int evaluationB;
     [SerializeField] int evaluationC;
+
+    [Header("キャンバスの種類")]
+    [SerializeField] Canvas EvaluationCanvas;
+    [SerializeField] Canvas RankingCanvas;
+
+    [Header("合計スコア")]
     [SerializeField] Text scoretext;
+
+    [SerializeField] float waittime = 3.0f;//待機時間
 
 
 
@@ -30,17 +40,34 @@ public class ScoreEvaluation : MonoBehaviour
 
     void Start()
     {
-
+        /*
         //スコアによるランク判定
-        if (ResltScore < evaluationC)
-        {
-            evaluation = Evaluation.D;
-        }
-        else if (ResltScore < evaluationB)
+        if (Mouse.score < evaluationC)
         {
             evaluation = Evaluation.C;
         }
-        else if(ResltScore < evaluationA)
+        else if (Mouse.score < evaluationB)
+        {
+            evaluation = Evaluation.C;
+        }
+        else if (Mouse.score < evaluationA)
+        {
+            evaluation = Evaluation.B;
+        }
+        else
+        {
+            evaluation = Evaluation.A;
+        }*/
+        //スコアによるランク判定
+        if (testScore < evaluationC)
+        {
+            evaluation = Evaluation.C;
+        }
+        else if (testScore < evaluationB)
+        {
+            evaluation = Evaluation.C;
+        }
+        else if (testScore < evaluationA)
         {
             evaluation = Evaluation.B;
         }
@@ -49,26 +76,40 @@ public class ScoreEvaluation : MonoBehaviour
             evaluation = Evaluation.A;
         }
     }
-
+    
     void Update()
     {
         //ランクの表示
         switch (evaluation)
         {
             case Evaluation.A:
+                EvaluationTextA.SetActive(true);
                // Debug.Log("評価A");
                 break;
             case Evaluation.B:
-              //  Debug.Log("評価B");
+                EvaluationTextB.SetActive(true);
+                //  Debug.Log("評価B");
                 break;
             case Evaluation.C:
-              //  Debug.Log("評価C");
+                EvaluationTextC.SetActive(true);
+                //  Debug.Log("評価C");
                 break;
             default:
               //  Debug.Log("評価外");
                 break;
         }
 
-        scoretext.text = ResltScore.ToString();
+        scoretext.text = Mouse.score.ToString();
+        StartCoroutine(WaitTime());
     }
+
+    IEnumerator WaitTime()
+    {
+        yield return new WaitForSeconds(3.0f);
+        EvaluationCanvas.enabled = false;
+        RankingCanvas.enabled = true;
+    }
+
 }
+
+

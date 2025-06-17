@@ -4,25 +4,21 @@ using UnityEngine.SceneManagement;
 public class ResultButton : MonoBehaviour
 {
 
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if(Input.GetMouseButtonDown(0))
-        {
-            ResulttoTaitle();
-        }
-    }
-
+    [Header("シーン移行")]
+    [SerializeField] string TitleSceneName = "Title";//←移動先のシーン名
+    [SerializeField] string MainGameSceneName = "";
     /// <summary>
     /// リザルトからタイトルシーンへ移行
     /// </summary>
-    void ResulttoTaitle()
+   public void ResultToTaitle()
     {
-        SceneManager.LoadSceneAsync("Title");
+        SceneManager.LoadSceneAsync(TitleSceneName);
+    }
+
+
+
+    public void ResultToMainGame()
+    {
+        SceneManager.LoadScene(MainGameSceneName);
     }
 }
