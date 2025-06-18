@@ -18,7 +18,6 @@ public class HitCheakOdokasi : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        Debug.Log(GameObject.Find("Hit").gameObject.GetComponent<HitManager>());
         hitManager = GameObject.Find("Hit").gameObject.GetComponent<HitManager>();
         alphaStart = false;
         alphaTimer = 1.0f;

@@ -114,7 +114,6 @@ MonoBehaviour:
   specialAnimationFrames:
   - {fileID: 21300000, guid: d90b2e875dcbf544e887e5d08c24bb9d, type: 3}
   specialFrameDuration: 0.1
-  generatedLifetime: 3
   pauseDuration: 3
   enableScaling: 1
   targetScale: {x: 4, y: 4, z: 1}
@@ -151,7 +150,7 @@ PolygonCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
