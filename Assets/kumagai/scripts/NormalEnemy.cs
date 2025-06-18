@@ -1,19 +1,28 @@
 using System.Collections;
+using UnityEditor.Animations;
 using UnityEngine;
 
 public class NormalEnemy : MonoBehaviour
 {
     float nextMoveTime=0.0f;
-    const float nextMoveTimeMax=5f;
-    const float nextMoveTimeMin=3.0f;
-    
+    const float nextMoveTimeMax=15.0f;
+    const float nextMoveTimeMin=7.0f;
     const float half=0.5f;
+    GameObject flashImage;
     enum State
     {
         HIDE = 0, //何もしない
-        MOVE,//顔出し
+        MOVE,//移動中
+        OPEN,//顔出し中
         RUN,//フラッシュされたら
         EXIT,//写真を撮られたら
+    }
+
+    State state=State.HIDE;
+
+    private void Awake()
+    {
+        flashImage = GameObject.Find("FlashImage").gameObject;
     }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -24,7 +33,6 @@ public class NormalEnemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
     }
 
     private IEnumerator MoveCoroutine()
@@ -32,8 +40,13 @@ public class NormalEnemy : MonoBehaviour
         float r = Random.Range(nextMoveTimeMin, nextMoveTimeMax);
         //yield return new WaitForSeconds(r);
         
-        StartCoroutine(MoveRightCoroutine());
-        yield return null;
+        while (true)
+        {
+            state = State.HIDE;
+            yield return new WaitForSeconds(r);
+            StartCoroutine(MoveRightCoroutine());
+            yield return null;
+        }
     }
 
 
@@ -47,7 +60,6 @@ public class NormalEnemy : MonoBehaviour
             Vector3 pos = transform.position;
             pos.x = x;
             transform.position = pos;
-            Debug.Log(1);
             yield return null;
         }
         yield return new WaitForSeconds(1f);
@@ -59,7 +71,6 @@ public class NormalEnemy : MonoBehaviour
             Vector3 pos = transform.position;
             pos.x = x;
             transform.position = pos;
-            Debug.Log(1);
             yield return null;
         }
         totalTime=0.5f;
@@ -71,6 +82,7 @@ public class NormalEnemy : MonoBehaviour
             pos.x = x;
             transform.position = pos;
             Debug.Log(1);
+
             yield return null;
         }
         yield return new WaitForSeconds(2f);
@@ -86,4 +98,6 @@ public class NormalEnemy : MonoBehaviour
             yield return null;
         }
     }
+
+
 }
