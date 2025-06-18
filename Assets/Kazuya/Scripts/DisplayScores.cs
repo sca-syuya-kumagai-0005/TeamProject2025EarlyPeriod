@@ -46,6 +46,10 @@ public class DisplayScores : MonoBehaviour
     [SerializeField]
     Vector3 MaskScale = new Vector3((float)0.2,(float)0.2,1);
 
+    [Header("複製したオバケの表示範囲")]
+    [SerializeField] GameObject PhotoDisplayRefernce;
+    [SerializeField] GameObject displayAree;//オバケを表示する範囲となるオブジェクト
+
 
     Vector3 enemyCopyDestination = new Vector3(0,0,0);
 
@@ -56,17 +60,38 @@ public class DisplayScores : MonoBehaviour
     {
         //シーンをまたいだオバケを取得
         cameraMask = GameObject.Find("PhotoStorage");
-        if(cameraMask != null )
+        if(cameraMask == null)
         {
-            PhotoObject = cameraMask.transform;
-            SceneManager.MoveGameObjectToScene(cameraMask, SceneManager.GetActiveScene());
-            cameraMask.transform.position = MaskPosition;
-            cameraMask.transform.localScale = MaskScale;
+            Debug.LogError("マスクの対象が見つからないよ");
+            return;
         }
-        else
+        if(PhotoDisplayRefernce == null)
         {
-            Debug.Log("指定されたオブジェクトが見つかりません");
+            Debug.LogError("基準となるオブジェクトが見つからないよ");
+            return;
         }
+        SceneManager.MoveGameObjectToScene(cameraMask, SceneManager.GetActiveScene());
+
+        //
+
+        var targetzBounds = PhotoDisplayRefernce.GetComponent<Collider>().bounds;
+        var sourceRenderer = cameraMask.GetComponent<Renderer>();
+        if(sourceRenderer == null) { return; }
+        var sourceBounds = sourceRenderer.bounds;
+
+        cameraMask.transform.position = targetzBounds.center;
+
+        //
+        float scaleX = targetzBounds.size.x / sourceBounds.size.x;
+        float scaleY = targetzBounds.size.y / sourceBounds.size.y;
+
+        float finalScaleRatio = Mathf.Min(scaleX, scaleY);
+
+        cameraMask.transform.localScale = new Vector3(
+            cameraMask.transform.localScale.x * finalScaleRatio,
+            cameraMask.transform.localScale.y * finalScaleRatio,
+            cameraMask.transform.localScale.z
+            );
     }
     void Start()
     {
@@ -169,6 +194,76 @@ public class DisplayScores : MonoBehaviour
     }
     void DuplicateAndMoveEnemies(GameObject photo)
     {
+        //表示先の範囲となるオブジェクトとそのColliderを取得
+        if(displayAree == null)
+        {
+            Debug.LogError("対象となるオブジェクトが設定されていません");
+            return;
+        }
+        var destCollider = displayAree.GetComponent<Collider>();
+        if(destCollider ==  null )
+        {
+            Debug.LogError("コライダーが設定されていません");
+            return;
+        }
+
+        //複製元の写真オブジェクトとそのコライダーの取得
+        photo.AddComponent<BoxCollider>();
+        var sourceCollider = photo.GetComponent<Collider>();
+        if(sourceCollider == null)
+        {
+            Debug.LogError("写真にコライダーがついてないよ");
+            return;
+        }
+
+        //それぞれのColliderから、ワールド空間での境界を取得
+        var destBounds = destCollider.bounds;
+        var sourceBounds = sourceCollider.bounds;
+
+        Transform[] children = photo.GetComponentsInChildren<Transform>();
+        foreach (Transform child in children)
+        {
+            if (child.CompareTag("Enemy"))
+            {
+                // オバケの複製
+                GameObject clone = Instantiate(child.gameObject);
+
+                //元のオバケのワールド座標を習得
+                Vector3 originalPos = child.position;
+                //元の座標が、元の範囲のどのくらいの割合になるかの計算
+
+                float relativeX = Mathf.InverseLerp(sourceBounds.min.x, sourceBounds.max.x, originalPos.x);
+                float relativeY = Mathf.InverseLerp(sourceBounds.min.y,sourceBounds.max.y, originalPos.y);
+
+                //新しい範囲内で座標を決定
+                float newX = Mathf.Lerp(destBounds.min.x,destBounds.max.x, relativeX);
+                float newY = Mathf.Lerp(destBounds.min.y,destBounds.max.y, relativeY);
+                float newZ = destBounds.center.z;
+
+                //計算した座標を複製したオバケの設定
+                clone.transform.localPosition = new Vector3(newX, newY, newZ);
+                //基準オブジェクトのサイズと現在のスケールの比率を計算
+                float scaleX = destBounds.size.x / sourceBounds.size.x;
+                float scaleY = destBounds.size.y / sourceBounds.size.y;
+
+                // 縦横比を維持するため、比率の小さい方を採用
+                float finalScaleRatio = Mathf.Min(scaleX, scaleY);
+
+                // 元の回転は維持
+                clone.transform.rotation = child.rotation;
+                //計算した比率を適用
+                clone.transform.localScale = new Vector3( 0.5f,0.5f,1
+                    //clone.transform.localScale.x * finalScaleRatio,
+                    //clone.transform.localScale.y * finalScaleRatio,
+                    //clone.transform.localScale.z
+                    );
+                clone.name = child.name + "_Copy";
+
+                // 後でまとめて削除するためにリストに追加
+                clonedEnemies.Add(clone);
+            }
+        }
+        /*
         Transform[] children = photo.GetComponentsInChildren<Transform>();
         foreach (Transform child in children)
         {
@@ -186,7 +281,7 @@ public class DisplayScores : MonoBehaviour
                 // リストに追加して後で消去
                 clonedEnemies.Add(clone);
             }
-        }
+        }*/
     }
 
 
