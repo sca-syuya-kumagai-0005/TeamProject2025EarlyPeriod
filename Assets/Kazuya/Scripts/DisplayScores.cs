@@ -47,6 +47,7 @@ public class DisplayScores : MonoBehaviour
     Vector3 MaskScale = new Vector3((float)0.2,(float)0.2,1);
 
     [Header("複製したオバケの表示範囲")]
+    [SerializeField] GameObject PhotoDisplayRefernce;
     [SerializeField] GameObject displayAree;//オバケを表示する範囲となるオブジェクト
 
 
@@ -59,17 +60,38 @@ public class DisplayScores : MonoBehaviour
     {
         //シーンをまたいだオバケを取得
         cameraMask = GameObject.Find("PhotoStorage");
-        if(cameraMask != null )
+        if(cameraMask == null)
         {
-            PhotoObject = cameraMask.transform;
-            SceneManager.MoveGameObjectToScene(cameraMask, SceneManager.GetActiveScene());
-            cameraMask.transform.position = MaskPosition;
-            cameraMask.transform.localScale = MaskScale;
+            Debug.LogError("マスクの対象が見つからないよ");
+            return;
         }
-        else
+        if(PhotoDisplayRefernce == null)
         {
-            Debug.Log("指定されたオブジェクトが見つかりません");
+            Debug.LogError("基準となるオブジェクトが見つからないよ");
+            return;
         }
+        SceneManager.MoveGameObjectToScene(cameraMask, SceneManager.GetActiveScene());
+
+        //
+
+        var targetzBounds = PhotoDisplayRefernce.GetComponent<Collider>().bounds;
+        var sourceRenderer = cameraMask.GetComponent<Renderer>();
+        if(sourceRenderer == null) { return; }
+        var sourceBounds = sourceRenderer.bounds;
+
+        cameraMask.transform.position = targetzBounds.center;
+
+        //
+        float scaleX = targetzBounds.size.x / sourceBounds.size.x;
+        float scaleY = targetzBounds.size.y / sourceBounds.size.y;
+
+        float finalScaleRatio = Mathf.Min(scaleX, scaleY);
+
+        cameraMask.transform.localScale = new Vector3(
+            cameraMask.transform.localScale.x * finalScaleRatio,
+            cameraMask.transform.localScale.y * finalScaleRatio,
+            cameraMask.transform.localScale.z
+            );
     }
     void Start()
     {
@@ -230,10 +252,10 @@ public class DisplayScores : MonoBehaviour
                 // 元の回転は維持
                 clone.transform.rotation = child.rotation;
                 //計算した比率を適用
-                clone.transform.localScale = new Vector3(
-                    clone.transform.localScale.x * finalScaleRatio,
-                    clone.transform.localScale.y * finalScaleRatio,
-                    clone.transform.localScale.z
+                clone.transform.localScale = new Vector3( 0.5f,0.5f,1
+                    //clone.transform.localScale.x * finalScaleRatio,
+                    //clone.transform.localScale.y * finalScaleRatio,
+                    //clone.transform.localScale.z
                     );
                 clone.name = child.name + "_Copy";
 
