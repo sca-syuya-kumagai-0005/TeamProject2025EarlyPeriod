@@ -264,23 +264,28 @@ public class DisplayScores : MonoBehaviour
     public string nextSceneName = "RankingScene";//←移動先のシーン名
 
     [Header("UIの基準オブジェクト")]
-    [SerializeField] private GameObject photoDisplayReference; // 写真を表示する位置と大きさの基準となるオブジェクト
-    [SerializeField] private GameObject displayArea; // 複製したオバケを表示する範囲となるオブジェクト
+    [SerializeField]  GameObject photoDisplayReference; // 写真を表示する位置と大きさの基準となるオブジェクト
+    [SerializeField]  GameObject displayArea; // 複製したオバケを表示する範囲となるオブジェクト
 
     [Header("早送りするときの倍速度")]
     [SerializeField] float acceleration = 0.3f;
 
-    private GameObject cameraMask; // シーンをまたいで運ばれてきた写真の親オブジェクト("PhotoStorage")
-    private Transform photoContainer; // 写真オブジェクトのTransform
-    private List<GameObject> photoList = new List<GameObject>(); // 写真を格納するリスト
-    private List<GameObject> clonedEnemies = new List<GameObject>(); // 複製したオバケのリスト
+     [SerializeField]GameObject cameraMask; // シーンをまたいで運ばれてきた写真の親オブジェクト("PhotoStorage")
+     Transform photoContainer; // 写真オブジェクトのTransform
+    [SerializeField] List<GameObject> photoList = new List<GameObject>(); // 写真を格納するリスト
+    [SerializeField] List<GameObject> clonedEnemies = new List<GameObject>(); // 複製したオバケのリスト
 
-    private int cumulativeScore = 0; // 累計スコア
+     int cumulativeScore = 0; // 累計スコア
     //早送り/スキップのフラグ
-    private bool skipRequested = false;
-    private bool fastForwardRequested = false;
+     bool skipRequested = false;
+     bool fastForwardRequested = false;
 
     private void Awake()
+    {
+
+    }
+
+    void Start()
     {
         // シーンをまたいだ写真の親オブジェクトを取得
         cameraMask = GameObject.Find("PhotoStorage");
@@ -307,7 +312,8 @@ public class DisplayScores : MonoBehaviour
         var targetBounds = photoDisplayReference.GetComponent<Collider>().bounds;
 
         // 2. 写真の全子要素のRendererから、写真全体のBoundsを計算
-        Renderer[] childRenderers = cameraMask.GetComponentsInChildren<Renderer>();
+        Renderer[] childRenderers = cameraMask.GetComponentsInChildren<Renderer>(true);
+        Debug.Log(childRenderers.Length);
         if (childRenderers.Length == 0)
         {
             Debug.LogError("PhotoStorageの子オブジェクトに、表示するためのRendererコンポーネントが見つかりません。");
@@ -322,7 +328,7 @@ public class DisplayScores : MonoBehaviour
         }
 
         // 3. 写真の位置を基準オブジェクトの中央に設定
-        cameraMask.transform.position = targetBounds.center;
+        cameraMask.transform.position = new Vector3(targetBounds.center.x, targetBounds.center.y, 70); //targetBounds.center;
 
         // 4. 基準オブジェクトのサイズと写真全体のサイズの比率を計算
         float scaleX = targetBounds.size.x / totalSourceBounds.size.x;
@@ -333,10 +339,6 @@ public class DisplayScores : MonoBehaviour
 
         // 5. 計算した比率を現在のスケールに適用
         cameraMask.transform.localScale *= finalScaleRatio;
-    }
-
-    void Start()
-    {
         if (photoContainer == null)
         {
             Debug.LogError("写真オブジェクトが初期化されていません。");
@@ -454,6 +456,12 @@ public class DisplayScores : MonoBehaviour
             {
                 GameObject clone = Instantiate(descendant.gameObject);
 
+                Renderer cloneRenderer = clone.GetComponent<Renderer>();
+                if(cloneRenderer != null)
+                {
+                    cloneRenderer.sortingOrder = 10;
+                }
+
                 // --- 座標とスケールのマッピング ---
                 // 元の座標が、元の範囲(sourceBounds)のどのくらいの割合の位置にあるかを計算
                 float relativeX = Mathf.InverseLerp(sourceBounds.min.x, sourceBounds.max.x, descendant.position.x);
@@ -471,6 +479,7 @@ public class DisplayScores : MonoBehaviour
                 float scaleRatioY = destBounds.size.y / sourceBounds.size.y;
                 float finalScaleRatio = Mathf.Min(scaleRatioX, scaleRatioY);
                 
+                Debug.Log(finalScaleRatio);
                 //計算した比率を適用
                 clone.transform.localScale *= finalScaleRatio;
                 clone.transform.rotation = descendant.rotation;
