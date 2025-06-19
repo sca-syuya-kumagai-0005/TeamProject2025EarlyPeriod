@@ -30,7 +30,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
@@ -112,7 +112,6 @@ MonoBehaviour:
   specialAnimationFrames:
   - {fileID: 21300000, guid: 5ad61f6e90e92214d8dd9c77b355acbd, type: 3}
   specialFrameDuration: 0.1
-  generatedLifetime: 3
   pauseDuration: 3
   enableScaling: 1
   targetScale: {x: 4, y: 4, z: 1}
