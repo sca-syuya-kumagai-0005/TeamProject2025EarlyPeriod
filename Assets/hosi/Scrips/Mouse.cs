@@ -14,6 +14,8 @@ public class Mouse : MonoBehaviour
 
     public ShutterEffect shutterEffect; //シャッターエフェクトへの参照
 
+    public GameObject ScoreTextPrefab;
+
     void Start()
     {
         score = 0;
@@ -107,6 +109,10 @@ public class Mouse : MonoBehaviour
             {
                 continue;//完全に入っていたら次へ
             }
+
+            Vector3 offset = new Vector3(0, 0.5f, 0); // 高さのオフセット
+            Vector3 spawnPos = col.bounds.center + offset;
+            ScoreText(spawnPos);
 
 
             //タグで目の種類を確認
@@ -253,6 +259,15 @@ public class Mouse : MonoBehaviour
             return RereScore * 5;
         }
         else return 0;
+    }
+
+    void ScoreText(Vector3 worldPosition)
+    {
+        if (ScoreTextPrefab != null)
+        {
+            GameObject text = Instantiate(ScoreTextPrefab, worldPosition, Quaternion.identity);
+            Destroy(text, 1.0f); // 1秒で消える
+        }
     }
 
     bool IsFullyInside(Bounds outer, Bounds inner)
