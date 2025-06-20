@@ -25,10 +25,10 @@ public class StayEnemyTemplate : MonoBehaviour
 
     protected IEnumerator MoveLeftCoroutine(float totalTime, float lastPos)
     {
-        while (transform.localPosition.x < lastPos)
+        while (transform.localPosition.x > lastPos)
         {
             float x = transform.position.x;
-            x += Time.deltaTime / totalTime ;
+            x -= Time.deltaTime / totalTime ;
             Vector3 pos = transform.position;
             pos.x = x;
             transform.position = pos;
