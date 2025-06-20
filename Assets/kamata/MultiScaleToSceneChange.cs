@@ -30,15 +30,15 @@ public class MultiScaleToSceneChange : MonoBehaviour
             if (enemy == null) continue;
 
             Vector3 currentScale = enemy.transform.localScale;
-
-            if (Vector3.Distance(currentScale, targetScale) > tolerance)
+            Debug.Log(enemy.name);
+            if (Vector3.Distance(currentScale, targetScale) < tolerance)
             {
-                return; // 1つでもスケール未到達 → シーン切り替えしない
+                hasSceneChanged = true;
+                SceneManager.LoadScene(nextSceneName);
             }
         }
 
         // すべてスケール到達 → シーン切り替え
-        hasSceneChanged = true;
-        SceneManager.LoadScene(nextSceneName);
+      
     }
 }
