@@ -123,20 +123,20 @@ public class DisplayScores : MonoBehaviour
     {
         for (int i = 0; i < photoList.Count; i++)
         {
-            if (i >= pointlist.point.Count)
-            {
-                Debug.LogWarning("写真の数とスコアデータの数が一致しないため、処理を中断します。");
-                break;
-            }
+            //if (i >= pointlist.point.Count)
+            //{
+            //    Debug.LogWarning("写真の数とスコアデータの数が一致しないため、処理を中断します。");
+            //    break;
+            //}
 
             GameObject currentPhoto = photoList[i];
-            var currentScoreData = pointlist.point[i];
+            //var currentScoreData = pointlist.point[i];
 
-            UpdateScores(currentScoreData);
+            //UpdateScores(currentScoreData);
 
-            int photoScore = currentScoreData.eyes + currentScoreData.rarity + currentScoreData.bonus;
-            cumulativeScore += photoScore;
-            AddScore.text = $"{cumulativeScore}";
+            //int photoScore = currentScoreData.eyes + currentScoreData.rarity + currentScoreData.bonus;
+            //cumulativeScore += photoScore;
+            //AddScore.text = $"{cumulativeScore}";
 
             skipRequested = false;
 
@@ -214,23 +214,27 @@ public class DisplayScores : MonoBehaviour
 
         Transform[] allDescendants = photo.GetComponentsInChildren<Transform>();
 
+        bool maskDuplicated = false;
+
         // 全ての子孫の中から"Enemy"タグを持つオブジェクトを探す
         foreach (Transform descendant in allDescendants)
         {
-            if (descendant.CompareTag("Enemy"))
+            if (!descendant.CompareTag("Enemy"))  continue; 
             {
                 //レイキャストによる判定
                 Vector3 rayorigin = descendant.position;
                 Vector3 rayDirection = (maskObject.transform.position - rayorigin).normalized;
                 float rayDistance = Vector3.Distance(rayorigin, maskObject.transform.position);
                 Ray ray = new Ray(rayorigin, rayDirection);
-                RaycastHit rayhit;
+                RaycastHit hit;
+                Debug.DrawRay(rayorigin, rayDirection * rayDistance, Color.red, 1.0f);
                 Debug.Log("レイの設定終了");
-                if (Physics.Raycast(ray, out rayhit, rayDistance + 0.1f))
+                if (Physics.Raycast(rayorigin,rayDirection, out hit, rayDistance + 0.1f))
                 {
-                    if (rayhit.transform == maskTransform)
+                    if (hit.transform == maskTransform)
                     {
                         Debug.Log("レイを感知　オブジェクトの複製を開始");
+                        //オバケの複製
                         GameObject clone = Instantiate(descendant.gameObject);
 
                         Renderer cloneRenderer = clone.GetComponent<Renderer>();
@@ -260,11 +264,38 @@ public class DisplayScores : MonoBehaviour
 
                         Debug.Log(finalScaleRatio);
                         //計算した比率を適用
-                        clone.transform.localScale *= finalScaleRatio;
+                        clone.transform.localScale *= finalScaleRatio*3;
                         clone.transform.rotation = descendant.rotation;
                         clone.name = descendant.name + "_Copy";
                         // 後でまとめて削除するためにリストに追加
                         clonedEnemies.Add(clone);
+
+                        if (!maskDuplicated)
+                        {
+                            Vector3 originalPos = maskObject.transform.position;
+
+                            float relatveX = Mathf.InverseLerp(sourceBounds.min.x,sourceBounds.max.x,originalPos.x);
+                            float relatveY = Mathf.InverseLerp(sourceBounds.min.y,sourceBounds.max.y,originalPos.y);
+
+                            float newmaskX = Mathf.Lerp(destBounds.min.x, destBounds.max.x, relatveX);
+                            float newmaskY = Mathf.Lerp(destBounds.min.y, destBounds.max.y, relatveY);
+
+                            float scaleRatiomaskX = destBounds.size.x / sourceBounds.size.x;
+                            float scaleRatiomaskY = destBounds.size.y / sourceBounds.size.y;
+                            float finalScaleRatiomask = Mathf.Min(scaleRatiomaskX, scaleRatiomaskY);
+
+
+                            //マスクの複製
+                            GameObject maskClone = Instantiate(maskObject.gameObject);
+                            maskClone.transform.position = new Vector3(newmaskX, newmaskY, destBounds.center.z + 0.01f);
+                            maskClone.transform.localScale *= finalScaleRatiomask*3;
+                            maskClone.transform.rotation = maskObject.transform.rotation;
+                            maskClone.name = maskObject.name + "_Copy";
+
+                            clonedEnemies.Add(maskClone);
+                            maskDuplicated = true;
+                        }
+
                     }
                 }
             }
