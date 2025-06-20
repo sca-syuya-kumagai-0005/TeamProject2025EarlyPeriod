@@ -16,6 +16,7 @@ public class ScoreEvaluation : MonoBehaviour
     }
     Evaluation evaluation;
     [SerializeField]public  int testScore = 10000;
+    int TotalScore;
     [Header("評価用のオブジェクト")]
     [SerializeField] GameObject EvaluationTextA;
     [SerializeField] GameObject EvaluationTextB;
@@ -40,34 +41,18 @@ public class ScoreEvaluation : MonoBehaviour
 
     void Start()
     {
-        /*
+        TotalScore = Mouse.score;
+        Debug.Log(Mouse.score);
         //スコアによるランク判定
-        if (Mouse.score < evaluationC)
+        if (TotalScore < evaluationC)
         {
             evaluation = Evaluation.C;
         }
-        else if (Mouse.score < evaluationB)
+        else if (TotalScore < evaluationB)
         {
             evaluation = Evaluation.C;
         }
-        else if (Mouse.score < evaluationA)
-        {
-            evaluation = Evaluation.B;
-        }
-        else
-        {
-            evaluation = Evaluation.A;
-        }*/
-        //スコアによるランク判定
-        if (testScore < evaluationC)
-        {
-            evaluation = Evaluation.C;
-        }
-        else if (testScore < evaluationB)
-        {
-            evaluation = Evaluation.C;
-        }
-        else if (testScore < evaluationA)
+        else if (TotalScore < evaluationA)
         {
             evaluation = Evaluation.B;
         }
@@ -75,6 +60,23 @@ public class ScoreEvaluation : MonoBehaviour
         {
             evaluation = Evaluation.A;
         }
+        //スコアによるランク判定
+        //if (testScore < evaluationC)
+        //{
+        //    evaluation = Evaluation.C;
+        //}
+        //else if (testScore < evaluationB)
+        //{
+        //    evaluation = Evaluation.C;
+        //}
+        //else if (testScore < evaluationA)
+        //{
+        //    evaluation = Evaluation.B;
+        //}
+        //else
+        //{
+        //    evaluation = Evaluation.A;
+        //}
     }
     
     void Update()
