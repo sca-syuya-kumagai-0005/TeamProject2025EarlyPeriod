@@ -1,247 +1,8 @@
-/*
-    [Header("早送りするときの倍速度")]
-    [SerializeField]float acceleration = 0.3f;
-
-    [Header("UIの基準オブジェクト")]
-    [SerializeField] GameObject photoDisplayReference;//写真を表示する位置と大きさの基準となるオブジェクト
-    [SerializeField] GameObject displayArea;//複製したオバケを表示する範囲となるオブジェクト
-
-    [Header("写真のオブジェクト類")]
-    [SerializeField] GameObject cameraMask;//シーンをまたいできた写真の親オブジェクト
-    Transform photoContainer;//写真のオブジェクト
-    [SerializeField] List<GameObject> photoList = new List<GameObject>();//写真を格納するリスト
-    [SerializeField] List<GameObject> clonedEnemies = new List<GameObject>();//複製するオバケのリスト
-
-    private int cumulativeScore = 0;//累計スコア
-                                    //早送り/スキップのフラグ
-    private bool skipRequested = false;
-    private bool fastForwardRequested = false;
-
-    private void Awake()
-    {
-        //シーンをまたいだ親オブジェクトを取得
-        cameraMask = GameObject.Find("PhotoStorage");
-        if(cameraMask == null)
-        {
-            Debug.LogError("PhotoStorageが見つからないよ");
-            return;
-        }
-        //基準となるオブジェクトが設定されているか
-        if(photoDisplayReference == null)
-        {
-            Debug.LogError("基準となるオブジェクトが見つからないよ");
-            return;
-        }
-        //写真オブジェクトを現在のシーンに移動
-        SceneManager.MoveGameObjectToScene(cameraMask, SceneManager.GetActiveScene());
-        photoContainer = cameraMask.transform;
-
-        //表示先の基準オブジェクトを取得
-        var targetzBounds = photoDisplayReference.GetComponent<Collider>().bounds;
-
-        Renderer[] childRenderers = cameraMask.GetComponentsInChildren<Renderer>();
-        if(childRenderers.Length == 0)
-        {
-            Debug.LogError("子オブジェクトに、Rendererがついてません");
-            return;
-        }
-
-        //全ての子を囲うBoundsを計算
-        Bounds totalBounds = childRenderers[0].bounds;
-        for(int i = 1; i < childRenderers.Length; i++)
-        {
-            totalBounds.Encapsulate(childRenderers[i].bounds);
-        }
-        
-        cameraMask.transform.position = targetzBounds.center;
-
-        //基準となるオブジェクトのサイズと、計算した写真全体のサイズの比率比較
-        float scaleX = targetzBounds.size.x / totalBounds.size.x;
-        float scaleY = targetzBounds.size.y / totalBounds.size.y;
-
-        float finalScaleRatio = Mathf.Min(scaleX, scaleY);
-
-        //計算した比率を適用
-        cameraMask.transform.localScale *= finalScaleRatio;
-    }
-    void Start()
-    {
-        if (photoContainer == null) 
-        {
-            Debug.LogError("写真オブジェクトが初期化されていません"); 
-            return; 
-        }
-        //UIの表示リセット
-        ResetScoreUI();
-            //写真をリストを初期化し、PhotoStorageの子要素(撮影した写真)をリストに追加
-            photoList.Clear();
-            for (int i = 0; i < photoContainer.childCount; i++)
-            {
-                photoList.Add(photoContainer.GetChild(i).gameObject);
-            }
-        //写真を順番に表示するコルーチンを開始
-        StartCoroutine(ProcessPhotos());
-    }
-
-    void Update()
-    {
-        //ユーザー入力の受付
-         HandleUserInput();
-    }
-    //コルーチン
-
-    //写真を順番に処理するメインのコルーチン
-    IEnumerator ProcessPhotos()
-    {
-        //写真リスト内の各オブジェクトに対して処理を繰り返す
-        for(int i = 0;i < photoList.Count;i++)
-        {
-            Debug.Log(photoList.Count);
-            //リストの範囲外になら終了させる
-            if (i >= pointlist.point.Count)
-            {
-                Debug.Log("リストの範囲外になりました。");
-                break;
-            }
-            GameObject currentPhoto = photoList[i];
-            var currentScoreData = pointlist.point[i];
-
-            UpdateScores(currentScoreData);
-
-            //写真の得点を累計に追加
-            int photoScore = currentScoreData.eyes + currentScoreData.rarity + currentScoreData.bonus;
-            cumulativeScore += photoScore;
-
-            AddScore.text = $"{cumulativeScore}";
-            //次の写真のためのスキップ要求をリセット
-            skipRequested = false;
-
-            //写真を1枚表示するシーケンスコルーチン
-            yield return StartCoroutine(PhotoDisplay(currentPhoto));
-
-            if (currentPhoto != null)
-            {
-                Destroy(currentPhoto);
-            }
-            Debug.Log(i+1 + "枚目終了");
-        }
-        //表示の終了orスキップされた 写真は破棄
-        yield return new WaitForSeconds(1.0f);
-
-
-        //すべての写真の処理が終わったら、次のシーンに遷移する
-         SceneManager.LoadScene(nextSceneName);
-    }
-
-    //写真1枚の表示部分
-    IEnumerator PhotoDisplay(GameObject photo)
-    {
-        photo.SetActive(true);
-
-        //写真全体の表示
-        //スキップが適用されたら即終了へ
-        if(skipRequested)yield break;
-        //指定された時間だけ待機(早送りを考慮)
-        yield return new WaitForSeconds(GetInterval(WholePhotoTime));
-
-        //ピンとない写真表示
-
-        //--切り取り機能追加
-        if (!skipRequested)
-        {
-            yield return new WaitForSeconds(GetInterval(FocusedPhoto));
-            DuplicateAndMoveEnemies(photo);
-        }
-
-        if (skipRequested ) yield break;
-        
-        //得点詳細の表示
-        if(skipRequested ) yield break;
-        yield return new WaitForSeconds(GetInterval(Information));
-        // 複製したEnemyをすべて削除
-        foreach (GameObject enemy in clonedEnemies)
-        {
-            if (enemy != null)
-            {
-                Destroy(enemy);
-            }
-        }
-        clonedEnemies.Clear(); // リストもクリア
-    }
-    void DuplicateAndMoveEnemies(GameObject photo)
-    {
-        //表示先の範囲となるオブジェクトとそのColliderを取得
-        if(displayArea == null)
-        {
-            Debug.LogError("対象となるオブジェクトが設定されていません");
-            return;
-        }
-        var destCollider = displayArea.GetComponent<Collider>();
-        if(destCollider ==  null )
-        {
-            Debug.LogError("コライダーが設定されていません");
-            return;
-        }
-
-        //複製元の写真オブジェクトとそのコライダーの取得
-        Renderer[] sourceCollider = photo.GetComponentsInChildren<Renderer>();
-        if(sourceCollider == null)
-        {
-            Debug.LogError("写真にコライダーがついてないよ");
-            return;
-        }
-
-        //それぞれのColliderから、ワールド空間での境界を取得
-        Bounds sourceBounds = sourceCollider[0].bounds;
-        for(int i = 1; i < sourceCollider.Length; i++)
-        {
-            sourceBounds.Encapsulate(sourceCollider[i].bounds);
-        }
-
-        var destBounds = destCollider.bounds;
-
-        //写真内の"Enemy"タグを持つオブジェクトを全て探す
-        foreach (Transform child in photo.transform)
-        {
-            if (child.CompareTag("Enemy"))
-            {
-                // オバケの複製
-                GameObject clone = Instantiate(child.gameObject);
-
-                //元の座標が、元の範囲のどのくらいの割合になるかの計算
-
-                float relativeX = Mathf.InverseLerp(sourceBounds.min.x, sourceBounds.max.x, child.position.x);
-                float relativeY = Mathf.InverseLerp(sourceBounds.min.y,sourceBounds.max.y, child.position.y);
-
-                //新しい範囲内で座標を決定
-                float newX = Mathf.Lerp(destBounds.min.x,destBounds.max.x, relativeX);
-                float newY = Mathf.Lerp(destBounds.min.y,destBounds.max.y, relativeY);
-                float newZ = destBounds.center.z;
-
-                //計算した座標を複製したオバケの設定
-                clone.transform.localPosition = new Vector3(newX, newY, newZ);
-                //基準オブジェクトのサイズと現在のスケールの比率を計算
-                float scaleX = destBounds.size.x / sourceBounds.size.x;
-                float scaleY = destBounds.size.y / sourceBounds.size.y;
-
-                // 縦横比を維持するため、比率の小さい方を採用
-                float finalScaleRatio = Mathf.Min(scaleX, scaleY);
-                //計算した比率を適用
-            }
-        }
-    }
-
-
-
-
-}*/
-
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Collections;
-using TMPro;
 
 public class DisplayScores : MonoBehaviour
 {
@@ -264,26 +25,22 @@ public class DisplayScores : MonoBehaviour
     public string nextSceneName = "RankingScene";//←移動先のシーン名
 
     [Header("UIの基準オブジェクト")]
-    [SerializeField]  GameObject photoDisplayReference; // 写真を表示する位置と大きさの基準となるオブジェクト
-    [SerializeField]  GameObject displayArea; // 複製したオバケを表示する範囲となるオブジェクト
+    [SerializeField] GameObject photoDisplayReference; // 写真を表示する位置と大きさの基準となるオブジェクト
+    [SerializeField] GameObject displayArea; // 複製したオバケを表示する範囲となるオブジェクト
+    [SerializeField] string maskName;
 
     [Header("早送りするときの倍速度")]
     [SerializeField] float acceleration = 0.3f;
 
-     [SerializeField]GameObject cameraMask; // シーンをまたいで運ばれてきた写真の親オブジェクト("PhotoStorage")
-     Transform photoContainer; // 写真オブジェクトのTransform
+    [SerializeField] GameObject cameraMask; // シーンをまたいで運ばれてきた写真の親オブジェクト("PhotoStorage")
+    Transform photoContainer; // 写真オブジェクトのTransform
     [SerializeField] List<GameObject> photoList = new List<GameObject>(); // 写真を格納するリスト
     [SerializeField] List<GameObject> clonedEnemies = new List<GameObject>(); // 複製したオバケのリスト
 
-     int cumulativeScore = 0; // 累計スコア
-    //早送り/スキップのフラグ
-     bool skipRequested = false;
-     bool fastForwardRequested = false;
-
-    private void Awake()
-    {
-
-    }
+    int cumulativeScore = 0; // 累計スコア
+                             //早送り/スキップのフラグ
+    bool skipRequested = false;
+    bool fastForwardRequested = false;
 
     void Start()
     {
@@ -446,6 +203,14 @@ public class DisplayScores : MonoBehaviour
         }
 
         var destBounds = destCollider.bounds;
+        Transform maskTransform = photo.transform.Find(maskName);
+        if (maskTransform == null) { Debug.LogError("Maskオブジェクトが選択されていません:" + maskName); return; }
+
+        GameObject maskObject = maskTransform.gameObject;
+        if (maskObject.GetComponent<Collider>() == null)
+        {
+            maskObject.AddComponent<CapsuleCollider>();
+        }
 
         Transform[] allDescendants = photo.GetComponentsInChildren<Transform>();
 
@@ -454,38 +219,54 @@ public class DisplayScores : MonoBehaviour
         {
             if (descendant.CompareTag("Enemy"))
             {
-                GameObject clone = Instantiate(descendant.gameObject);
-
-                Renderer cloneRenderer = clone.GetComponent<Renderer>();
-                if(cloneRenderer != null)
+                //レイキャストによる判定
+                Vector3 rayorigin = descendant.position;
+                Vector3 rayDirection = (maskObject.transform.position - rayorigin).normalized;
+                float rayDistance = Vector3.Distance(rayorigin, maskObject.transform.position);
+                Ray ray = new Ray(rayorigin, rayDirection);
+                RaycastHit rayhit;
+                Debug.Log("レイの設定終了");
+                if (Physics.Raycast(ray, out rayhit, rayDistance + 0.1f))
                 {
-                    cloneRenderer.sortingOrder = 10;
+                    if (rayhit.transform == maskTransform)
+                    {
+                        Debug.Log("レイを感知　オブジェクトの複製を開始");
+                        GameObject clone = Instantiate(descendant.gameObject);
+
+                        Renderer cloneRenderer = clone.GetComponent<Renderer>();
+                        if (cloneRenderer == null) { Debug.LogError("Rendererの参照不可"); return; }
+
+                        if (cloneRenderer != null)
+                        {
+                            cloneRenderer.sortingOrder = 10;
+                        }
+
+                        // --- 座標とスケールのマッピング ---
+                        // 元の座標が、元の範囲(sourceBounds)のどのくらいの割合の位置にあるかを計算
+                        float relativeX = Mathf.InverseLerp(sourceBounds.min.x, sourceBounds.max.x, descendant.position.x);
+                        float relativeY = Mathf.InverseLerp(sourceBounds.min.y, sourceBounds.max.y, descendant.position.y);
+
+                        // 計算した割合を使って、新しい範囲(destBounds)内での座標を決定
+                        float newX = Mathf.Lerp(destBounds.min.x, destBounds.max.x, relativeX);
+                        float newY = Mathf.Lerp(destBounds.min.y, destBounds.max.y, relativeY);
+
+                        // 計算した新しいワールド座標を複製したオバケに設定
+                        clone.transform.position = new Vector3(newX, newY, destBounds.center.z);
+
+                        // スケールも写真全体の縮小率に合わせて調整
+                        float scaleRatioX = destBounds.size.x / sourceBounds.size.x;
+                        float scaleRatioY = destBounds.size.y / sourceBounds.size.y;
+                        float finalScaleRatio = Mathf.Min(scaleRatioX, scaleRatioY);
+
+                        Debug.Log(finalScaleRatio);
+                        //計算した比率を適用
+                        clone.transform.localScale *= finalScaleRatio;
+                        clone.transform.rotation = descendant.rotation;
+                        clone.name = descendant.name + "_Copy";
+                        // 後でまとめて削除するためにリストに追加
+                        clonedEnemies.Add(clone);
+                    }
                 }
-
-                // --- 座標とスケールのマッピング ---
-                // 元の座標が、元の範囲(sourceBounds)のどのくらいの割合の位置にあるかを計算
-                float relativeX = Mathf.InverseLerp(sourceBounds.min.x, sourceBounds.max.x, descendant.position.x);
-                float relativeY = Mathf.InverseLerp(sourceBounds.min.y, sourceBounds.max.y, descendant.position.y);
-
-                // 計算した割合を使って、新しい範囲(destBounds)内での座標を決定
-                float newX = Mathf.Lerp(destBounds.min.x, destBounds.max.x, relativeX);
-                float newY = Mathf.Lerp(destBounds.min.y, destBounds.max.y, relativeY);
-
-                // 計算した新しいワールド座標を複製したオバケに設定
-                clone.transform.position = new Vector3(newX, newY, destBounds.center.z);
-
-                // スケールも写真全体の縮小率に合わせて調整
-                float scaleRatioX = destBounds.size.x / sourceBounds.size.x;
-                float scaleRatioY = destBounds.size.y / sourceBounds.size.y;
-                float finalScaleRatio = Mathf.Min(scaleRatioX, scaleRatioY);
-                
-                Debug.Log(finalScaleRatio);
-                //計算した比率を適用
-                clone.transform.localScale *= finalScaleRatio;
-                clone.transform.rotation = descendant.rotation;
-                clone.name = descendant.name + "_Copy";
-                // 後でまとめて削除するためにリストに追加
-                clonedEnemies.Add(clone);
             }
         }
     }
