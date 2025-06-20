@@ -1,13 +1,16 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using static HitManager;
+using static UnityEditor.SceneView;
 
 public class Mouse : MonoBehaviour
 {
     Vector3 mousePos, pos;
     public static int score;
     Collider2D circleCollider;
-
+   [SerializeField] HitManager hitManager;
+   [SerializeField]GameObject HitObje;
     public Transform cameraCenter;
 
     bool canMove = true; //移動可能かどうか
@@ -18,6 +21,7 @@ public class Mouse : MonoBehaviour
 
     void Start()
     {
+        hitManager =  HitObje.GetComponent<HitManager>();
         score = 0;
         circleCollider = GetComponent<Collider2D>();
 
@@ -30,7 +34,7 @@ public class Mouse : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0) && canMove) //移動可能でクリックされたとき
+        if (Input.GetMouseButtonDown(0) && canMove &&hitManager.Mode == modeChange.cameraMode) //移動可能でクリックされたとき
         {
             AddScore();                                     //スコア追加
             StartCoroutine(DisableMovementForSeconds(3f));  //移動の無効化
