@@ -22,7 +22,8 @@ public class NormalEnemy : StayEnemyTemplate
 
     private void Awake()
     {
-        flashImage = GameObject.Find("FlashImage").gameObject;
+        flashImage = GameObject.Find("SpawnManager").gameObject.GetComponent<SpawnManager>().FlashImage;
+
     }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -39,10 +40,6 @@ public class NormalEnemy : StayEnemyTemplate
         StartCoroutine(MoveRightCoroutine(0.2f,2.0f));
         yield return new WaitForSeconds(1.0f);
         StartCoroutine(MoveLeftCoroutine(0.1f,0.0f));
-
-
         yield return null;
      }
-
-
 }

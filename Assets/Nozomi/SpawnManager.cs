@@ -8,6 +8,9 @@ public class SpawnManager : MonoBehaviour
     [SerializeField] private GameObject enemyParent;
     [SerializeField] private GameObject enemy;
     [SerializeField] private GameObject flashImage;
+    [SerializeField] private Vector3[] spawnPosition;
+    [SerializeField] private GameObject stayEnemy;
+    public GameObject FlashImage { get { return flashImage; } }
     const float time = 3.0f;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -39,8 +42,14 @@ public class SpawnManager : MonoBehaviour
         {
             return;
         }
-        if(rand==0) Instantiate(enemy, PositionRand(), Quaternion.identity, enemyParent.transform);//ここのポジションをランダムに変更してね
- 
+        int makeRand=Random.Range(0,100);
+
+        if(rand==0&&makeRand<0) Instantiate(enemy, PositionRand(), Quaternion.identity, enemyParent.transform);//ここのポジションをランダムに変更してね
+        else if(rand==0)
+        {
+            int posRand =  Random.Range(0,spawnPosition.Length);
+            Instantiate(stayEnemy, spawnPosition[posRand], Quaternion.identity, enemyParent.transform);
+        }
     }
 
     private void EnemySearch()
