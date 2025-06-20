@@ -22,12 +22,16 @@ public class TimeManager : MonoBehaviour
         timer+=Time.deltaTime;
         if(timer>MaxTimer/sprits.Length*(nowSprite+1))
         {
+            
             nowSprite++;
         }
         if(timer>MaxTimer)
         {
             SceneManager.LoadScene(result);
         }
-        sr.sprite = sprits[nowSprite];
+        if(sprits.Length>nowSprite)
+        { 
+            sr.sprite = sprits[nowSprite];
+        }
     }
 }

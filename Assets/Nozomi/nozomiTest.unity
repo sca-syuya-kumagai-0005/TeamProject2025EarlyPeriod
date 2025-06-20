@@ -579,7 +579,7 @@ MonoBehaviour:
   - {fileID: -533207388, guid: f3916bd2f3382f74f968161dc55e2471, type: 3}
   - {fileID: -1406776051, guid: e984f319fc890c14ab10f074e2e97cfb, type: 3}
   - {fileID: -1400870029, guid: 26692aeaf6f8086449506496bf117dfc, type: 3}
-  MaxTimer: 5
+  MaxTimer: 60
   nowSprite: 0
 --- !u!212 &581773358
 SpriteRenderer:
