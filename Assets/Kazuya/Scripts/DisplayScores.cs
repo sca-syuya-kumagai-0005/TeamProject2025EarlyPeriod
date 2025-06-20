@@ -300,6 +300,7 @@ public class DisplayScores : MonoBehaviour
                 }
             }
         }
+        maskTransform = null;
     }
     //ƒXƒRƒA‚Ì‰Šú‰»
     void ResetScoreUI()
