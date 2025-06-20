@@ -21,7 +21,11 @@ public class CameraMask :SoundPlayer
     private void Awake()
     {
         flashImage = GameObject.Find("imageObject").gameObject;
-        flashImage.SetActive(false);
+        if(flashImage != null )
+        {
+            flashImage.SetActive(false);
+        }
+
     }
 
     void Start()
@@ -79,17 +83,29 @@ public class CameraMask :SoundPlayer
             tmpThis.GetComponent<CameraMask>().enabled = false;
             GameObject hitLens = Instantiate(hit.gameObject,hit.transform.position, Quaternion.identity, p.transform);
             HitManager hitManager = hitLens.GetComponent<HitManager>();
-            hitManager.enabled = false;
+            if(hitManager!=null)hitManager.enabled = false;
             HitMove hitMove=hitLens.GetComponent<HitMove>();
-            hitMove.enabled = false;    
+            if(hitMove!=null)hitMove.enabled = false;    
+
             GameObject tmpBackGround = Instantiate(backGround, backGround.transform.position, Quaternion.identity, p.transform);
             SpriteRenderer sr = tmpBackGround.GetComponent<SpriteRenderer>();
-            sr.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
+            if(sr!=null)sr.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
             GameObject enemies=Instantiate(enemy,new Vector3(0,0,0),Quaternion.identity, p.transform);
+            
             for (int i = 0; i < enemies.transform.childCount; i++)
             {
-                sr = enemies.transform.GetChild(i).GetComponent<SpriteRenderer>();
+                GameObject obj = enemies.transform.GetChild(i).gameObject;
+                sr = obj.GetComponent<SpriteRenderer>();
                 sr.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
+                EnemySpriteAnimator enemyAnim = obj.GetComponent<EnemySpriteAnimator>();
+                if(enemyAnim!=null)enemyAnim.enabled = false;
+                HitCheakBibiri hitBibiri = obj.GetComponent<HitCheakBibiri>();
+                if(hitBibiri!=null)hitBibiri.enabled = false;
+                HitCheakOdokasi hitOdokasi = obj.GetComponent<HitCheakOdokasi>();
+                if( hitOdokasi!=null)hitOdokasi.enabled = false;
+                NormalEnemy nomEnemy = obj.GetComponent<NormalEnemy>(); 
+                if(nomEnemy!=null) nomEnemy.enabled = false;    
+               
             }
             SavePhoto();
             DebugFunction();

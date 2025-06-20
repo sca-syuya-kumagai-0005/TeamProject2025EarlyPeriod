@@ -22,7 +22,9 @@ public class NormalEnemy : StayEnemyTemplate
 
     private void Awake()
     {
-        flashImage = GameObject.Find("SpawnManager").gameObject.GetComponent<SpawnManager>().FlashImage;
+        GameObject obj = GameObject.Find("SpawnManager").gameObject;
+        if(obj != null )  flashImage = obj.GetComponent<SpawnManager>().FlashImage; 
+        
 
     }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -33,13 +35,17 @@ public class NormalEnemy : StayEnemyTemplate
 
      protected override IEnumerator ExectionCoroutine()
      {
-        StartCoroutine(MoveRightCoroutine(3.5f,1.5f));
-        yield return new WaitForSeconds(5.0f);
-        StartCoroutine(MoveLeftCoroutine(0.2f,0.0f));
-        yield return new WaitForSeconds(1.0f);
-        StartCoroutine(MoveRightCoroutine(0.2f,2.0f));
-        yield return new WaitForSeconds(1.0f);
-        StartCoroutine(MoveLeftCoroutine(0.1f,0.0f));
-        yield return null;
+        while(true)
+        {
+            float randomR = Random.Range(0.5f, 10.0f);
+            float randomL = randomR * -1;
+            float totalTime = Random.Range(0.1f, 2.0f);
+
+            StartCoroutine(MoveRightCoroutine(totalTime, randomR));
+            yield return new WaitForSeconds(totalTime+1);
+            totalTime = Random.Range(0.1f, 3f);
+            StartCoroutine(MoveLeftCoroutine(totalTime, randomL));
+            yield return new WaitForSeconds(totalTime+1);
+        }
      }
 }
