@@ -32,6 +32,15 @@ public class NormalEnemy : StayEnemyTemplate
 
      protected override IEnumerator ExectionCoroutine()
      {
+        StartCoroutine(MoveRightCoroutine(3.5f,1.5f));
+        yield return new WaitForSeconds(5.0f);
+        StartCoroutine(MoveLeftCoroutine(0.2f,0.0f));
+        yield return new WaitForSeconds(1.0f);
+        StartCoroutine(MoveRightCoroutine(0.2f,2.0f));
+        yield return new WaitForSeconds(1.0f);
+        StartCoroutine(MoveLeftCoroutine(0.1f,0.0f));
+
+
         yield return null;
      }
 
