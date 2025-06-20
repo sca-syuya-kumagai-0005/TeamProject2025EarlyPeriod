@@ -42,7 +42,8 @@ public class CameraMask :SoundPlayer
     // Update is called once per frame
     void Update()
     {
-        if(!flashImage.activeSelf)
+        timer -= Time.deltaTime;
+        if(flashImage.activeSelf)
         {
             return;
         }
