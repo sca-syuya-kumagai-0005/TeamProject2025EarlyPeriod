@@ -35,6 +35,11 @@ public class NormalEnemy : MonoBehaviour
     {
     }
 
+    private  IEnumerator ExectionCoroutine()
+    {
+        yield return null;
+    }
+
     private IEnumerator MoveCoroutine()
     {
         float r = Random.Range(nextMoveTimeMin, nextMoveTimeMax);
@@ -44,16 +49,25 @@ public class NormalEnemy : MonoBehaviour
         {
             state = State.HIDE;
             yield return new WaitForSeconds(r);
-            StartCoroutine(MoveRightCoroutine());
+            //StartCoroutine(MoveRightCoroutine());
             yield return null;
         }
     }
 
 
-    IEnumerator MoveRightCoroutine()
+    IEnumerator MoveRightCoroutine(float totalTime,float lastPos)
     {
-        float totalTime = 5.0f;
-        while (transform.localPosition.x < 0.5f)
+        while (transform.localPosition.x < lastPos)
+        {
+            float x = transform.position.x;
+            x += Time.deltaTime / totalTime / half;
+            Vector3 pos = transform.position;
+            pos.x = x;
+            transform.position = pos;
+            Debug.Log(1);
+            yield return null;
+        }
+        while (transform.localPosition.x < 1.0f)
         {
             float x = transform.position.x;
             x += Time.deltaTime / totalTime / half;
@@ -74,7 +88,7 @@ public class NormalEnemy : MonoBehaviour
             yield return null;
         }
         totalTime=0.5f;
-        while (transform.localPosition.x < 1f)
+        while (transform.localPosition.x < 1.5f)
         {
             float x = transform.position.x;
             x += Time.deltaTime / totalTime / half;
@@ -99,5 +113,21 @@ public class NormalEnemy : MonoBehaviour
         }
     }
 
+    private IEnumerator MoveLeftCoroutine(float totalTime,float lastPos)
+    {
+        while (transform.localPosition.x < lastPos)
+        {
+            float x = transform.position.x;
+            x += Time.deltaTime / totalTime / half;
+            Vector3 pos = transform.position;
+            pos.x = x;
+            transform.position = pos;
+            yield return null;
+        }
+    }
 
+    private IEnumerator RunCoroutine()
+    {
+        yield return null;
+    }
 }
