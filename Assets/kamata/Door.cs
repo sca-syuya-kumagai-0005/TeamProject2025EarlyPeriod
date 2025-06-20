@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Door : MonoBehaviour
 {
@@ -15,10 +16,17 @@ public class Door : MonoBehaviour
     public float doorOpenSpeed = 2f;
 
     [Header("カメラ移動設定")]
-    public Camera targetCamera;                       // 対象カメラ
-    public Transform cameraTargetPosition;            // カメラが移動する目的地（Transform）
-    public float cameraMoveDelay = 2.0f;              // ドア開後、カメラ移動を始めるまでの待機時間
-    public float cameraMoveSpeed = 1.5f;              // カメラの移動速度
+    public Camera targetCamera;
+    public Transform cameraTargetPosition;
+    public float cameraMoveDelay = 2.0f;
+    public float cameraMoveSpeed = 1.5f;
+
+    [Header("シーン切り替え設定")]
+    [Tooltip("このZ座標をカメラが超えたらシーンを切り替えます")]
+    public float cameraTriggerZ = 5.0f;
+
+    [Tooltip("遷移先のシーン名（必ずBuild Settingsに追加してください）")]
+    public string nextSceneName;
 
     private Quaternion leftClosedRot;
     private Quaternion rightClosedRot;
@@ -27,28 +35,28 @@ public class Door : MonoBehaviour
 
     private bool doorIsOpening = false;
     private bool cameraIsMoving = false;
+    private bool sceneSwitched = false;
 
     private float timer = 0f;
     private float cameraMoveTimer = 0f;
 
     void Start()
     {
-        // 初期回転の保存
         leftClosedRot = leftDoor.localRotation;
         rightClosedRot = rightDoor.localRotation;
 
-        // Z軸に回転（左右逆方向に回転させる）
         leftOpenRot = leftClosedRot * Quaternion.Euler(0, 0, -openAngle);
         rightOpenRot = rightClosedRot * Quaternion.Euler(0, 0, openAngle);
 
         timer = 0f;
         doorIsOpening = false;
         cameraIsMoving = false;
+        sceneSwitched = false;
     }
 
     void Update()
     {
-        // ドア開くまでの待機
+        // ドアの開き処理
         if (!doorIsOpening)
         {
             timer += Time.deltaTime;
@@ -59,11 +67,9 @@ public class Door : MonoBehaviour
         }
         else
         {
-            // ドアの開閉アニメーション
             leftDoor.localRotation = Quaternion.Lerp(leftDoor.localRotation, leftOpenRot, Time.deltaTime * doorOpenSpeed);
             rightDoor.localRotation = Quaternion.Lerp(rightDoor.localRotation, rightOpenRot, Time.deltaTime * doorOpenSpeed);
 
-            // ドアがある程度開いたらカメラ移動開始準備
             cameraMoveTimer += Time.deltaTime;
             if (!cameraIsMoving && cameraMoveTimer >= cameraMoveDelay)
             {
@@ -71,22 +77,33 @@ public class Door : MonoBehaviour
             }
         }
 
-        // カメラの移動処理
+        // カメラの移動とZ軸チェック
         if (cameraIsMoving && targetCamera != null && cameraTargetPosition != null)
         {
-            // 位置の補間
             targetCamera.transform.position = Vector3.Lerp(
                 targetCamera.transform.position,
                 cameraTargetPosition.position,
                 Time.deltaTime * cameraMoveSpeed
             );
 
-            // 向きの補間（回転）
             targetCamera.transform.rotation = Quaternion.Lerp(
                 targetCamera.transform.rotation,
                 cameraTargetPosition.rotation,
                 Time.deltaTime * cameraMoveSpeed
             );
+
+            if (!sceneSwitched && targetCamera.transform.position.z >= cameraTriggerZ)
+            {
+                sceneSwitched = true;
+                if (!string.IsNullOrEmpty(nextSceneName))
+                {
+                    SceneManager.LoadScene(nextSceneName);
+                }
+                else
+                {
+                    Debug.LogWarning("シーン名が設定されていません！");
+                }
+            }
         }
     }
 }

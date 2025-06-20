@@ -413,6 +413,8 @@ MonoBehaviour:
   cameraTargetPosition: {fileID: 1824297008}
   cameraMoveDelay: 2
   cameraMoveSpeed: 1.5
+  cameraTriggerZ: 1.5
+  nextSceneName: Title2
 --- !u!4 &1611684011 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: d663dce8d3f5a3d45980ccab687022a1, type: 3}
