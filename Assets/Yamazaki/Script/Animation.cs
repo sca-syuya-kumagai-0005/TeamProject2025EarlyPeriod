@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.SceneManagement;
 public class Animation : MonoBehaviour
 {
+    [SerializeField] private Material clickTo_Mat;
     [SerializeField] private SpriteRenderer rainSpriteRenderer;
     //スナップショットで使用
     [Header("移動開始オフセット（ローカル座標）")]
@@ -66,6 +67,8 @@ public class Animation : MonoBehaviour
 
     string mainGame="nozomiTest";
     string alpha="_Alpha";
+    string frameRate = "_FrameRate";
+    string glitchScale = "_GlitchScale";
     public int GetSetProperty
     {
         get { return anime_num; }
@@ -79,6 +82,7 @@ public class Animation : MonoBehaviour
             titleAnimeObj[i].SetActive(false);
             Debug.Log(i);
         }
+        StartCoroutine(NoiseClickToStart());
 
     }
 
@@ -135,6 +139,23 @@ public class Animation : MonoBehaviour
         spriteRenderer_Phot.color = finalColor;
         anime_num = 3;
     }*/
+    private IEnumerator NoiseClickToStart()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(2.0f);
+            for(int x = 0; x<4;x++)
+            {
+                int i = Random.Range(10, 51);
+                int y = Random.Range(4, 21);
+                clickTo_Mat.SetFloat(frameRate, i);
+                clickTo_Mat.SetFloat(glitchScale, y);
+                yield return new WaitForSeconds(0.05f);
+            }
+            yield return new WaitForSeconds(0.1f);
+            clickTo_Mat.SetFloat(glitchScale, 0);
+        }
+    }
 
     private IEnumerator Anime_1()
     {
