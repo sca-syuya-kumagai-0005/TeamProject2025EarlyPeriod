@@ -229,9 +229,9 @@ public class DisplayScores : MonoBehaviour
                 RaycastHit hit;
                 Debug.DrawRay(rayorigin, rayDirection * rayDistance, Color.red, 1.0f);
                 Debug.Log("レイの設定終了");
-                if (Physics.Raycast(rayorigin,rayDirection, out hit, rayDistance + 0.1f))
+                //if (Physics.Raycast(rayorigin,rayDirection, out hit, rayDistance + 0.1f))
                 {
-                    if (hit.transform == maskTransform)
+                    //if (hit.transform == maskTransform)
                     {
                         Debug.Log("レイを感知　オブジェクトの複製を開始");
                         //オバケの複製
