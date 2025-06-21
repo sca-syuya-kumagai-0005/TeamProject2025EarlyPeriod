@@ -1,7 +1,5 @@
-using UnityEditor.PackageManager.UI;
-using UnityEditor.UI;
+
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
 public class ObjectSpawn : MonoBehaviour
 {
