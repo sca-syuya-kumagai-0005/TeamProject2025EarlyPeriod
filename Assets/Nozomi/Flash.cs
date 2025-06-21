@@ -7,7 +7,7 @@ public class Flash : MonoBehaviour
     bool flashOn;
     float flashTimer;
     float imageAlpha = 1;
-    float coolTime = 4f;
+    float coolTime = 3f;
     [SerializeField] Image Image;
     bool getFirst;
     bool flashCool;
@@ -18,7 +18,7 @@ public class Flash : MonoBehaviour
     {
         //spriteRenderer = Image.GetComponent<SpriteRenderer>();
         flashTimer = 120.0f;
-        coolTime = 240.0f;
+        //coolTime = 240.0f;
         flashOn = false;
         Image.gameObject.SetActive(false);
         getFirst = true;
@@ -52,9 +52,8 @@ public class Flash : MonoBehaviour
     }
     IEnumerator TestCoroutine()
     {
-        yield return new WaitForSeconds(0.1f);
         flashOn = true;
-        yield return new WaitForSeconds(3.0f);
+        yield return new WaitForSeconds(coolTime);
         Image.gameObject.SetActive(false);
         Debug.Log("クールタイム終了（フラッシュ）");
         flashOn = false;

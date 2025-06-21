@@ -65,7 +65,7 @@ public class Animation : MonoBehaviour
 
     int anime_num;//アニメーションの数
 
-    string mainGame="nozomiTest";
+    string mainGame="DoorScene1";
     string alpha="_Alpha";
     string frameRate = "_FrameRate";
     string glitchScale = "_GlitchScale";

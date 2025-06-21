@@ -44,7 +44,7 @@ public class SpawnManager : MonoBehaviour
         }
         int makeRand=Random.Range(0,100);
         Vector3 spawnPos = new Vector3(Random.Range(-5,5),-3,0); 
-        if(rand==0&&makeRand<30) Instantiate(enemy, PositionRand(), Quaternion.identity, enemyParent.transform);//ここのポジションをランダムに変更してね
+        if(rand<30&&makeRand<30) Instantiate(enemy, PositionRand(), Quaternion.identity, enemyParent.transform);//ここのポジションをランダムに変更してね
         else if(rand==0)
         {
             int posRand =  Random.Range(0,spawnPosition.Length);

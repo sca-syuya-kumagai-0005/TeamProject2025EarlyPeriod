@@ -1,9 +1,11 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public class GlassBrake : MonoBehaviour
 {
+    const string nextScene = "Result";
     [SerializeField] private float flashDuration = 0.5f;
     [SerializeField] private GameObject[] glassObj;
     [SerializeField] Sprite[] ghostSprite; 
@@ -81,6 +83,8 @@ public class GlassBrake : MonoBehaviour
         GameOver.enabled = true;
         targetTransform.position = targetPosition;
         targetTransform.localScale = targetScale;
+        yield return new WaitForSeconds(1);
+        SceneManager.LoadScene(nextScene);
     }
 
     private IEnumerator FlashRoutine()
