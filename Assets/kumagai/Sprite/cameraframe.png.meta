@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: d217093803c72c94882e82338f6cd96f
+guid: 854bd1b71798c644bae60f8d81cad4a2
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -110,35 +110,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: kaiga_0
-      rect:
-        serializedVersion: 2
-        x: 162
-        y: 192
-        width: 55
-        height: 44
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 9ee5da334cd0cb145b55b6be15614011
-      internalID: -912018919
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: kaiga_1
+      name: cameraframe_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 217
-        height: 236
+        width: 4093
+        height: 2894
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -147,8 +125,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a56098cbdefd05f40af434ed6cc93b69
-      internalID: 207889777
+      spriteID: 18a0ee1a836da89459d7fa64d96aa0b3
+      internalID: -889240631
       vertices: []
       indices: 
       edges: []
@@ -157,7 +135,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: bf38e96ed0cf716488d6ffb0fa575522
+    spriteID: 8644eb0d3856fcd4da9ce6141ade50df
     internalID: 0
     vertices: []
     indices: 
@@ -167,8 +145,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      kaiga_0: -912018919
-      kaiga_1: 207889777
+      cameraframe_0: -889240631
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
