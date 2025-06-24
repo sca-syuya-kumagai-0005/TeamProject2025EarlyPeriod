@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 using static HitManager;
 
@@ -106,6 +107,12 @@ public class Mouse : MonoBehaviour
         //各コライダーが判定枠内に入っているかのチェック
         foreach (var col in colliders)
         {
+            string[] validTags = { "nEye", "tEye", "nred", "tred", "nblue", "tblue" };
+            if (!validTags.Contains(col.tag))
+            {
+                continue;
+            }
+
             // マウス範囲に完全に入っているか確認
             if (!IsFullyInside(circleCollider.bounds, col.bounds))
             {
