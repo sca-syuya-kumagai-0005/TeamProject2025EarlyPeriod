@@ -10,7 +10,9 @@ public class SpawnManager : MonoBehaviour
     [SerializeField] private GameObject flashImage;
     [SerializeField] private Vector3[] spawnPosition;
     [SerializeField] private GameObject stayEnemy;
+    [SerializeField] private GameObject flash;
     public GameObject FlashImage { get { return flashImage; } }
+    public GameObject Flash {  get { return flash; } }  
     const float time = 3.0f;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -36,7 +38,7 @@ public class SpawnManager : MonoBehaviour
 
     private void EnemySpawner()
     {
-        int rand = Random.Range(0, 1000);//毎フレームrandを取得
+        int rand = Random.Range(0, 100);//毎フレームrandを取得
         //if(enemies.Length>=5||rand<999)//敵が5体以上もしくは99.9%の確率でreturn
         if (enemies.Length >= 5)//テスト用　敵が５体以上ならreturn
         {
@@ -44,8 +46,12 @@ public class SpawnManager : MonoBehaviour
         }
         int makeRand=Random.Range(0,100);
         Vector3 spawnPos = new Vector3(Random.Range(-5,5),-3,0); 
-        if(rand<30&&makeRand<30) Instantiate(enemy, PositionRand(), Quaternion.identity, enemyParent.transform);//ここのポジションをランダムに変更してね
-        else if(rand==0)
+        if(rand!=0)
+        {
+            return;
+        }
+        if(makeRand<-10) Instantiate(enemy, PositionRand(), Quaternion.identity, enemyParent.transform);//ここのポジションをランダムに変更してね
+        else
         {
             int posRand =  Random.Range(0,spawnPosition.Length);
             Instantiate(stayEnemy, spawnPos, Quaternion.identity, enemyParent.transform);

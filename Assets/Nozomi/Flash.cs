@@ -11,6 +11,8 @@ public class Flash : MonoBehaviour
     [SerializeField] Image Image;
     bool getFirst;
     bool flashCool;
+    bool flashing;
+    public bool Flashing { get { return flashing; } }
     // [SerializeField] SpriteRenderer spriteRenderer;
     [SerializeField] HitManager hitManager;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -28,7 +30,7 @@ public class Flash : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        flashing = false;
         if (hitManager.Mode == HitManager.modeChange.flashMode)
         {
 
@@ -37,6 +39,7 @@ public class Flash : MonoBehaviour
                 if (getFirst)
                 {
                     getFirst = false;
+                    flashing = true;
                     Image.gameObject.SetActive(true);
                     StartCoroutine(TestCoroutine());
                 }

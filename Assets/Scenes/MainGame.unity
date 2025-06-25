@@ -515,10 +515,11 @@ MonoBehaviour:
   hitEnemy: []
   enemyParent: {fileID: 1293616787}
   enemy: {fileID: 1159644384196845789, guid: 3836a34b50d2e6c40a15e291c841fff0, type: 3}
-  flashImage: {fileID: 1072513612}
+  flashImage: {fileID: 1755194998}
   spawnPosition:
   - {x: -7, y: -3, z: 0}
   stayEnemy: {fileID: 2798844205172854006, guid: aead5d67ca3766a4a8335b15cc9b223b, type: 3}
+  flash: {fileID: 1439307486}
 --- !u!4 &268060485
 Transform:
   m_ObjectHideFlags: 0
