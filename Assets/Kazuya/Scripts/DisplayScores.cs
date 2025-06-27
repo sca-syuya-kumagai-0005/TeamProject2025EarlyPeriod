@@ -36,6 +36,8 @@ public class DisplayScores : MonoBehaviour
     Transform photoContainer; // 写真オブジェクトのTransform
     [SerializeField] List<GameObject> photoList = new List<GameObject>(); // 写真を格納するリスト
     [SerializeField] List<GameObject> clonedEnemies = new List<GameObject>(); // 複製したオバケのリスト
+    [Header("写真の拡大倍率")]
+    [SerializeField] float Magnification =3.0f;
 
     int cumulativeScore = 0; // 累計スコア
                              //早送り/スキップのフラグ
@@ -74,6 +76,7 @@ public class DisplayScores : MonoBehaviour
         if (childRenderers.Length == 0)
         {
             Debug.LogError("PhotoStorageの子オブジェクトに、表示するためのRendererコンポーネントが見つかりません。");
+            SceneManager.LoadScene(nextSceneName);
             return;
         }
 
@@ -118,7 +121,10 @@ public class DisplayScores : MonoBehaviour
     {
         HandleUserInput();
     }
-
+    /// <summary>
+    /// 写真をリストにまとめる
+    /// </summary>
+    /// <returns></returns>
     IEnumerator ProcessPhotos()
     {
         for (int i = 0; i < photoList.Count; i++)
@@ -151,7 +157,11 @@ public class DisplayScores : MonoBehaviour
         yield return new WaitForSeconds(1.0f);
         SceneManager.LoadScene(nextSceneName);
     }
-
+    /// <summary>
+    /// 写真を表示するシークエンス
+    /// </summary>
+    /// <param name="photo">写真の名前</param>
+    /// <returns></returns>
     IEnumerator PhotoDisplaySequence(GameObject photo)
     {
         photo.SetActive(true);
@@ -173,7 +183,10 @@ public class DisplayScores : MonoBehaviour
         }
         clonedEnemies.Clear();
     }
-
+    /// <summary>
+    /// オバケを写真から切り取って複製する
+    /// </summary>
+    /// <param name="photo">写真オブジェクト名前</param>
     void DuplicateAndMoveEnemies(GameObject photo)
     {
         // 1. 表示先の範囲オブジェクトとそのColliderを取得
@@ -209,7 +222,7 @@ public class DisplayScores : MonoBehaviour
         GameObject maskObject = maskTransform.gameObject;
         if (maskObject.GetComponent<Collider>() == null)
         {
-            maskObject.AddComponent<CapsuleCollider>();
+            maskObject.AddComponent<BoxCollider>();
         }
 
         Transform[] allDescendants = photo.GetComponentsInChildren<Transform>();
@@ -219,6 +232,7 @@ public class DisplayScores : MonoBehaviour
         // 全ての子孫の中から"Enemy"タグを持つオブジェクトを探す
         foreach (Transform descendant in allDescendants)
         {
+
             if (!descendant.CompareTag("Enemy"))  continue; 
             {
                 //レイキャストによる判定
@@ -229,11 +243,44 @@ public class DisplayScores : MonoBehaviour
                 RaycastHit hit;
                 Debug.DrawRay(rayorigin, rayDirection * rayDistance, Color.red, 1.0f);
                 Debug.Log("レイの設定終了");
-                //if (Physics.Raycast(rayorigin,rayDirection, out hit, rayDistance + 0.1f))
+                //if (Physics.Raycast(rayorigin, rayDirection, out hit, rayDistance + 0.1f))
                 {
                     //if (hit.transform == maskTransform)
                     {
+                        if (!maskDuplicated)
+                        {
+                            Vector3 originalPos = maskObject.transform.position;
+
+                            float relatveX = Mathf.InverseLerp(sourceBounds.min.x, sourceBounds.max.x, originalPos.x);
+                            float relatveY = Mathf.InverseLerp(sourceBounds.min.y, sourceBounds.max.y, originalPos.y);
+                            // 1. スケール調整（写真と表示エリアの比率に合わせて）
+                            float scaleRatiomaskX = destBounds.size.x / sourceBounds.size.x;
+                            float scaleRatiomaskY = destBounds.size.y / sourceBounds.size.y;
+                            float finalScaleRatiomask = Mathf.Min(scaleRatiomaskX, scaleRatiomaskY);
+
+                            // 2. 複製して center に表示
+                            GameObject maskClone = Instantiate(maskObject.gameObject);
+
+                            //  displayArea の中心に配置
+                            maskClone.transform.position = new Vector3(destBounds.center.x, destBounds.center.y, destBounds.center.z + 0.01f);
+
+                            // スケール・回転の調整
+                            maskClone.transform.localScale *= finalScaleRatiomask * Magnification;
+                            maskClone.transform.rotation = maskObject.transform.rotation;
+                            maskClone.name = maskObject.name + "_Copy";
+
+                            clonedEnemies.Add(maskClone);
+                            maskDuplicated = true;
+                        }
                         Debug.Log("レイを感知　オブジェクトの複製を開始");
+                        // スケール比率
+                        float scaleX = destBounds.size.x / sourceBounds.size.x;
+                        float scaleY = destBounds.size.y / sourceBounds.size.y;
+                        float finalScaleRatio = Mathf.Min(scaleX, scaleY);
+                        //マスクの元座標と複製後の中心座標
+                        Vector3 originalMaskPos = maskObject.transform.position;
+                        Vector3 maskCenterPos = destBounds.center;
+
                         //オバケの複製
                         GameObject clone = Instantiate(descendant.gameObject);
 
@@ -245,56 +292,18 @@ public class DisplayScores : MonoBehaviour
                             cloneRenderer.sortingOrder = 10;
                         }
 
-                        // --- 座標とスケールのマッピング ---
-                        // 元の座標が、元の範囲(sourceBounds)のどのくらいの割合の位置にあるかを計算
-                        float relativeX = Mathf.InverseLerp(sourceBounds.min.x, sourceBounds.max.x, descendant.position.x);
-                        float relativeY = Mathf.InverseLerp(sourceBounds.min.y, sourceBounds.max.y, descendant.position.y);
-
-                        // 計算した割合を使って、新しい範囲(destBounds)内での座標を決定
-                        float newX = Mathf.Lerp(destBounds.min.x, destBounds.max.x, relativeX);
-                        float newY = Mathf.Lerp(destBounds.min.y, destBounds.max.y, relativeY);
-
+                        Vector3 offset = descendant.position - originalMaskPos;
                         // 計算した新しいワールド座標を複製したオバケに設定
-                        clone.transform.position = new Vector3(newX, newY, destBounds.center.z);
+                        clone.transform.position =maskCenterPos+offset * finalScaleRatio;
 
-                        // スケールも写真全体の縮小率に合わせて調整
-                        float scaleRatioX = destBounds.size.x / sourceBounds.size.x;
-                        float scaleRatioY = destBounds.size.y / sourceBounds.size.y;
-                        float finalScaleRatio = Mathf.Min(scaleRatioX, scaleRatioY);
 
-                        Debug.Log(finalScaleRatio);
+
                         //計算した比率を適用
-                        clone.transform.localScale *= finalScaleRatio*3;
+                        clone.transform.localScale *= finalScaleRatio* Magnification;
                         clone.transform.rotation = descendant.rotation;
                         clone.name = descendant.name + "_Copy";
                         // 後でまとめて削除するためにリストに追加
                         clonedEnemies.Add(clone);
-
-                        if (!maskDuplicated)
-                        {
-                            Vector3 originalPos = maskObject.transform.position;
-
-                            float relatveX = Mathf.InverseLerp(sourceBounds.min.x,sourceBounds.max.x,originalPos.x);
-                            float relatveY = Mathf.InverseLerp(sourceBounds.min.y,sourceBounds.max.y,originalPos.y);
-
-                            float newmaskX = Mathf.Lerp(destBounds.min.x, destBounds.max.x, relatveX);
-                            float newmaskY = Mathf.Lerp(destBounds.min.y, destBounds.max.y, relatveY);
-
-                            float scaleRatiomaskX = destBounds.size.x / sourceBounds.size.x;
-                            float scaleRatiomaskY = destBounds.size.y / sourceBounds.size.y;
-                            float finalScaleRatiomask = Mathf.Min(scaleRatiomaskX, scaleRatiomaskY);
-
-
-                            //マスクの複製
-                            GameObject maskClone = Instantiate(maskObject.gameObject);
-                            maskClone.transform.position = new Vector3(newmaskX, newmaskY, destBounds.center.z + 0.01f);
-                            maskClone.transform.localScale *= finalScaleRatiomask*3;
-                            maskClone.transform.rotation = maskObject.transform.rotation;
-                            maskClone.name = maskObject.name + "_Copy";
-
-                            clonedEnemies.Add(maskClone);
-                            maskDuplicated = true;
-                        }
 
                     }
                 }
@@ -302,7 +311,9 @@ public class DisplayScores : MonoBehaviour
         }
         maskTransform = null;
     }
-    //スコアの初期化
+    /// <summary>
+    /// スコアの初期化
+    /// </summary>
     void ResetScoreUI()
     {
         NumberEyes.text = "_";
@@ -311,7 +322,10 @@ public class DisplayScores : MonoBehaviour
         BonusPoints.text = "_";
         AddScore.text = "0";
     }
-    // スコアを集計し、UIテキストを更新する
+    /// <summary>
+    /// スコアを集計し、UIテキストを更新する
+    /// </summary>
+    /// <param name="data"></param>
     void UpdateScores(EnemyData data)
     {
         if (pointlist.point == null)
@@ -327,7 +341,9 @@ public class DisplayScores : MonoBehaviour
         BonusPoints.text = $"{data.bonus}";
     }
 
-    //ユーザー入力処理
+    /// <summary>
+    /// ユーザー入力処理
+    /// </summary>
     void HandleUserInput()
     {
         //スキップ処理
@@ -339,7 +355,11 @@ public class DisplayScores : MonoBehaviour
         fastForwardRequested = Input.GetKey(KeyCode.F);
     }
 
-    //早送り状態を考慮した、待機時間
+    /// <summary>
+    /// 早送り状態を考慮した、待機時間
+    /// </summary>
+    /// <param name="baseInterval">標準の待機時間</param>
+    /// <returns></returns>
     float GetInterval(float baseInterval)
     {
         //早送り要求があれば基本時間のn倍、なければ基本時間をそのまま返す
