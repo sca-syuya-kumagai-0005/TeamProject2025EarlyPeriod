@@ -1,5 +1,7 @@
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using static HitManager;
 
@@ -17,6 +19,9 @@ public class Mouse : MonoBehaviour
     public ShutterEffect shutterEffect; //シャッターエフェクトへの参照
 
     public GameObject ScoreTextPrefab;
+
+    [SerializeField] TextMeshProUGUI VarText;
+    int scoreText = 0;
 
     void Start()
     {
@@ -104,6 +109,8 @@ public class Mouse : MonoBehaviour
         int nRarebonus = 0;
         int tRarebonus = 0;
 
+        HashSet<Transform> hitEyeParents = new HashSet<Transform>(); // 重複なしで親を集める
+
         //各コライダーが判定枠内に入っているかのチェック
         foreach (var col in colliders)
         {
@@ -119,9 +126,11 @@ public class Mouse : MonoBehaviour
                 continue;//完全に入っていたら次へ
             }
 
-            Vector3 offset = new Vector3(0, 0.5f, 0); // 高さのオフセット
-            Vector3 spawnPos = col.bounds.center + offset;
-            ScoreText(spawnPos);
+            Transform parentObj = col.transform.parent;
+            if (parentObj != null)
+            {
+                hitEyeParents.Add(parentObj);
+            }
 
 
             //タグで目の種類を確認
@@ -191,6 +200,14 @@ public class Mouse : MonoBehaviour
         if (AddedScore > 0)
         {
             score += AddedScore;
+
+            foreach (var parent in hitEyeParents)
+            {
+                if (parent != null)
+                {
+                    ShowScoreText(TotalEyesScore, parent.position + Vector3.up * 1.5f);
+                }
+            }
 
             Debug.Log("TotalEyes:" + TotalEyes);
             Debug.Log("TotalEyesScore:" + TotalEyesScore);
@@ -270,13 +287,19 @@ public class Mouse : MonoBehaviour
         else return 0;
     }
 
-    void ScoreText(Vector3 worldPosition)
+    void ShowScoreText(int amount, Vector3 worldPos)
     {
-        if (ScoreTextPrefab != null)
+        if (ScoreTextPrefab == null) return;
+
+        GameObject scoreTextObj = Instantiate(ScoreTextPrefab, worldPos, Quaternion.identity);
+        TextMeshProUGUI textMesh = scoreTextObj.GetComponentInChildren<TextMeshProUGUI>();
+
+        if (textMesh != null)
         {
-            GameObject text = Instantiate(ScoreTextPrefab, worldPosition, Quaternion.identity);
-            Destroy(text, 1.0f); // 1秒で消える
+            textMesh.text = $"+{amount}";
         }
+
+        Destroy(scoreTextObj, 1f);
     }
 
     bool IsFullyInside(Bounds outer, Bounds inner)
