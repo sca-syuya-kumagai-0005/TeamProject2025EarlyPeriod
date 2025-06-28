@@ -109,7 +109,11 @@ public class Mouse : MonoBehaviour
         int nRarebonus = 0;
         int tRarebonus = 0;
 
+        //
         HashSet<Transform> hitEyeParents = new HashSet<Transform>(); // 重複なしで親を集める
+        Dictionary<Transform, int> parentIndividualScore = new Dictionary<Transform, int>(); // 親ごとのスコア
+        //
+
 
         //各コライダーが判定枠内に入っているかのチェック
         foreach (var col in colliders)
@@ -126,11 +130,17 @@ public class Mouse : MonoBehaviour
                 continue;//完全に入っていたら次へ
             }
 
+
+            //
             Transform parentObj = col.transform.parent;
             if (parentObj != null)
             {
                 hitEyeParents.Add(parentObj);
+                // 親ごとの初期スコア設定
+                if (!parentIndividualScore.ContainsKey(parentObj))
+                    parentIndividualScore[parentObj] = 0;
             }
+
 
 
             //タグで目の種類を確認
@@ -138,23 +148,31 @@ public class Mouse : MonoBehaviour
             {
                 case "nEye":
                     nEye++;
+                    if (parentObj != null) parentIndividualScore[parentObj] += 1; // nEye1点
                     break;
                 case "tEye":
                     tEye++;
+                    if (parentObj != null) parentIndividualScore[parentObj] += 2; // tEye2点
                     break;
                 case "nred":
                     nRed++;
+                    if (parentObj != null) parentIndividualScore[parentObj] += GetRerebounus(1, 50);
                     break;
                 case "nblue":
                     nBlue++;
+                    if (parentObj != null) parentIndividualScore[parentObj] += GetRerebounus(1, 100);
                     break;
                 case "tred":
                     tRed++;
+                    if (parentObj != null) parentIndividualScore[parentObj] += GetRerebounus(1, 70);
                     break;
                 case "tblue":
                     tBlue++;
+                    if (parentObj != null) parentIndividualScore[parentObj] += GetRerebounus(1, 120);
                     break;
             }
+
+            //
         }
 
         int nTotalEye = nEye + nRed + nBlue;
@@ -184,7 +202,6 @@ public class Mouse : MonoBehaviour
             TotalEyesScore += 2;
         }
 
-
         int TotalEyes = nEye + tEye + nRed + tRed + nBlue + tBlue; //最終的に判定される目の数
 
         int bonus = GetBonusPoint(TotalEyes); //判定された目の数によるボーナス
@@ -201,13 +218,21 @@ public class Mouse : MonoBehaviour
         {
             score += AddedScore;
 
+            //
+            // 親ごとに個別スコア表示
             foreach (var parent in hitEyeParents)
             {
-                if (parent != null)
+                if (parent != null && parentIndividualScore.ContainsKey(parent))
                 {
-                    ShowScoreText(TotalEyesScore, parent.position + Vector3.up * 1.5f);
+                    int individualScore = parentIndividualScore[parent];
+                    if (individualScore > 0)
+                    {
+                        ShowScoreText(individualScore, parent.position + Vector3.up * 1.5f);
+                    }
                 }
             }
+
+            //
 
             Debug.Log("TotalEyes:" + TotalEyes);
             Debug.Log("TotalEyesScore:" + TotalEyesScore);
@@ -217,6 +242,7 @@ public class Mouse : MonoBehaviour
             Debug.Log("Score: " + score);
         }
     }
+
 
     /// <summary>
     /// ボーナススコアの配点
@@ -287,6 +313,8 @@ public class Mouse : MonoBehaviour
         else return 0;
     }
 
+
+    //
     void ShowScoreText(int amount, Vector3 worldPos)
     {
         if (ScoreTextPrefab == null) return;
@@ -301,6 +329,8 @@ public class Mouse : MonoBehaviour
 
         Destroy(scoreTextObj, 1f);
     }
+
+    //
 
     bool IsFullyInside(Bounds outer, Bounds inner)
     {
