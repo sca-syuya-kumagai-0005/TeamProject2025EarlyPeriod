@@ -1,5 +1,7 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class Door : MonoBehaviour
 {
@@ -27,6 +29,20 @@ public class Door : MonoBehaviour
 
     [Tooltip("遷移先のシーン名（必ずBuild Settingsに追加してください）")]
     public string nextSceneName;
+
+    [Header("テキストメッシュプロ設定")]
+    [Tooltip("アルファをループさせるTextMeshProオブジェクト")]
+    public TextMeshProUGUI loopAlphaText; // UGUI版
+    // public TextMeshPro loopAlphaText; // 3D Text版にしたい場合はこちらに変更
+
+    [Tooltip("アルファのループ速度")]
+    public float alphaLoopSpeed = 2.0f;
+
+    [Tooltip("最小アルファ値")]
+    public float minAlpha = 0.2f;
+
+    [Tooltip("最大アルファ値")]
+    public float maxAlpha = 1.0f;
 
     private Quaternion leftClosedRot;
     private Quaternion rightClosedRot;
@@ -56,6 +72,21 @@ public class Door : MonoBehaviour
 
     void Update()
     {
+        // ▼ 左クリックで即シーン遷移
+        if (!sceneSwitched && Input.GetMouseButtonDown(0))
+        {
+            TrySwitchScene();
+        }
+
+        // ▼ アルファ値ループ（TextMeshPro）
+        if (loopAlphaText != null)
+        {
+            float alpha = Mathf.Lerp(minAlpha, maxAlpha, Mathf.PingPong(Time.time * alphaLoopSpeed, 1f));
+            Color currentColor = loopAlphaText.color;
+            currentColor.a = alpha;
+            loopAlphaText.color = currentColor;
+        }
+
         // ドアの開き処理
         if (!doorIsOpening)
         {
@@ -94,16 +125,22 @@ public class Door : MonoBehaviour
 
             if (!sceneSwitched && targetCamera.transform.position.z >= cameraTriggerZ)
             {
-                sceneSwitched = true;
-                if (!string.IsNullOrEmpty(nextSceneName))
-                {
-                    SceneManager.LoadScene(nextSceneName);
-                }
-                else
-                {
-                    Debug.LogWarning("シーン名が設定されていません！");
-                }
+                TrySwitchScene();
             }
+        }
+    }
+
+    // シーン切り替え処理（共通化）
+    void TrySwitchScene()
+    {
+        sceneSwitched = true;
+        if (!string.IsNullOrEmpty(nextSceneName))
+        {
+            SceneManager.LoadScene(nextSceneName);
+        }
+        else
+        {
+            Debug.LogWarning("シーン名が設定されていません！");
         }
     }
 }
