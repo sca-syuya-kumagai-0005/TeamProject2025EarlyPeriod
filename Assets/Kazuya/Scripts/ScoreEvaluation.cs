@@ -40,7 +40,7 @@ public class ScoreEvaluation : MonoBehaviour
 
     void Start()
     {
-        /*
+        Debug.Log(Mouse.score);
         //スコアによるランク判定
         if (Mouse.score < evaluationC)
         {
@@ -57,24 +57,24 @@ public class ScoreEvaluation : MonoBehaviour
         else
         {
             evaluation = Evaluation.A;
-        }*/
-        //スコアによるランク判定
-        if (testScore < evaluationC)
-        {
-            evaluation = Evaluation.C;
         }
-        else if (testScore < evaluationB)
-        {
-            evaluation = Evaluation.C;
-        }
-        else if (testScore < evaluationA)
-        {
-            evaluation = Evaluation.B;
-        }
-        else
-        {
-            evaluation = Evaluation.A;
-        }
+        ////スコアによるランク判定
+        //if (testScore < evaluationC)
+        //{
+        //    evaluation = Evaluation.C;
+        //}
+        //else if (testScore < evaluationB)
+        //{
+        //    evaluation = Evaluation.C;
+        //}
+        //else if (testScore < evaluationA)
+        //{
+        //    evaluation = Evaluation.B;
+        //}
+        //else
+        //{
+        //    evaluation = Evaluation.A;
+        //}
     }
     
     void Update()
