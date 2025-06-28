@@ -168,7 +168,7 @@ GameObject:
   - component: {fileID: -2375101173633019413}
   - component: {fileID: 9055983663267313623}
   - component: {fileID: 6026926161923751459}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: StayEnemy01__Red_Nomal
   m_TagString: Enemy
   m_Icon: {fileID: 0}

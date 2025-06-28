@@ -1,15 +1,25 @@
+using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
+using UnityEditor.Rendering;
 
 public class NormalEnemy : StayEnemyTemplate
 {
     GameObject flashImage;
-    IEnumerator coroutine;
+    
     IEnumerator moveRightCoroutine;
     IEnumerator moveLeftCoroutine;
+    IEnumerator coroutine;
+    List<IEnumerator> motions=new List<IEnumerator>();
+    GameObject[] hideObjects;
+    const string hideObjectTag = "HideObject";
     Flash flash;
     private void Awake()
     {
+        hideObjects = GameObject.FindGameObjectsWithTag(hideObjectTag);
+        motions.Clear();
+        motions.Add(RoundTripCoroutine());
+        motions.Add(HIdeCoroutine());   
         GameObject obj = GameObject.Find("SpawnManager").gameObject;
         if (obj != null)
         {
@@ -22,10 +32,12 @@ public class NormalEnemy : StayEnemyTemplate
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        coroutine=ExectionCoroutine();
+        
+        coroutine = motions[Random.Range(0,motions.Count)];
         StartCoroutine(coroutine);
         
     }
+
 
     private void Update()
     {
@@ -39,9 +51,10 @@ public class NormalEnemy : StayEnemyTemplate
             StartCoroutine(ExitCoroutine(this.gameObject, 1f));
         }
     }
-    protected override IEnumerator ExectionCoroutine()
-     {
-        while(true)
+
+    private IEnumerator RoundTripCoroutine()//往復
+    {
+        while (true)
         {
             Debug.Log("コルーチンは動いています");
             float randomR = Random.Range(0.5f, 10.0f);
@@ -49,11 +62,38 @@ public class NormalEnemy : StayEnemyTemplate
             float totalTime = Random.Range(0.1f, 2.0f);
             moveRightCoroutine = MoveRightCoroutine(totalTime, randomR);
             StartCoroutine(moveRightCoroutine);
-            yield return new WaitForSeconds(totalTime+1);
+            yield return new WaitForSeconds(totalTime + 1);
             totalTime = Random.Range(0.1f, 3f);
             moveLeftCoroutine = MoveLeftCoroutine(totalTime, randomL);
             StartCoroutine(moveLeftCoroutine);
-            yield return new WaitForSeconds(totalTime+1);
+            yield return new WaitForSeconds(totalTime + 1);
         }
-     }
+    }
+
+    private IEnumerator HIdeCoroutine()
+    {
+        int lastObject=-1;//現在隠れているオブジェクトの番号
+        while(true)
+        {
+            while (true)
+            {
+                int r = Random.Range(0,hideObjects.Length);
+                if(r!=lastObject)//rがlastと異なれば抜ける
+                {
+                    lastObject = r;
+                    break;
+                }
+            }
+            float time = Random.Range(0.5f, 2.0f);
+            StartCoroutine(MoveCoroutine(time, hideObjects[lastObject].transform.position));
+            float waitTime = Random.Range(1.0f, 3.0f);
+            yield return new WaitForSeconds(time+waitTime);
+
+        }
+    }
+
+ 
+
+   
+
 }
