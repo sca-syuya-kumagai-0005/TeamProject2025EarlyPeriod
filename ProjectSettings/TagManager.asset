@@ -17,6 +17,7 @@ TagManager:
   - nblue
   - tred
   - tblue
+  - HideObject
   layers:
   - Default
   - TransparentFX
@@ -26,8 +27,8 @@ TagManager:
   - UI
   - Eye
   - Main body
-  - 
-  - 
+  - Enemy
+  - Hit
   - 
   - 
   - 

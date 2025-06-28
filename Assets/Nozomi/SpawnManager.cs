@@ -17,21 +17,12 @@ public class SpawnManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        //camLeftDown = Camera.main.ViewportToWorldPoint(Vector2.zero);
-        //Debug.Log(camLeftDown);
-        //camRightUp = Camera.main.ViewportToWorldPoint(Vector2.one);
-        //Debug.Log(camRightUp);
         EnemySearch();
     }
 
     // Update is called once per frame
     void Update()
     {
-        //if(flashImage.activeSelf)
-        //{
-        //    return;
-        //}
-      
         EnemySpawner();
         EnemySearch();
     }
@@ -39,7 +30,6 @@ public class SpawnManager : MonoBehaviour
     private void EnemySpawner()
     {
         int rand = Random.Range(0, 100);//毎フレームrandを取得
-        //if(enemies.Length>=5||rand<999)//敵が5体以上もしくは99.9%の確率でreturn
         if (enemies.Length >= 5)//テスト用　敵が５体以上ならreturn
         {
             return;
@@ -50,7 +40,7 @@ public class SpawnManager : MonoBehaviour
         {
             return;
         }
-        if(makeRand<-10) Instantiate(enemy, PositionRand(), Quaternion.identity, enemyParent.transform);//ここのポジションをランダムに変更してね
+        if(makeRand<20) Instantiate(enemy, PositionRand(), Quaternion.identity, enemyParent.transform);//ここのポジションをランダムに変更してね
         else
         {
             int posRand =  Random.Range(0,spawnPosition.Length);
