@@ -33,7 +33,14 @@ public class SceneLoopSwitcher : MonoBehaviour
         }
         // このオブジェクトを唯一のインスタンスに設定
         instance = this;
-
+        GameObject[] objs=GameObject.FindGameObjectsWithTag("Canvas");
+        if (objs.Length > 1)
+        {
+            for (int i = 1; i < objs.Length; i++)
+            {
+                Destroy(objs[i]);
+            }
+        }
         // シーンを跨いでもこのオブジェクトが消えないようにする
         DontDestroyOnLoad(gameObject);
     }

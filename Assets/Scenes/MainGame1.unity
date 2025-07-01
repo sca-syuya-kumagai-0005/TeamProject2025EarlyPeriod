@@ -1001,11 +1001,11 @@ GameObject:
   - component: {fileID: 844970217}
   m_Layer: 0
   m_Name: Picture
-  m_TagString: Untagged
+  m_TagString: HideObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &844970216
 Transform:
   m_ObjectHideFlags: 0
@@ -1114,6 +1114,53 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 2707921881127961826, guid: 8291350e636479b48a9cdabb9dae0453, type: 3}
   m_PrefabInstance: {fileID: 158391617}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1000750941
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1000750943}
+  - component: {fileID: 1000750942}
+  m_Layer: 0
+  m_Name: SceneChanger
+  m_TagString: Canvas
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1000750942
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000750941}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6642ee30db0fcab4c8150f19c7c442fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneNames:
+  - MainGame1
+  doorSceneName: DoorScene1
+--- !u!4 &1000750943
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000750941}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -8.671344, y: -3.1593633, z: 7.4030404}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1040504701
 GameObject:
   m_ObjectHideFlags: 0
@@ -1978,11 +2025,9 @@ GameObject:
   - component: {fileID: 1530340519}
   - component: {fileID: 1530340518}
   - component: {fileID: 1530340517}
-  - component: {fileID: 1530340521}
   - component: {fileID: 1530340522}
-  - component: {fileID: 1530340523}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: Ca
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2073,18 +2118,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &1530340521
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1530340516}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9c9bf29eefef104085ddd8a4bbae8b9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1530340522
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2101,20 +2134,6 @@ MonoBehaviour:
   nextSceneName: GameOver
   targetScale: {x: 4, y: 4, z: 1}
   tolerance: 0.01
---- !u!114 &1530340523
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1530340516}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6642ee30db0fcab4c8150f19c7c442fd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sceneNames: []
-  doorSceneName: Door
 --- !u!1 &1660183604
 GameObject:
   m_ObjectHideFlags: 0
@@ -2456,3 +2475,4 @@ SceneRoots:
   - {fileID: 158391617}
   - {fileID: 1330208613}
   - {fileID: 846651059}
+  - {fileID: 1000750943}
