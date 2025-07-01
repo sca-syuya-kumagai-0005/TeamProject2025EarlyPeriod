@@ -1,20 +1,12 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using TMPro;
 
 public class Door : MonoBehaviour
 {
     public Transform leftDoor;
     public Transform rightDoor;
-
-    [Tooltip("ドアを開くZ軸の角度（正の値で開く）")]
     public float openAngle = 90f;
-
-    [Tooltip("開き始めるまでの時間（秒）")]
     public float delayBeforeOpen = 1.0f;
-
-    [Tooltip("開ききるまでの速さ（大きいほど速い）")]
     public float doorOpenSpeed = 2f;
 
     [Header("カメラ移動設定")]
@@ -23,25 +15,10 @@ public class Door : MonoBehaviour
     public float cameraMoveDelay = 2.0f;
     public float cameraMoveSpeed = 1.5f;
 
-    [Header("シーン切り替え設定")]
-    [Tooltip("このZ座標をカメラが超えたらシーンを切り替えます")]
-    public float cameraTriggerZ = 5.0f;
-
-    [Tooltip("遷移先のシーン名（必ずBuild Settingsに追加してください）")]
-    public string nextSceneName;
-
     [Header("テキストメッシュプロ設定")]
-    [Tooltip("アルファをループさせるTextMeshProオブジェクト")]
-    public TextMeshProUGUI loopAlphaText; // UGUI版
-    // public TextMeshPro loopAlphaText; // 3D Text版にしたい場合はこちらに変更
-
-    [Tooltip("アルファのループ速度")]
+    public TextMeshProUGUI loopAlphaText;
     public float alphaLoopSpeed = 2.0f;
-
-    [Tooltip("最小アルファ値")]
     public float minAlpha = 0.2f;
-
-    [Tooltip("最大アルファ値")]
     public float maxAlpha = 1.0f;
 
     private Quaternion leftClosedRot;
@@ -51,7 +28,7 @@ public class Door : MonoBehaviour
 
     private bool doorIsOpening = false;
     private bool cameraIsMoving = false;
-    private bool sceneSwitched = false;
+    private bool requestedSceneChange = false;
 
     private float timer = 0f;
     private float cameraMoveTimer = 0f;
@@ -63,31 +40,20 @@ public class Door : MonoBehaviour
 
         leftOpenRot = leftClosedRot * Quaternion.Euler(0, 0, -openAngle);
         rightOpenRot = rightClosedRot * Quaternion.Euler(0, 0, openAngle);
-
-        timer = 0f;
-        doorIsOpening = false;
-        cameraIsMoving = false;
-        sceneSwitched = false;
     }
 
     void Update()
     {
-        // ▼ 左クリックで即シーン遷移
-        if (!sceneSwitched && Input.GetMouseButtonDown(0))
-        {
-            TrySwitchScene();
-        }
-
-        // ▼ アルファ値ループ（TextMeshPro）
+        // テキストアルファのループ
         if (loopAlphaText != null)
         {
             float alpha = Mathf.Lerp(minAlpha, maxAlpha, Mathf.PingPong(Time.time * alphaLoopSpeed, 1f));
-            Color currentColor = loopAlphaText.color;
-            currentColor.a = alpha;
-            loopAlphaText.color = currentColor;
+            Color color = loopAlphaText.color;
+            color.a = alpha;
+            loopAlphaText.color = color;
         }
 
-        // ドアの開き処理
+        // ドア開き処理
         if (!doorIsOpening)
         {
             timer += Time.deltaTime;
@@ -108,7 +74,7 @@ public class Door : MonoBehaviour
             }
         }
 
-        // カメラの移動とZ軸チェック
+        // カメラ移動
         if (cameraIsMoving && targetCamera != null && cameraTargetPosition != null)
         {
             targetCamera.transform.position = Vector3.Lerp(
@@ -116,31 +82,18 @@ public class Door : MonoBehaviour
                 cameraTargetPosition.position,
                 Time.deltaTime * cameraMoveSpeed
             );
-
             targetCamera.transform.rotation = Quaternion.Lerp(
                 targetCamera.transform.rotation,
                 cameraTargetPosition.rotation,
                 Time.deltaTime * cameraMoveSpeed
             );
 
-            if (!sceneSwitched && targetCamera.transform.position.z >= cameraTriggerZ)
+            // ▼ 目的地にある程度近づいたらSceneLoopSwitcherに通知
+            if (!requestedSceneChange && Vector3.Distance(targetCamera.transform.position, cameraTargetPosition.position) < 0.1f)
             {
-                TrySwitchScene();
+                requestedSceneChange = true;
+                SceneLoopSwitcher.RequestSceneChange(); // 呼び出し
             }
-        }
-    }
-
-    // シーン切り替え処理（共通化）
-    void TrySwitchScene()
-    {
-        sceneSwitched = true;
-        if (!string.IsNullOrEmpty(nextSceneName))
-        {
-            SceneManager.LoadScene(nextSceneName);
-        }
-        else
-        {
-            Debug.LogWarning("シーン名が設定されていません！");
         }
     }
 }
