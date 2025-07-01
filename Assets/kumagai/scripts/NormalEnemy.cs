@@ -85,7 +85,11 @@ public class NormalEnemy : StayEnemyTemplate
                 }
             }
             float time = Random.Range(0.5f, 2.0f);
-            StartCoroutine(MoveCoroutine(time, hideObjects[lastObject].transform.position));
+            if(lastObject>0)
+            {
+                StartCoroutine(MoveCoroutine(time, hideObjects[lastObject].transform.position));
+            }
+         
             float waitTime = Random.Range(1.0f, 3.0f);
             yield return new WaitForSeconds(time+waitTime);
 
