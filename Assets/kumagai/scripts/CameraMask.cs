@@ -20,14 +20,19 @@ public class CameraMask :SoundPlayer
 
     private void Awake()
     {
-        flashImage = GameObject.Find("imageObject").gameObject;
-        if(flashImage != null )
-        {
-            flashImage.SetActive(false);
-        }
+       
 
     }
 
+    private void OnEnable()
+    {
+        flashImage = GameObject.Find("imageObject").gameObject;
+        Debug.Log(flashImage.name);
+        if (flashImage != null)
+        {
+            flashImage.SetActive(false);
+        }
+    }
     void Start()
     {
         if(GameObject.Find("PhotoStorage")!=null)
@@ -47,6 +52,7 @@ public class CameraMask :SoundPlayer
     void Update()
     {
         timer -= Time.deltaTime;
+
         if(flashImage.activeSelf)
         {
             return;

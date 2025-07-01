@@ -18,6 +18,7 @@ TagManager:
   - tred
   - tblue
   - HideObject
+  - Canvas
   layers:
   - Default
   - TransparentFX
