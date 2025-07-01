@@ -7,22 +7,24 @@ using static HitManager;
 
 public class Mouse : MonoBehaviour
 {
-    Vector3 mousePos, pos;
-    public static int score;
+    Vector3 mousePos;
+    public static int score; //全体スコア
+
     Collider2D circleCollider;
-   [SerializeField] HitManager hitManager;
-   [SerializeField]GameObject HitObje;
     public Transform cameraCenter;
 
-    bool canMove = true; //移動可能かどうか
-
+    bool canMove = true;                //移動可能かどうか
     public ShutterEffect shutterEffect; //シャッターエフェクトへの参照
-
-    public GameObject ScoreTextPrefab;
-
+    
     [SerializeField] TextMeshProUGUI VarText;
+    public GameObject ScoreTextPrefab;  //スコアテキストのプレハブ
     int scoreText = 0;
 
+    public float ShutterTime = 3.0f;    //シャッター効果の持続時間
+    public float moveDistance = 2.0f;   //スコアテキストの移動距離
+
+    [SerializeField] HitManager hitManager;
+    [SerializeField] GameObject HitObje;
     void Start()
     {
         hitManager =  HitObje.GetComponent<HitManager>();
@@ -41,7 +43,7 @@ public class Mouse : MonoBehaviour
         if (Input.GetMouseButtonDown(0) && canMove &&hitManager.Mode == modeChange.cameraMode) //移動可能でクリックされたとき
         {
             AddScore();                                     //スコア追加
-            StartCoroutine(DisableMovementForSeconds(3f));  //移動の無効化
+            StartCoroutine(DisableMovementForSeconds(ShutterTime));  //移動の無効化
             shutterEffect.TriggerEffect();                  //シャッターエフェクトの発動
 
         }
@@ -109,11 +111,8 @@ public class Mouse : MonoBehaviour
         int nRarebonus = 0;
         int tRarebonus = 0;
 
-        //
-        HashSet<Transform> hitEyeParents = new HashSet<Transform>(); // 重複なしで親を集める
-        Dictionary<Transform, int> parentIndividualScore = new Dictionary<Transform, int>(); // 親ごとのスコア
-        //
-
+        HashSet<Transform> EyeParents = new HashSet<Transform>(); //重複なしで親を集める
+        Dictionary<Transform, (int nCount, int tCount)> EyeCount = new Dictionary<Transform, (int, int)>(); //親ごとのスコア管理
 
         //各コライダーが判定枠内に入っているかのチェック
         foreach (var col in colliders)
@@ -130,49 +129,66 @@ public class Mouse : MonoBehaviour
                 continue;//完全に入っていたら次へ
             }
 
-
-            //
+            //親オブジェクトを管理
             Transform parentObj = col.transform.parent;
             if (parentObj != null)
             {
-                hitEyeParents.Add(parentObj);
-                // 親ごとの初期スコア設定
-                if (!parentIndividualScore.ContainsKey(parentObj))
-                    parentIndividualScore[parentObj] = 0;
+                EyeParents.Add(parentObj);　//親をHashSetに追加
+
+                //親がDictionaryにない場合は初期化
+                if (!EyeCount.ContainsKey(parentObj))
+                {
+                    EyeCount[parentObj] = (0, 0);
+                }
             }
-
-
 
             //タグで目の種類を確認
             switch (col.tag)
             {
                 case "nEye":
                     nEye++;
-                    if (parentObj != null) parentIndividualScore[parentObj] += 1; // nEye1点
+                    if (parentObj != null)
+                    {
+                        EyeCount[parentObj] = (EyeCount[parentObj].nCount + 1, EyeCount[parentObj].tCount);     //nEye1点
+                    }
                     break;
                 case "tEye":
                     tEye++;
-                    if (parentObj != null) parentIndividualScore[parentObj] += 2; // tEye2点
+                    if (parentObj != null)
+                    {
+                        EyeCount[parentObj] = (EyeCount[parentObj].nCount, EyeCount[parentObj].tCount + 1); ;   //tEye2点
+                    }
                     break;
                 case "nred":
                     nRed++;
-                    if (parentObj != null) parentIndividualScore[parentObj] += GetRerebounus(1, 50);
+                    if (parentObj != null)
+                    {
+                        EyeCount[parentObj] = (EyeCount[parentObj].nCount + 1, EyeCount[parentObj].tCount);     //nEye1点
+                    }   
                     break;
                 case "nblue":
                     nBlue++;
-                    if (parentObj != null) parentIndividualScore[parentObj] += GetRerebounus(1, 100);
+                    if (parentObj != null)
+                    {
+                        EyeCount[parentObj] = (EyeCount[parentObj].nCount + 1, EyeCount[parentObj].tCount);     //nEye1点
+                    }
                     break;
                 case "tred":
                     tRed++;
-                    if (parentObj != null) parentIndividualScore[parentObj] += GetRerebounus(1, 70);
+                    if (parentObj != null)
+                    {
+                        EyeCount[parentObj] = (EyeCount[parentObj].nCount, EyeCount[parentObj].tCount + 1); ;   //tEye2点
+                    }
                     break;
                 case "tblue":
                     tBlue++;
-                    if (parentObj != null) parentIndividualScore[parentObj] += GetRerebounus(1, 120);
+                    if (parentObj != null)
+                    {
+                        EyeCount[parentObj] = (EyeCount[parentObj].nCount, EyeCount[parentObj].tCount + 1); ;   //tEye2点
+                    }
                     break;
             }
 
-            //
         }
 
         int nTotalEye = nEye + nRed + nBlue;
@@ -218,21 +234,44 @@ public class Mouse : MonoBehaviour
         {
             score += AddedScore;
 
-            //
-            // 親ごとに個別スコア表示
-            foreach (var parent in hitEyeParents)
+            //親ごとに個別のスコア表示
+            foreach (var parent in EyeParents)
             {
-                if (parent != null && parentIndividualScore.ContainsKey(parent))
+                if (parent == null)
                 {
-                    int individualScore = parentIndividualScore[parent];
-                    if (individualScore > 0)
-                    {
-                        ShowScoreText(individualScore, parent.position + Vector3.up * 1.5f);
-                    }
+                    continue;
+                }
+                
+                //親ごとの目のカウントを取得
+                int nCount = EyeCount[parent].nCount;
+                int tCount = EyeCount[parent].tCount;
+
+                int Displayscore = 0; //表示用のスコア
+
+                //ビビりの表示スコア
+                if (nCount >= 2)
+                {
+                    Displayscore = 2;
+                }
+                else
+                {
+                    Displayscore = 1;
+                }
+                //脅かしの表示スコア
+                if (tCount >= 2)
+                {
+                    Displayscore = 5;
+                }
+                else
+                {
+                    Displayscore = 2;
+                }
+
+                if (Displayscore > 0)
+                {
+                    ShowScoreText(Displayscore, parent.position + Vector3.up * 1.5f);
                 }
             }
-
-            //
 
             Debug.Log("TotalEyes:" + TotalEyes);
             Debug.Log("TotalEyesScore:" + TotalEyesScore);
@@ -313,24 +352,69 @@ public class Mouse : MonoBehaviour
         else return 0;
     }
 
-
-    //
-    void ShowScoreText(int amount, Vector3 worldPos)
+    /// <summary>
+    /// スコアテキストの表示処理
+    /// </summary>
+    /// <param name="ShowScore">表示スコア</param>
+    /// <param name="worldPos">表示位置</param>
+    void ShowScoreText(int ShowScore, Vector3 worldPos)
     {
-        if (ScoreTextPrefab == null) return;
+        //プレハブが設定されていない場合は処理を終了
+        if (ScoreTextPrefab == null)
+        {
+            return;
+        }
 
+        //スコアテキストオブジェクトを生成
         GameObject scoreTextObj = Instantiate(ScoreTextPrefab, worldPos, Quaternion.identity);
         TextMeshProUGUI textMesh = scoreTextObj.GetComponentInChildren<TextMeshProUGUI>();
 
         if (textMesh != null)
         {
-            textMesh.text = $"+{amount}";
+            textMesh.text = "+" + ShowScore;
+            // アニメーションコルーチンを開始
+            StartCoroutine(AnimateScoreText(textMesh, scoreTextObj));
         }
-
-        Destroy(scoreTextObj, 1f);
+        else
+        {
+            Destroy(scoreTextObj, ShutterTime);
+        }
     }
 
-    //
+    /// <summary>
+    /// スコアテキストのアニメーション処理
+    /// </summary>
+    /// <param name="textMesh">アニメーションするのテキスト</param>
+    /// <param name="scoreTextObj">アニメーションするオブジェクト</param>
+    /// <returns>コルーチン</returns>
+    IEnumerator AnimateScoreText(TextMeshProUGUI textMesh, GameObject scoreTextObj)
+    {
+        //位置
+        Vector3 startPos = scoreTextObj.transform.position;
+        Vector3 endPos = startPos + Vector3.up * moveDistance;
+
+        //色
+        Color startColor = textMesh.color;
+        Color endColor = new Color(startColor.r, startColor.g, startColor.b, 0f); //透明に
+
+        float elapsedTime = 0f;
+
+        while (elapsedTime < ShutterTime)
+        {
+            float progress = elapsedTime / ShutterTime;
+
+            //上に移動
+            scoreTextObj.transform.position = Vector3.Lerp(startPos, endPos, progress);
+
+            //透明度を0
+            textMesh.color = Color.Lerp(startColor, endColor, progress);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        Destroy(scoreTextObj);
+    }
+
 
     bool IsFullyInside(Bounds outer, Bounds inner)
     {

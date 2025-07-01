@@ -1819,6 +1819,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1345811837957096260, guid: 350f42bd442753f438f5bfc77a4abe99, type: 3}
+      propertyPath: m_TagString
+      value: tEye
+      objectReference: {fileID: 0}
     - target: {fileID: 1750668401148059786, guid: 350f42bd442753f438f5bfc77a4abe99, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.76
@@ -1866,6 +1870,10 @@ PrefabInstance:
     - target: {fileID: 6799248276376455495, guid: 350f42bd442753f438f5bfc77a4abe99, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7466161335102192657, guid: 350f42bd442753f438f5bfc77a4abe99, type: 3}
+      propertyPath: m_TagString
+      value: tEye
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3696,8 +3704,16 @@ PrefabInstance:
       value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 8709510090276080732, guid: 9218141d01ac55d4fa60a5c04a6ce6eb, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    - target: {fileID: 8709510090276080732, guid: 9218141d01ac55d4fa60a5c04a6ce6eb, type: 3}
       propertyPath: m_fontSizeBase
       value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 8709510090276080732, guid: 9218141d01ac55d4fa60a5c04a6ce6eb, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3724,6 +3740,14 @@ PrefabInstance:
       propertyPath: hitManager
       value: 
       objectReference: {fileID: 1836878077}
+    - target: {fileID: 185299896699258944, guid: 70dc622718b8b204d85f2000a359e5ef, type: 3}
+      propertyPath: ShutterTime
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 185299896699258944, guid: 70dc622718b8b204d85f2000a359e5ef, type: 3}
+      propertyPath: moveDistance
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 185299896699258944, guid: 70dc622718b8b204d85f2000a359e5ef, type: 3}
       propertyPath: shutterEffect
       value: 
