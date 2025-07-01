@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class Door : MonoBehaviour
 {
+    [Header("ドア設定")]
     public Transform leftDoor;
     public Transform rightDoor;
     public float openAngle = 90f;
@@ -44,7 +45,15 @@ public class Door : MonoBehaviour
 
     void Update()
     {
-        // テキストアルファのループ
+        // ▼ 左クリックで即シーン切り替え（Doorスキップ）
+        if (!requestedSceneChange && Input.GetMouseButtonDown(0))
+        {
+            requestedSceneChange = true;
+            RequestSceneChange();
+            return;
+        }
+
+        // ▼ TextMeshPro アルファループ（フェード演出）
         if (loopAlphaText != null)
         {
             float alpha = Mathf.Lerp(minAlpha, maxAlpha, Mathf.PingPong(Time.time * alphaLoopSpeed, 1f));
@@ -53,7 +62,7 @@ public class Door : MonoBehaviour
             loopAlphaText.color = color;
         }
 
-        // ドア開き処理
+        // ▼ ドア開き処理
         if (!doorIsOpening)
         {
             timer += Time.deltaTime;
@@ -74,7 +83,7 @@ public class Door : MonoBehaviour
             }
         }
 
-        // カメラ移動
+        // ▼ カメラ移動処理とシーン遷移判定
         if (cameraIsMoving && targetCamera != null && cameraTargetPosition != null)
         {
             targetCamera.transform.position = Vector3.Lerp(
@@ -88,12 +97,25 @@ public class Door : MonoBehaviour
                 Time.deltaTime * cameraMoveSpeed
             );
 
-            // ▼ 目的地にある程度近づいたらSceneLoopSwitcherに通知
-            if (!requestedSceneChange && Vector3.Distance(targetCamera.transform.position, cameraTargetPosition.position) < 0.1f)
+            if (!requestedSceneChange &&
+                Vector3.Distance(targetCamera.transform.position, cameraTargetPosition.position) < 0.1f)
             {
                 requestedSceneChange = true;
-                SceneLoopSwitcher.RequestSceneChange(); // 呼び出し
+                RequestSceneChange();
             }
+        }
+    }
+
+    void RequestSceneChange()
+    {
+        var switcher = Object.FindFirstObjectByType<SceneLoopSwitcher>();
+        if (switcher != null)
+        {
+            SceneLoopSwitcher.RequestSceneChange();
+        }
+        else
+        {
+            Debug.LogWarning("SceneLoopSwitcher が見つかりません。");
         }
     }
 }

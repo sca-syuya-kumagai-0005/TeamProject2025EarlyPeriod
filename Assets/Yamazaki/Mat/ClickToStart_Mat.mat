@@ -42,8 +42,8 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _FrameRate: 29
-    - _GlitchScale: 0
+    - _FrameRate: 28
+    - _GlitchScale: 20
     - _QueueControl: 0
     - _QueueOffset: 0
     m_Colors:
