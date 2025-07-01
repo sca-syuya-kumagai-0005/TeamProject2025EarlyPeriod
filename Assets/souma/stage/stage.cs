@@ -1,48 +1,59 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using System.Collections;
 
 public class SceneLoopSwitcher : MonoBehaviour
 {
-    public string[] sceneNames; // 切り替えたいシーン名を配列で設定
-    public float interval = 3f; // 秒数
+    public string[] sceneNames;
+    public string doorSceneName = "Door";
 
-    private int previousSceneIndex = -1; // 前回選ばれたシーンのインデックス（初期値は-1）
+    private int previousSceneIndex = -1;
     private int currentSceneIndex = 0;
+    private bool sceneChangeRequested = false;
+
+    private static SceneLoopSwitcher instance;
+
+    void Awake()
+    {
+        if (instance != null && instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        instance = this;
+        DontDestroyOnLoad(gameObject);
+    }
 
     void Start()
     {
-        StartCoroutine(SwitchScenesLoop());
+        // 最初にDoorシーンへ移動
+        SceneManager.LoadScene(doorSceneName);
     }
 
-    IEnumerator SwitchScenesLoop()
+    void Update()
     {
-        while (true)
+        // Door側から呼び出されたらシーン切り替えを行う
+        if (sceneChangeRequested)
         {
-            yield return new WaitForSeconds(interval);
+            sceneChangeRequested = false;
 
-            // ランダムにシーンを選ぶ（前回選ばれたシーンを避ける）
+            // ランダムにシーン選択（前回と異なる）
             do
             {
                 currentSceneIndex = Random.Range(0, sceneNames.Length);
             } while (currentSceneIndex == previousSceneIndex);
 
-            // 前回選ばれたシーンのインデックスを更新
             previousSceneIndex = currentSceneIndex;
 
-            // シーンのロード
             SceneManager.LoadScene(sceneNames[currentSceneIndex]);
         }
     }
 
-    void Awake()
+    // ▼ Door.cs から呼び出す用の関数
+    public static void RequestSceneChange()
     {
-        if (FindObjectsOfType<SceneLoopSwitcher>().Length > 1)
+        if (instance != null)
         {
-            Destroy(gameObject);
-            return;
+            instance.sceneChangeRequested = true;
         }
-
-        DontDestroyOnLoad(gameObject);
     }
 }

@@ -30,7 +30,7 @@ EditorBuildSettings:
     path: Assets/Scenes/YScene.unity
     guid: 685388a51f86037499e5ad5e37aa5ad3
   - enabled: 1
-    path: Assets/Scenes/MainGame.unity
+    path: Assets/Scenes/MainGame0.unity
     guid: 4f560a312c76e7e40a03536014152fbc
   - enabled: 1
     path: Assets/Scenes/Result.unity

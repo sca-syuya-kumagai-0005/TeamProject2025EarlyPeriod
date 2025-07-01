@@ -565,6 +565,9 @@ MonoBehaviour:
   - stage4
   - stage02
   interval: 3
+  doorSceneName: DoorScene1
+  triggerZ: 5
+  cameraTag: MainCamera
 --- !u!1 &2083489772
 GameObject:
   m_ObjectHideFlags: 0

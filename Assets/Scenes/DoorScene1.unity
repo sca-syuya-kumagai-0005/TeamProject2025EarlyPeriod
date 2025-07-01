@@ -1068,7 +1068,7 @@ GameObject:
   - component: {fileID: 683997888}
   - component: {fileID: 683997887}
   m_Layer: 5
-  m_Name: Click to Skip(TMP)
+  m_Name: ClicktoSkip(TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2319,10 +2319,10 @@ MonoBehaviour:
   cameraMoveSpeed: 1.5
   cameraTriggerZ: 1.5
   nextSceneName: MainGame
-  loopAlphaText: {fileID: 1528723624}
-  alphaLoopSpeed: 2
+  loopAlphaText: {fileID: 683997887}
+  alphaLoopSpeed: 1
   minAlpha: 0.1
-  maxAlpha: 1
+  maxAlpha: 0.8
 --- !u!4 &1611684011 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: d663dce8d3f5a3d45980ccab687022a1, type: 3}
