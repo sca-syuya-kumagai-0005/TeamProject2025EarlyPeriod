@@ -37,6 +37,9 @@ public class EnemySpriteAnimator : MonoBehaviour
     [Header("カメラフレームのCollider2D")]
     public Collider2D cameraFrameCollider;
 
+    [Header("カメラフレームのオブジェクト名（任意）")]
+    public string cameraFrameColliderName = "";
+
     private SpriteRenderer spriteRenderer;
     private int currentFrame = 0;
     private bool isPlaying = false;
@@ -55,6 +58,28 @@ public class EnemySpriteAnimator : MonoBehaviour
         Color c = spriteRenderer.color;
         c.a = 0.8f;
         spriteRenderer.color = c;
+
+        // 名前からCameraFrameのCollider2Dを取得（任意設定）
+        if (cameraFrameCollider == null && !string.IsNullOrEmpty(cameraFrameColliderName))
+        {
+            GameObject obj = GameObject.Find(cameraFrameColliderName);
+            if (obj != null)
+            {
+                Collider2D col = obj.GetComponent<Collider2D>();
+                if (col != null)
+                {
+                    cameraFrameCollider = col;
+                }
+                else
+                {
+                    Debug.LogWarning($"[{name}] 指定されたオブジェクト '{cameraFrameColliderName}' に Collider2D がありません。");
+                }
+            }
+            else
+            {
+                Debug.LogWarning($"[{name}] オブジェクト名 '{cameraFrameColliderName}' が見つかりませんでした。");
+            }
+        }
 
         if (playOnStart)
         {
