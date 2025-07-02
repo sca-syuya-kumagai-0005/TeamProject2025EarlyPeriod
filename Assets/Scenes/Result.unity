@@ -2685,7 +2685,7 @@ MonoBehaviour:
   cameraMask: {fileID: 0}
   photoList: []
   clonedEnemies: []
-  Magnification: 1
+  Magnification: 3
 --- !u!4 &569928106
 Transform:
   m_ObjectHideFlags: 0
