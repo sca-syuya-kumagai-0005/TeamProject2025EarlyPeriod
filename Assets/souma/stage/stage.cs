@@ -10,7 +10,7 @@ public class SceneLoopSwitcher : MonoBehaviour
 
     [Header("最初にロードするDoorシーン名")]
     // 起動直後に最初に遷移するDoorシーンの名前
-    public string doorSceneName = "Door";
+    public string doorSceneName = "DoorScene1";
 
     // 前回選ばれたシーンのインデックス（同じシーンを連続で選ばないため）
     private int previousSceneIndex = -1;
