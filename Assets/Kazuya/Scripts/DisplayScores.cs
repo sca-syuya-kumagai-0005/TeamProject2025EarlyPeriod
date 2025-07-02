@@ -3,6 +3,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Collections;
+using UnityEditor.Experimental.GraphView;
 
 public class DisplayScores : MonoBehaviour
 {
@@ -203,7 +204,20 @@ public class DisplayScores : MonoBehaviour
             return;
         }
 
-        // 2. 複製元の写真の全子要素から、写真全体のBoundsを計算
+        Transform maskTransform = photo.transform.Find(maskName);
+        if (maskTransform == null) { Debug.LogError("Maskオブジェクトが選択されていません:" + maskName); return; }
+
+        GameObject maskObject = maskTransform.gameObject;
+        var maskCollider = maskObject.GetComponent<Collider>();
+        if (maskCollider == null)
+        {
+            var tempCollider = maskObject.AddComponent<BoxCollider>();
+            maskCollider = tempCollider;
+        }
+
+        var maskBounds = maskCollider.bounds;
+
+        //. 複製元の写真の全子要素から、写真全体のBoundsを計算
         Renderer[] sourceRenderers = photo.GetComponentsInChildren<Renderer>();
         if (sourceRenderers.Length == 0)
         {
@@ -217,101 +231,52 @@ public class DisplayScores : MonoBehaviour
         }
 
         var destBounds = destCollider.bounds;
-        Transform maskTransform = photo.transform.Find(maskName);
-        if (maskTransform == null) { Debug.LogError("Maskオブジェクトが選択されていません:" + maskName); return; }
+        // 1. 全体的な縮小率を計算（写真→表示エリア）
+        float baseScaleRatio = Mathf.Min(destBounds.size.x / sourceBounds.size.x, destBounds.size.y / sourceBounds.size.y);
+        GameObject maskClone = Instantiate(maskObject);
+        maskClone.transform.position = destBounds.center;
+        maskClone.transform.localScale = maskObject.transform.lossyScale * baseScaleRatio * Magnification;
 
-        GameObject maskObject = maskTransform.gameObject;
-        if (maskObject.GetComponent<Collider>() == null)
-        {
-            maskObject.AddComponent<BoxCollider>();
-        }
-
+        clonedEnemies.Add(maskClone);
+        
         Transform[] allDescendants = photo.GetComponentsInChildren<Transform>();
-
-        bool maskDuplicated = false;
         int count = 1;
+
         // 全ての子孫の中から"Enemy"タグを持つオブジェクトを探す
         foreach (Transform descendant in allDescendants)
         {
+        if (!descendant.CompareTag("Enemy")) continue;
+            // --- ステップ1: まず全てのオバケを複製する ---
+            // これで元のdescendantオブジェクトは一切変更されません。
+            GameObject clone = Instantiate(descendant.gameObject);
 
-            if (!descendant.CompareTag("Enemy"))  continue; 
+            // --- ステップ2: 複製したクローンの位置とスケールを計算する ---
+            Vector3 originalCenterPos = maskObject.transform.position;
+            Vector3 newCenterPos = destBounds.center;
+            Vector3 relativePos = descendant.position - originalCenterPos;
+            Vector3 newPosition = newCenterPos + (relativePos * baseScaleRatio * Magnification);
+
+            clone.transform.position = newPosition;
+            clone.transform.localScale = descendant.lossyScale * baseScaleRatio * Magnification;
+            clone.transform.localScale = descendant.lossyScale * baseScaleRatio * Magnification;
+
+            if (maskBounds.Contains(descendant.position))
             {
-                //レイキャストによる判定
-                Vector3 rayorigin = descendant.position;
-                Vector3 rayDirection = (maskObject.transform.position - rayorigin).normalized;
-                float rayDistance = Vector3.Distance(rayorigin, maskObject.transform.position);
-                Ray ray = new Ray(rayorigin, rayDirection);
-                RaycastHit hit;
-                Debug.DrawRay(rayorigin, rayDirection * rayDistance, Color.red, 1.0f);
-                Debug.Log("レイの設定終了");
-                //if (Physics.Raycast(rayorigin, rayDirection, out hit, rayDistance + 0.1f))
-                {
-                    //if (hit.transform == maskTransform)
-                    {
-                        //マスクの元座標と複製後の中心座標
-                        Vector3 originalMaskPos = maskObject.transform.position;
-                        Vector3 maskCenterPos = destBounds.center;
-                        if (!maskDuplicated)
-                        {
-                            Vector3 originalPos = maskObject.transform.position;
+                Renderer cloneRenderer = clone.GetComponent<Renderer>();
+                if (cloneRenderer != null) cloneRenderer.sortingOrder = 10;
 
-                            float relatveX = Mathf.InverseLerp(sourceBounds.min.x, sourceBounds.max.x, originalPos.x);
-                            float relatveY = Mathf.InverseLerp(sourceBounds.min.y, sourceBounds.max.y, originalPos.y);
-                            // 1. スケール調整（写真と表示エリアの比率に合わせて）
-                            float scaleRatiomaskX = destBounds.size.x / sourceBounds.size.x;
-                            float scaleRatiomaskY = destBounds.size.y / sourceBounds.size.y;
-                            float finalScaleRatiomask = Mathf.Min(scaleRatiomaskX, scaleRatiomaskY);
+                if (cloneRoot != null) clone.transform.SetParent(cloneRoot);
 
-                            // 2. 複製して center に表示
-                            GameObject maskClone = Instantiate(maskObject.gameObject, maskCenterPos + (descendant.position - originalMaskPos) * finalScaleRatiomask, descendant.rotation);
-                            //descendant.gameObject, maskCenterPos + (descendant.position - originalMaskPos) * finalScaleRatio, descendant.rotation
-                            //  displayArea の中心に配置
-                            maskClone.transform.position = new Vector3(destBounds.center.x, destBounds.center.y, destBounds.center.z + 0.01f);
-
-                            // スケール・回転の調整
-                            maskClone.transform.localScale *= finalScaleRatiomask * Magnification;
-                            maskClone.transform.rotation = maskObject.transform.rotation;
-                            maskClone.name = maskObject.name + "_Copy";
-
-                            clonedEnemies.Add(maskClone);
-                            maskDuplicated = true;
-                        }
-                        Debug.Log("レイを感知　オブジェクトの複製を開始");
-                        // スケール比率
-                        float scaleX = destBounds.size.x / sourceBounds.size.x;
-                        float scaleY = destBounds.size.y / sourceBounds.size.y;
-                        float finalScaleRatio = Mathf.Min(scaleX, scaleY);
-
-                        //オバケの複製
-                        GameObject clone = Instantiate(descendant.gameObject, maskCenterPos + (descendant.position - originalMaskPos) * finalScaleRatio, descendant.rotation);
-
-                        Renderer cloneRenderer = clone.GetComponent<Renderer>();
-                        if (cloneRenderer == null) { Debug.LogError("Rendererの参照不可"); return; }
-
-                        if (cloneRenderer != null)
-                        {
-                            cloneRenderer.sortingOrder = 10;
-                        }
-                        //計算した比率を適用
-                        clone.transform.localScale = descendant.lossyScale * finalScaleRatio * Magnification;
-                        clone.transform.rotation = descendant.rotation;
-                        
-                        //ヒエラルキー順制御
-                        if(cloneRoot != null)
-                        {
-                            clone.transform.SetParent(cloneRoot);
-                            clone.transform.SetSiblingIndex(0);//降順に
-                        }
-                        
-                        clone.name = descendant.name + "_Copy"+$"{count }";
-                        // 後でまとめて削除するためにリストに追加
-                        clonedEnemies.Add(clone);
-                        count++;
-                    }
-                }
+                clone.name = descendant.name + "_Copy" + $"{count}";
+                clonedEnemies.Add(clone); // 表示リストに追加（後でまとめて消す）
+                count++;
+            }
+            else
+            {
+                // 【範囲外の場合】 -> 元のオブジェクトをすぐに破棄する
+                Destroy(clone);
             }
         }
-        maskTransform = null;
     }
     /// <summary>
     /// スコアの初期化
