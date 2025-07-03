@@ -10,9 +10,6 @@ public class VirtualKeyboard : MonoBehaviour
     public Transform buttonContainer;   //ボタンの並べる親オブジェクト
     public GameObject emptoPrefab;      //空白ボタン
 
-
-
-
     [Header("UIコンポーネント")]
     public Text nameText;               //入力中の名前のテキスト
     public Button dakutenButton;    //濁点ボタン
@@ -42,12 +39,26 @@ public class VirtualKeyboard : MonoBehaviour
     {"カ", "ガ"}, {"キ", "ギ"}, {"ク", "グ"}, {"ケ", "ゲ"}, {"コ", "ゴ"},
     {"サ", "ザ"}, {"シ", "ジ"}, {"ス", "ズ"}, {"セ", "ゼ"}, {"ソ", "ゾ"},
     {"タ", "ダ"}, {"チ", "ヂ"}, {"ツ", "ヅ"}, {"テ", "デ"}, {"ト", "ド"},
-    {"ハ", "バ"}, {"ヒ", "ビ"}, {"フ", "ブ"}, {"ヘ", "ベ"}, {"ホ", "ボ"}
+    {"ハ", "バ"}, {"ヒ", "ビ"}, {"フ", "ブ"}, {"ヘ", "ベ"}, {"ホ", "ボ"},
+    {"パ", "バ"}, {"ピ", "ビ"}, {"プ", "ブ"}, {"ペ", "ベ"}, {"ポ", "ボ"}
     };
 
+    Dictionary<string, string> reverseDakutenMap = new()
+{
+    {"ガ", "カ"}, {"ギ", "キ"}, {"グ", "ク"}, {"ゲ", "ケ"}, {"ゴ", "コ"},
+    {"ザ", "サ"}, {"ジ", "シ"}, {"ズ", "ス"}, {"ゼ", "セ"}, {"ゾ", "ソ"},
+    {"ダ", "タ"}, {"ヂ", "チ"}, {"ヅ", "ツ"}, {"デ", "テ"}, {"ド", "ト"},
+    {"バ", "ハ"}, {"ビ", "ヒ"}, {"ブ", "フ"}, {"ベ", "ヘ"}, {"ボ", "ホ"}
+};
 
     Dictionary<string, string> handakutenMap = new Dictionary<string, string>() {
-    {"ハ", "パ"}, {"ヒ", "ピ"}, {"フ", "プ"}, {"ヘ", "ペ"}, {"ホ", "ポ"}
+    {"ハ", "パ"}, {"ヒ", "ピ"}, {"フ", "プ"}, {"ヘ", "ペ"}, {"ホ", "ポ"},
+    {"バ", "パ"}, {"ビ", "ピ"}, {"ブ", "プ"}, {"ベ", "ペ"}, {"ボ", "ポ"}
+    };
+
+    Dictionary<string, string> reverseHandakutenMap = new()
+    {
+    {"パ", "ハ"}, {"ピ", "ヒ"}, {"プ", "フ"}, {"ペ", "ヘ"}, {"ポ", "ホ"}
     };
 
     void Start()
@@ -115,10 +126,16 @@ public class VirtualKeyboard : MonoBehaviour
         if(dakutenMap.TryGetValue(last, out string converted))
         {
             currentName = currentName.Substring(0,currentName.Length-1)+converted;
-        UpdateDisplay() ;
         }
+        else if(reverseDakutenMap.TryGetValue(last, out string original))
+        {
+            currentName = currentName.Substring(0, currentName.Length - 1) + original;
+        }
+        UpdateDisplay();
     }
-
+    /// <summary>
+    /// 文字の半濁点化
+    /// </summary>
     void AddHandakuten()
     {
         if (currentName.Length == 0) return;
@@ -126,8 +143,12 @@ public class VirtualKeyboard : MonoBehaviour
         if (handakutenMap.TryGetValue(last, out string converted))
         {
             currentName = currentName.Substring(0, currentName.Length - 1) + converted;
-            UpdateDisplay();
         }
+        else if (reverseHandakutenMap.TryGetValue(last, out string original))
+        {
+            currentName = currentName.Substring(0, currentName.Length - 1) + original;
+        }
+        UpdateDisplay();
     }
 
     //名前の確定
