@@ -425,6 +425,7 @@ MonoBehaviour:
   scaleDuration: 5
   targetImageName: FlashImage
   cameraFrameCollider: {fileID: 0}
+  cameraFrameColliderName: CameraCenter
 --- !u!60 &9199926404903162956
 PolygonCollider2D:
   m_ObjectHideFlags: 0

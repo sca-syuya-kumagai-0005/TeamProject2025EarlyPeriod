@@ -365,9 +365,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneNames:
-  - MainGame0
-  - MainGame1
-  - MainGame2
+  - kamata0
+  - kamata1
+  - kamata2
   doorSceneName: DoorScene1
 --- !u!4 &309009892
 Transform:
