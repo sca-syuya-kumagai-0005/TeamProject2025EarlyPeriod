@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Collections;
 using UnityEditor.Experimental.GraphView;
+using System.Linq;
 
 public class DisplayScores : MonoBehaviour
 {
@@ -138,13 +139,8 @@ public class DisplayScores : MonoBehaviour
             //}
 
             GameObject currentPhoto = photoList[i];
-            //var currentScoreData = pointlist.point[i];
 
-            //UpdateScores(currentScoreData);
-
-            //int photoScore = currentScoreData.eyes + currentScoreData.rarity + currentScoreData.bonus;
-            //cumulativeScore += photoScore;
-            //AddScore.text = $"{cumulativeScore}";
+            UpdateScores();
 
             skipRequested = false;
 
@@ -293,19 +289,93 @@ public class DisplayScores : MonoBehaviour
     /// スコアを集計し、UIテキストを更新する
     /// </summary>
     /// <param name="data"></param>
-    void UpdateScores(EnemyData data)
+    void UpdateScores()
     {
-        if (pointlist.point == null)
+        if (clonedEnemies.Count > 0)
         {
-            Debug.LogError("PointListが設定されていません。");
-            return;
+            GameObject maskClone = clonedEnemies[0]; // 最初の要素はマスク
+            int addedScore = CalculateScore(maskClone);
+            cumulativeScore += addedScore;
+            AddScore.text = $"{cumulativeScore}";
         }
-        // UIテキストに計算結果を反映
-        NumberEyes.text = $"{data.eyes}つ";
-        // ToDo: Coward, Furiousのカウント方法は元スクリプトで未定義のため、一旦0で表示
-        GostType.text = $"0体 0体"; // ToDo
-        Rarity.text = $"{data.rarity}";
-        BonusPoints.text = $"{data.bonus}";
+    }
+
+
+    int CalculateScore(GameObject maskClone)
+    {
+        int nEye = 0,tEye = 0,nRed = 0, tRed = 0,nBlue = 0,tBlue = 0;
+        string[] validTags = {"nEye","tEye","nred","tred","nblue","tblue"};
+
+        Collider maskCol = maskClone.GetComponent<Collider>();
+
+        Bounds maskBounds = maskCol.bounds;
+        foreach(GameObject ghot in clonedEnemies)
+        {
+            if(ghot == null) continue;
+
+            Collider[] childCols = ghot.GetComponentsInChildren<Collider>();
+            foreach(Collider col in childCols)
+            {
+                if (!validTags.Contains(col.tag)) continue;
+
+                if (maskBounds.Contains(col.bounds.min) && maskBounds.Contains(col.bounds.max))
+                {
+                    switch (col.tag)
+                    {
+                        case "nEye": nEye++; break;
+                        case "tEye": tEye++; break;
+                        case "nred": nRed++; break;
+                        case "tred": tRed++; break;
+                        case "nblue": nBlue++; break;
+                        case "tblue": tBlue++; break;
+                    }
+                }
+            }
+        }
+        // スコア計算（Mouse.cs と同じルール）
+        int score = 0;
+        int normal = nEye + nRed + nBlue;
+        score += (normal / 2) * 2;
+        if (normal % 2 == 1) score += 1;
+
+        int threaten = tEye + tRed + tBlue;
+        score += (threaten / 2) * 5;
+        if (threaten % 2 == 1) score += 2;
+
+        score += GetRareBonus(nRed, 50);
+        score += GetRareBonus(nBlue, 100);
+        score += GetRareBonus(tRed, 70);
+        score += GetRareBonus(tBlue, 120);
+
+        score += GetBonusPoint(normal + threaten);
+        return score;
+    }
+
+    int GetBonusPoint(int eyes)
+    {
+        switch (eyes)
+        {
+            case 3: return 5;
+            case 4: return 10;
+            case 5: return 20;
+            case 6: return 50;
+            case 7: return 100;
+            case 8: return 250;
+            case 9: return 300;
+            case 10: return 500;
+            default: return 0;
+        }
+    }
+
+    int GetRareBonus(int count, int baseScore)
+    {
+        if (count == 0) return 0;
+        if (count <= 2) return baseScore;
+        if (count <= 4) return baseScore * 2;
+        if (count <= 6) return baseScore * 3;
+        if (count <= 8) return baseScore * 4;
+        if (count <= 10) return baseScore * 5;
+        return baseScore * 6;
     }
 
     /// <summary>
