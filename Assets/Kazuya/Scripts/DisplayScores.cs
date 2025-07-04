@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Collections.Generic;
@@ -8,109 +8,109 @@ using System.Linq;
 
 public class DisplayScores : MonoBehaviour
 {
-    [Header("ƒXƒRƒAƒf[ƒ^")]
+    [Header("ã‚¹ã‚³ã‚¢ãƒ‡ãƒ¼ã‚¿")]
     [SerializeField] PointList pointlist;
 
-    [Header("UI•\¦ƒeƒLƒXƒg")]
-    [SerializeField] Text NumberEyes;//ƒGƒlƒ~[‚Ì–Ú‚Ì”
-    [SerializeField] Text GostType;//ƒGƒlƒ~[‚Ìí—Ş
-    [SerializeField] Text Rarity;//ƒŒƒA“x
-    [SerializeField] Text BonusPoints;//ƒ{[ƒiƒXƒ|ƒCƒ“ƒg
-    [SerializeField] Text AddScore;//—İŒvPoint
+    [Header("UIè¡¨ç¤ºãƒ†ã‚­ã‚¹ãƒˆ")]
+    [SerializeField] Text NumberEyes;//ã‚¨ãƒãƒŸãƒ¼ã®ç›®ã®æ•°
+    [SerializeField] Text GostType;//ã‚¨ãƒãƒŸãƒ¼ã®ç¨®é¡
+    [SerializeField] Text Rarity;//ãƒ¬ã‚¢åº¦
+    [SerializeField] Text BonusPoints;//ãƒœãƒ¼ãƒŠã‚¹ãƒã‚¤ãƒ³ãƒˆ
+    [SerializeField] Text AddScore;//ç´¯è¨ˆPoint
 
-    [Header("Ê^‚Ì•\¦‚Ìİ’è")]
-    [SerializeField] float WholePhotoTime = 1.5f;//æ‚Á‚½Ê^‚Ì•\¦ŠÔ
-    [SerializeField] float FocusedPhoto = 1.0f;//ƒsƒ“ƒg“àÊ^‚Ì•\¦ŠÔ
-    [SerializeField] float Information = 1.0f;//“¾“_‚ÌÚ×à–¾
+    [Header("å†™çœŸã®è¡¨ç¤ºã®è¨­å®š")]
+    [SerializeField] float WholePhotoTime = 1.5f;//å–ã£ãŸå†™çœŸã®è¡¨ç¤ºæ™‚é–“
+    [SerializeField] float FocusedPhoto = 1.0f;//ãƒ”ãƒ³ãƒˆå†…å†™çœŸã®è¡¨ç¤ºæ™‚é–“
+    [SerializeField] float Information = 1.0f;//å¾—ç‚¹ã®è©³ç´°èª¬æ˜
 
-    [Header("ƒV[ƒ“ˆÚs")]
-    public string nextSceneName = "RankingScene";//©ˆÚ“®æ‚ÌƒV[ƒ“–¼
+    [Header("ã‚·ãƒ¼ãƒ³ç§»è¡Œ")]
+    public string nextSceneName = "RankingScene";//â†ç§»å‹•å…ˆã®ã‚·ãƒ¼ãƒ³å
 
-    [Header("UI‚ÌŠî€ƒIƒuƒWƒFƒNƒg")]
-    [SerializeField] GameObject photoDisplayReference; // Ê^‚ğ•\¦‚·‚éˆÊ’u‚Æ‘å‚«‚³‚ÌŠî€‚Æ‚È‚éƒIƒuƒWƒFƒNƒg
-    [SerializeField] GameObject displayArea; // •¡»‚µ‚½ƒIƒoƒP‚ğ•\¦‚·‚é”ÍˆÍ‚Æ‚È‚éƒIƒuƒWƒFƒNƒg
+    [Header("UIã®åŸºæº–ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ")]
+    [SerializeField] GameObject photoDisplayReference; // å†™çœŸã‚’è¡¨ç¤ºã™ã‚‹ä½ç½®ã¨å¤§ãã•ã®åŸºæº–ã¨ãªã‚‹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
+    [SerializeField] GameObject displayArea; // è¤‡è£½ã—ãŸã‚ªãƒã‚±ã‚’è¡¨ç¤ºã™ã‚‹ç¯„å›²ã¨ãªã‚‹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
     [SerializeField] string maskName;
-    [SerializeField] Transform cloneRoot;//•\¦ƒGƒŠƒA‚É”z’u‚·‚éeƒIƒuƒWƒFƒNƒg
+    [SerializeField] Transform cloneRoot;//è¡¨ç¤ºã‚¨ãƒªã‚¢ã«é…ç½®ã™ã‚‹è¦ªã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 
-    [Header("‘‘—‚è‚·‚é‚Æ‚«‚Ì”{‘¬“x")]
+    [Header("æ—©é€ã‚Šã™ã‚‹ã¨ãã®å€é€Ÿåº¦")]
     [SerializeField] float acceleration = 0.3f;
 
-    [SerializeField] GameObject cameraMask; // ƒV[ƒ“‚ğ‚Ü‚½‚¢‚Å‰^‚Î‚ê‚Ä‚«‚½Ê^‚ÌeƒIƒuƒWƒFƒNƒg("PhotoStorage")
-    Transform photoContainer; // Ê^ƒIƒuƒWƒFƒNƒg‚ÌTransform
-    [SerializeField] List<GameObject> photoList = new List<GameObject>(); // Ê^‚ğŠi”[‚·‚éƒŠƒXƒg
-    [SerializeField] List<GameObject> clonedEnemies = new List<GameObject>(); // •¡»‚µ‚½ƒIƒoƒP‚ÌƒŠƒXƒg
-    [Header("Ê^‚ÌŠg‘å”{—¦")]
+    [SerializeField] GameObject cameraMask; // ã‚·ãƒ¼ãƒ³ã‚’ã¾ãŸã„ã§é‹ã°ã‚Œã¦ããŸå†™çœŸã®è¦ªã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ("PhotoStorage")
+    Transform photoContainer; // å†™çœŸã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®Transform
+    [SerializeField] List<GameObject> photoList = new List<GameObject>(); // å†™çœŸã‚’æ ¼ç´ã™ã‚‹ãƒªã‚¹ãƒˆ
+    [SerializeField] List<GameObject> clonedEnemies = new List<GameObject>(); // è¤‡è£½ã—ãŸã‚ªãƒã‚±ã®ãƒªã‚¹ãƒˆ
+    [Header("å†™çœŸã®æ‹¡å¤§å€ç‡")]
     [SerializeField] float Magnification =3.0f;
 
-    int cumulativeScore = 0; // —İŒvƒXƒRƒA
-                             //‘‘—‚è/ƒXƒLƒbƒv‚Ìƒtƒ‰ƒO
+    int cumulativeScore = 0; // ç´¯è¨ˆã‚¹ã‚³ã‚¢
+                             //æ—©é€ã‚Š/ã‚¹ã‚­ãƒƒãƒ—ã®ãƒ•ãƒ©ã‚°
     bool skipRequested = false;
     bool fastForwardRequested = false;
 
     void Start()
     {
-        // ƒV[ƒ“‚ğ‚Ü‚½‚¢‚¾Ê^‚ÌeƒIƒuƒWƒFƒNƒg‚ğæ“¾
+        // ã‚·ãƒ¼ãƒ³ã‚’ã¾ãŸã„ã å†™çœŸã®è¦ªã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’å–å¾—
         cameraMask = GameObject.Find("PhotoStorage");
         if (cameraMask == null)
         {
-            Debug.LogError("PhotoStorageƒIƒuƒWƒFƒNƒg‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñB");
+            Debug.LogError("PhotoStorageã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ã€‚");
             return;
         }
 
-        // •\¦ˆÊ’u‚ÌŠî€‚Æ‚È‚éƒIƒuƒWƒFƒNƒg‚ªİ’è‚³‚ê‚Ä‚¢‚é‚©Šm”F
+        // è¡¨ç¤ºä½ç½®ã®åŸºæº–ã¨ãªã‚‹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãŒè¨­å®šã•ã‚Œã¦ã„ã‚‹ã‹ç¢ºèª
         if (photoDisplayReference == null)
         {
-            Debug.LogError("Šî€ƒIƒuƒWƒFƒNƒg(photoDisplayReference)‚ªİ’è‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB");
+            Debug.LogError("åŸºæº–ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ(photoDisplayReference)ãŒè¨­å®šã•ã‚Œã¦ã„ã¾ã›ã‚“ã€‚");
             return;
         }
 
-        // Ê^ƒIƒuƒWƒFƒNƒg‚ğŒ»İ‚ÌƒV[ƒ“‚ÉˆÚ“®
+        // å†™çœŸã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ç¾åœ¨ã®ã‚·ãƒ¼ãƒ³ã«ç§»å‹•
         SceneManager.MoveGameObjectToScene(cameraMask, SceneManager.GetActiveScene());
         photoContainer = cameraMask.transform;
 
-        // --- Ê^‘S‘Ì‚Ì•\¦ˆÊ’u‚ÆƒXƒP[ƒ‹‚ğ©“®’²® ---
+        // --- å†™çœŸå…¨ä½“ã®è¡¨ç¤ºä½ç½®ã¨ã‚¹ã‚±ãƒ¼ãƒ«ã‚’è‡ªå‹•èª¿æ•´ ---
 
-        // 1. •\¦æ‚ÌŠî€ƒIƒuƒWƒFƒNƒg‚ÌBounds‚ğæ“¾
+        // 1. è¡¨ç¤ºå…ˆã®åŸºæº–ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®Boundsã‚’å–å¾—
         var targetBounds = photoDisplayReference.GetComponent<Collider>().bounds;
 
-        // 2. Ê^‚Ì‘Sq—v‘f‚ÌRenderer‚©‚çAÊ^‘S‘Ì‚ÌBounds‚ğŒvZ
+        // 2. å†™çœŸã®å…¨å­è¦ç´ ã®Rendererã‹ã‚‰ã€å†™çœŸå…¨ä½“ã®Boundsã‚’è¨ˆç®—
         Renderer[] childRenderers = cameraMask.GetComponentsInChildren<Renderer>(true);
         Debug.Log(childRenderers.Length);
         if (childRenderers.Length == 0)
         {
-            Debug.LogError("PhotoStorage‚ÌqƒIƒuƒWƒFƒNƒg‚ÉA•\¦‚·‚é‚½‚ß‚ÌRendererƒRƒ“ƒ|[ƒlƒ“ƒg‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñB");
+            Debug.LogError("PhotoStorageã®å­ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã«ã€è¡¨ç¤ºã™ã‚‹ãŸã‚ã®Rendererã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ã€‚");
             SceneManager.LoadScene(nextSceneName);
             return;
         }
 
-        // ‘S‚Ä‚Ìq‚ğˆÍ‚¤Bounds‚ğŒvZiÅ‰‚Ìq‚ÌBounds‚Å‰Šú‰»‚µAc‚è‚ğŒ‹‡‚µ‚Ä‚¢‚­j
+        // å…¨ã¦ã®å­ã‚’å›²ã†Boundsã‚’è¨ˆç®—ï¼ˆæœ€åˆã®å­ã®Boundsã§åˆæœŸåŒ–ã—ã€æ®‹ã‚Šã‚’çµåˆã—ã¦ã„ãï¼‰
         Bounds totalSourceBounds = childRenderers[0].bounds;
         for (int i = 1; i < childRenderers.Length; i++)
         {
             totalSourceBounds.Encapsulate(childRenderers[i].bounds);
         }
 
-        // 3. Ê^‚ÌˆÊ’u‚ğŠî€ƒIƒuƒWƒFƒNƒg‚Ì’†‰›‚Éİ’è
+        // 3. å†™çœŸã®ä½ç½®ã‚’åŸºæº–ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ä¸­å¤®ã«è¨­å®š
         cameraMask.transform.position = new Vector3(targetBounds.center.x, targetBounds.center.y, 70); //targetBounds.center;
 
-        // 4. Šî€ƒIƒuƒWƒFƒNƒg‚ÌƒTƒCƒY‚ÆÊ^‘S‘Ì‚ÌƒTƒCƒY‚Ì”ä—¦‚ğŒvZ
+        // 4. åŸºæº–ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ã‚µã‚¤ã‚ºã¨å†™çœŸå…¨ä½“ã®ã‚µã‚¤ã‚ºã®æ¯”ç‡ã‚’è¨ˆç®—
         float scaleX = targetBounds.size.x / totalSourceBounds.size.x;
         float scaleY = targetBounds.size.y / totalSourceBounds.size.y;
 
-        // c‰¡”ä‚ğˆÛ‚·‚é‚½‚ßAX‚ÆY‚Ì”ä—¦‚Ì‚¤‚¿¬‚³‚¢•û‚ğÌ—p
+        // ç¸¦æ¨ªæ¯”ã‚’ç¶­æŒã™ã‚‹ãŸã‚ã€Xã¨Yã®æ¯”ç‡ã®ã†ã¡å°ã•ã„æ–¹ã‚’æ¡ç”¨
         float finalScaleRatio = Mathf.Min(scaleX, scaleY);
 
-        // 5. ŒvZ‚µ‚½”ä—¦‚ğŒ»İ‚ÌƒXƒP[ƒ‹‚É“K—p
+        // 5. è¨ˆç®—ã—ãŸæ¯”ç‡ã‚’ç¾åœ¨ã®ã‚¹ã‚±ãƒ¼ãƒ«ã«é©ç”¨
         cameraMask.transform.localScale *= finalScaleRatio;
         if (photoContainer == null)
         {
-            Debug.LogError("Ê^ƒIƒuƒWƒFƒNƒg‚ª‰Šú‰»‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB");
+            Debug.LogError("å†™çœŸã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãŒåˆæœŸåŒ–ã•ã‚Œã¦ã„ã¾ã›ã‚“ã€‚");
             return;
         }
 
         ResetScoreUI();
 
-        // PhotoStorage‚Ìq—v‘fiB‰e‚µ‚½Ê^j‚ğƒŠƒXƒg‚É’Ç‰Á
+        // PhotoStorageã®å­è¦ç´ ï¼ˆæ’®å½±ã—ãŸå†™çœŸï¼‰ã‚’ãƒªã‚¹ãƒˆã«è¿½åŠ 
         photoList.Clear();
         for (int i = 0; i < photoContainer.childCount; i++)
         {
@@ -125,7 +125,7 @@ public class DisplayScores : MonoBehaviour
         HandleUserInput();
     }
     /// <summary>
-    /// Ê^‚ğƒŠƒXƒg‚É‚Ü‚Æ‚ß‚é
+    /// å†™çœŸã‚’ãƒªã‚¹ãƒˆã«ã¾ã¨ã‚ã‚‹
     /// </summary>
     /// <returns></returns>
     IEnumerator ProcessPhotos()
@@ -134,14 +134,11 @@ public class DisplayScores : MonoBehaviour
         {
             //if (i >= pointlist.point.Count)
             //{
-            //    Debug.LogWarning("Ê^‚Ì”‚ÆƒXƒRƒAƒf[ƒ^‚Ì”‚ªˆê’v‚µ‚È‚¢‚½‚ßAˆ—‚ğ’†’f‚µ‚Ü‚·B");
+            //    Debug.LogWarning("å†™çœŸã®æ•°ã¨ã‚¹ã‚³ã‚¢ãƒ‡ãƒ¼ã‚¿ã®æ•°ãŒä¸€è‡´ã—ãªã„ãŸã‚ã€å‡¦ç†ã‚’ä¸­æ–­ã—ã¾ã™ã€‚");
             //    break;
             //}
 
             GameObject currentPhoto = photoList[i];
-
-            UpdateScores();
-
             skipRequested = false;
 
             yield return StartCoroutine(PhotoDisplaySequence(currentPhoto));
@@ -156,9 +153,9 @@ public class DisplayScores : MonoBehaviour
         SceneManager.LoadScene(nextSceneName);
     }
     /// <summary>
-    /// Ê^‚ğ•\¦‚·‚éƒV[ƒNƒGƒ“ƒX
+    /// å†™çœŸã‚’è¡¨ç¤ºã™ã‚‹ã‚·ãƒ¼ã‚¯ã‚¨ãƒ³ã‚¹
     /// </summary>
-    /// <param name="photo">Ê^‚Ì–¼‘O</param>
+    /// <param name="photo">å†™çœŸã®åå‰</param>
     /// <returns></returns>
     IEnumerator PhotoDisplaySequence(GameObject photo)
     {
@@ -172,36 +169,38 @@ public class DisplayScores : MonoBehaviour
         yield return new WaitForSeconds(GetInterval(FocusedPhoto));
 
         if (skipRequested) yield break;
+        UpdateScores();
         yield return new WaitForSeconds(GetInterval(Information));
 
-        // •¡»‚µ‚½Enemy‚ğ‚·‚×‚Äíœ
+        // è¤‡è£½ã—ãŸEnemyã‚’ã™ã¹ã¦å‰Šé™¤
         foreach (GameObject enemy in clonedEnemies)
         {
             if (enemy != null) Destroy(enemy);
         }
         clonedEnemies.Clear();
+        ResetScoreUI();
     }
     /// <summary>
-    /// ƒIƒoƒP‚ğÊ^‚©‚çØ‚èæ‚Á‚Ä•¡»‚·‚é
+    /// ã‚ªãƒã‚±ã‚’å†™çœŸã‹ã‚‰åˆ‡ã‚Šå–ã£ã¦è¤‡è£½ã™ã‚‹
     /// </summary>
-    /// <param name="photo">Ê^ƒIƒuƒWƒFƒNƒg–¼‘O</param>
+    /// <param name="photo">å†™çœŸã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆåå‰</param>
     void DuplicateAndMoveEnemies(GameObject photo)
     {
-        // 1. •\¦æ‚Ì”ÍˆÍƒIƒuƒWƒFƒNƒg‚Æ‚»‚ÌCollider‚ğæ“¾
+        // 1. è¡¨ç¤ºå…ˆã®ç¯„å›²ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã¨ãã®Colliderã‚’å–å¾—
         if (displayArea == null)
         {
-            Debug.LogError("ƒIƒoƒP‚Ì•\¦”ÍˆÍ(displayArea)‚ªİ’è‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB");
+            Debug.LogError("ã‚ªãƒã‚±ã®è¡¨ç¤ºç¯„å›²(displayArea)ãŒè¨­å®šã•ã‚Œã¦ã„ã¾ã›ã‚“ã€‚");
             return;
         }
         var destCollider = displayArea.GetComponent<Collider>();
         if (destCollider == null)
         {
-            Debug.LogError("displayArea‚ÉCollider‚ªƒAƒ^ƒbƒ`‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB");
+            Debug.LogError("displayAreaã«ColliderãŒã‚¢ã‚¿ãƒƒãƒã•ã‚Œã¦ã„ã¾ã›ã‚“ã€‚");
             return;
         }
 
         Transform maskTransform = photo.transform.Find(maskName);
-        if (maskTransform == null) { Debug.LogError("MaskƒIƒuƒWƒFƒNƒg‚ª‘I‘ğ‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ:" + maskName); return; }
+        if (maskTransform == null) { Debug.LogError("Maskã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãŒé¸æŠã•ã‚Œã¦ã„ã¾ã›ã‚“:" + maskName); return; }
 
         GameObject maskObject = maskTransform.gameObject;
         var maskCollider = maskObject.GetComponent<Collider>();
@@ -213,11 +212,11 @@ public class DisplayScores : MonoBehaviour
 
         var maskBounds = maskCollider.bounds;
 
-        //. •¡»Œ³‚ÌÊ^‚Ì‘Sq—v‘f‚©‚çAÊ^‘S‘Ì‚ÌBounds‚ğŒvZ
+        //. è¤‡è£½å…ƒã®å†™çœŸã®å…¨å­è¦ç´ ã‹ã‚‰ã€å†™çœŸå…¨ä½“ã®Boundsã‚’è¨ˆç®—
         Renderer[] sourceRenderers = photo.GetComponentsInChildren<Renderer>();
         if (sourceRenderers.Length == 0)
         {
-            Debug.LogError("•¡»Œ³‚ÌÊ^‚É•\¦‰Â”\‚Èq—v‘f(Renderer)‚ª‚ ‚è‚Ü‚¹‚ñB");
+            Debug.LogError("è¤‡è£½å…ƒã®å†™çœŸã«è¡¨ç¤ºå¯èƒ½ãªå­è¦ç´ (Renderer)ãŒã‚ã‚Šã¾ã›ã‚“ã€‚");
             return;
         }
         Bounds sourceBounds = sourceRenderers[0].bounds;
@@ -227,7 +226,7 @@ public class DisplayScores : MonoBehaviour
         }
 
         var destBounds = destCollider.bounds;
-        // 1. ‘S‘Ì“I‚Èk¬—¦‚ğŒvZiÊ^¨•\¦ƒGƒŠƒAj
+        // 1. å…¨ä½“çš„ãªç¸®å°ç‡ã‚’è¨ˆç®—ï¼ˆå†™çœŸâ†’è¡¨ç¤ºã‚¨ãƒªã‚¢ï¼‰
         float baseScaleRatio = Mathf.Min(destBounds.size.x / sourceBounds.size.x, destBounds.size.y / sourceBounds.size.y);
         GameObject maskClone = Instantiate(maskObject);
         maskClone.transform.position = destBounds.center;
@@ -238,15 +237,15 @@ public class DisplayScores : MonoBehaviour
         Transform[] allDescendants = photo.GetComponentsInChildren<Transform>();
         int count = 1;
 
-        // ‘S‚Ä‚Ìq‘·‚Ì’†‚©‚ç"Enemy"ƒ^ƒO‚ğ‚ÂƒIƒuƒWƒFƒNƒg‚ğ’T‚·
+        // å…¨ã¦ã®å­å­«ã®ä¸­ã‹ã‚‰"Enemy"ã‚¿ã‚°ã‚’æŒã¤ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’æ¢ã™
         foreach (Transform descendant in allDescendants)
         {
         if (!descendant.CompareTag("Enemy")) continue;
-            // --- ƒXƒeƒbƒv1: ‚Ü‚¸‘S‚Ä‚ÌƒIƒoƒP‚ğ•¡»‚·‚é ---
-            // ‚±‚ê‚ÅŒ³‚ÌdescendantƒIƒuƒWƒFƒNƒg‚ÍˆêØ•ÏX‚³‚ê‚Ü‚¹‚ñB
+            // --- ã‚¹ãƒ†ãƒƒãƒ—1: ã¾ãšå…¨ã¦ã®ã‚ªãƒã‚±ã‚’è¤‡è£½ã™ã‚‹ ---
+            // ã“ã‚Œã§å…ƒã®descendantã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã¯ä¸€åˆ‡å¤‰æ›´ã•ã‚Œã¾ã›ã‚“ã€‚
             GameObject clone = Instantiate(descendant.gameObject);
 
-            // --- ƒXƒeƒbƒv2: •¡»‚µ‚½ƒNƒ[ƒ“‚ÌˆÊ’u‚ÆƒXƒP[ƒ‹‚ğŒvZ‚·‚é ---
+            // --- ã‚¹ãƒ†ãƒƒãƒ—2: è¤‡è£½ã—ãŸã‚¯ãƒ­ãƒ¼ãƒ³ã®ä½ç½®ã¨ã‚¹ã‚±ãƒ¼ãƒ«ã‚’è¨ˆç®—ã™ã‚‹ ---
             Vector3 originalCenterPos = maskObject.transform.position;
             Vector3 newCenterPos = destBounds.center;
             Vector3 relativePos = descendant.position - originalCenterPos;
@@ -264,18 +263,18 @@ public class DisplayScores : MonoBehaviour
                 if (cloneRoot != null) clone.transform.SetParent(cloneRoot);
 
                 clone.name = descendant.name + "_Copy" + $"{count}";
-                clonedEnemies.Add(clone); // •\¦ƒŠƒXƒg‚É’Ç‰ÁiŒã‚Å‚Ü‚Æ‚ß‚ÄÁ‚·j
+                clonedEnemies.Add(clone); // è¡¨ç¤ºãƒªã‚¹ãƒˆã«è¿½åŠ ï¼ˆå¾Œã§ã¾ã¨ã‚ã¦æ¶ˆã™ï¼‰
                 count++;
             }
             else
             {
-                // y”ÍˆÍŠO‚Ìê‡z -> Œ³‚ÌƒIƒuƒWƒFƒNƒg‚ğ‚·‚®‚É”jŠü‚·‚é
+                // ã€ç¯„å›²å¤–ã®å ´åˆã€‘ -> å…ƒã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ã™ãã«ç ´æ£„ã™ã‚‹
                 Destroy(clone);
             }
         }
     }
     /// <summary>
-    /// ƒXƒRƒA‚Ì‰Šú‰»
+    /// ã‚¹ã‚³ã‚¢ã®åˆæœŸåŒ–
     /// </summary>
     void ResetScoreUI()
     {
@@ -286,17 +285,21 @@ public class DisplayScores : MonoBehaviour
         AddScore.text = "0";
     }
     /// <summary>
-    /// ƒXƒRƒA‚ğWŒv‚µAUIƒeƒLƒXƒg‚ğXV‚·‚é
+    /// ã‚¹ã‚³ã‚¢ã‚’é›†è¨ˆã—ã€UIãƒ†ã‚­ã‚¹ãƒˆã‚’æ›´æ–°ã™ã‚‹
     /// </summary>
     /// <param name="data"></param>
     void UpdateScores()
     {
         if (clonedEnemies.Count > 0)
         {
-            GameObject maskClone = clonedEnemies[0]; // Å‰‚Ì—v‘f‚Íƒ}ƒXƒN
-            int addedScore = CalculateScore(maskClone);
-            cumulativeScore += addedScore;
-            AddScore.text = $"{cumulativeScore}";
+            GameObject maskClone = clonedEnemies[0]; // æœ€åˆã®è¦ç´ ã¯ãƒã‚¹ã‚¯
+            ScoreDetail detail = CalculateScoreDetails(maskClone);
+
+            cumulativeScore += detail.totalScore;
+            Debug.Log(detail.totalScore);
+            AddScore.text = $"{detail.totalScore}";
+
+            UpdateDetailedScoreUI(detail,detail.totalScore);
         }
     }
 
@@ -332,7 +335,7 @@ public class DisplayScores : MonoBehaviour
                 }
             }
         }
-        // ƒXƒRƒAŒvZiMouse.cs ‚Æ“¯‚¶ƒ‹[ƒ‹j
+        // ã‚¹ã‚³ã‚¢è¨ˆç®—ï¼ˆMouse.cs ã¨åŒã˜ãƒ«ãƒ¼ãƒ«ï¼‰
         int score = 0;
         int normal = nEye + nRed + nBlue;
         score += (normal / 2) * 2;
@@ -350,7 +353,6 @@ public class DisplayScores : MonoBehaviour
         score += GetBonusPoint(normal + threaten);
         return score;
     }
-
     int GetBonusPoint(int eyes)
     {
         switch (eyes)
@@ -379,27 +381,110 @@ public class DisplayScores : MonoBehaviour
     }
 
     /// <summary>
-    /// ƒ†[ƒU[“ü—Íˆ—
+    /// ãƒ¦ãƒ¼ã‚¶ãƒ¼å…¥åŠ›å‡¦ç†
     /// </summary>
     void HandleUserInput()
     {
-        //ƒXƒLƒbƒvˆ—
+        //ã‚¹ã‚­ãƒƒãƒ—å‡¦ç†
         if (Input.GetKeyDown(KeyCode.S))
         {
             skipRequested = true;
         }
-        //‘‘—‚èˆ—
+        //æ—©é€ã‚Šå‡¦ç†
         fastForwardRequested = Input.GetKey(KeyCode.F);
     }
 
     /// <summary>
-    /// ‘‘—‚èó‘Ô‚ğl—¶‚µ‚½A‘Ò‹@ŠÔ
+    /// æ—©é€ã‚ŠçŠ¶æ…‹ã‚’è€ƒæ…®ã—ãŸã€å¾…æ©Ÿæ™‚é–“
     /// </summary>
-    /// <param name="baseInterval">•W€‚Ì‘Ò‹@ŠÔ</param>
+    /// <param name="baseInterval">æ¨™æº–ã®å¾…æ©Ÿæ™‚é–“</param>
     /// <returns></returns>
     float GetInterval(float baseInterval)
     {
-        //‘‘—‚è—v‹‚ª‚ ‚ê‚ÎŠî–{ŠÔ‚Ìn”{A‚È‚¯‚ê‚ÎŠî–{ŠÔ‚ğ‚»‚Ì‚Ü‚Ü•Ô‚·
+        //æ—©é€ã‚Šè¦æ±‚ãŒã‚ã‚Œã°åŸºæœ¬æ™‚é–“ã®nå€ã€ãªã‘ã‚Œã°åŸºæœ¬æ™‚é–“ã‚’ãã®ã¾ã¾è¿”ã™
         return fastForwardRequested ? baseInterval * acceleration : baseInterval;
     }
+
+    // è©³ç´°ã‚¹ã‚³ã‚¢æƒ…å ±æ ¼ç´ç”¨ã‚¯ãƒ©ã‚¹
+    class ScoreDetail
+    {
+        public int totalScore = 0;
+        public int rareBonus = 0;
+        public Dictionary<string, int> enemyTypeCounts = new(); // ã‚ªãƒã‚±ã®ç¨®é¡ã‚«ã‚¦ãƒ³ãƒˆ
+        public Dictionary<string, int> individualScores = new(); // å„ã‚ªãƒã‚±ã®ã‚¹ã‚³ã‚¢
+    }
+
+    // è©³ç´°ã‚¹ã‚³ã‚¢ã‚’é›†è¨ˆ
+    ScoreDetail CalculateScoreDetails(GameObject maskClone)
+    {
+        ScoreDetail detail = new();
+
+        if (maskClone == null || clonedEnemies.Count == 0) return detail;
+
+        Collider maskCol = maskClone.GetComponent<Collider>();
+        if (maskCol == null) return detail;
+
+        Bounds maskBounds = maskCol.bounds;
+
+        for (int i = 1; i < clonedEnemies.Count; i++) // 0ç•ªç›®ã¯maskClone
+        {
+            GameObject ghost = clonedEnemies[i];
+            if (ghost == null) continue;
+
+            string typeName = ghost.name.Replace("_Copy", "").Split('_')[0];
+
+            // ã‚¿ã‚°ã‚«ã‚¦ãƒ³ãƒˆ
+            int nEye = 0, tEye = 0, nRed = 0, tRed = 0, nBlue = 0, tBlue = 0;
+            Collider[] childCols = ghost.GetComponentsInChildren<Collider>();
+
+            foreach (var col in childCols)
+            {
+                if (!maskBounds.Contains(col.bounds.min) || !maskBounds.Contains(col.bounds.max)) continue;
+
+                switch (col.tag)
+                {
+                    case "nEye": nEye++; break;
+                    case "tEye": tEye++; break;
+                    case "nred": nRed++; break;
+                    case "tred": tRed++; break;
+                    case "nblue": nBlue++; break;
+                    case "tblue": tBlue++; break;
+                }
+            }
+
+            int normal = nEye + nRed + nBlue;
+            int threaten = tEye + tRed + tBlue;
+            int rare = GetRareBonus(nRed, 50) + GetRareBonus(nBlue, 100) + GetRareBonus(tRed, 70) + GetRareBonus(tBlue, 120);
+            int score = (normal / 2) * 2 + (normal % 2) + (threaten / 2) * 5 + (threaten % 2 == 1 ? 2 : 0) + rare;
+
+            detail.totalScore += score;
+            detail.rareBonus += rare;
+            Debug.Log(score);
+
+            if (!detail.enemyTypeCounts.ContainsKey(typeName))
+                detail.enemyTypeCounts[typeName] = 0;
+            detail.enemyTypeCounts[typeName]++;
+
+            detail.individualScores[ghost.name] = score;
+        }
+
+        return detail;
+    }
+
+    // è©³ç´°ã‚¹ã‚³ã‚¢ã‚’UIã¸åæ˜ ã™ã‚‹ãƒ¡ã‚½ãƒƒãƒ‰ï¼ˆUpdateScoreså†…ã§ä½¿ç”¨ï¼‰
+    void UpdateDetailedScoreUI(ScoreDetail detail,int photoScore)
+    {
+        // ç·ã‚¹ã‚³ã‚¢ã®æ›´æ–°
+        AddScore.text = $"{photoScore}";
+
+        // ã‚ªãƒã‚±ã®ç¨®é¡ã”ã¨ã®è¡¨ç¤ºï¼ˆä¾‹ï¼šSlime:2ä½“ / Ghost:1ä½“ï¼‰
+        GostType.text = string.Join(" / ",
+            detail.enemyTypeCounts.Select(kv => $"{kv.Key}:{kv.Value}ä½“"));
+
+        // ãƒ¬ã‚¢ãƒœãƒ¼ãƒŠã‚¹ã®ã¿è¡¨ç¤º
+        BonusPoints.text = $"ãƒ¬ã‚¢:{detail.rareBonus}ç‚¹";
+
+    }
+
 }
+
