@@ -25,10 +25,13 @@ public class ScoreRanking : MonoBehaviour
 
     ScoreEvaluation scoreEvaluation;
     [SerializeField] VirtualKeyboard virtualKeyboard;
+    [SerializeField] GameObject virtualObject;
+    [SerializeField] Canvas VirtualCanvas;
     void Start()
     {
         scoreEvaluation = GetComponent<ScoreEvaluation>();
-        score = Mouse.score;
+        //score = Mouse.score;
+        score = scoreEvaluation.testScore;
 
         /// ランキングの手順
         //StreamingAssetsフォルダのCSVファイルのパスを取得
@@ -45,28 +48,46 @@ public class ScoreRanking : MonoBehaviour
 
             //ボタンにイベントの登録
             subitButton.onClick.AddListener(OnSubmitName);*/
-            virtualKeyboard.gameObject.SetActive(true);
-            virtualKeyboard.OnNameSubmitted = OnSubmitName;
+            TextObject.SetActive(false);
+            virtualObject.SetActive(true);
+            virtualKeyboard.OnNameSubmitted = OnSubmitNameWithKeyboard;
         }
         else
         {
+            TextObject.SetActive(true);
             UpdateRankingDisplay();
             StartCoroutine(ButtonSetUp());
         }
     }
 
 
-    void OnSubmitName(string playerName)
+    //void OnSubmitName(string playerName)
+    //{
+    //    if (!string.IsNullOrEmpty(playerName))
+    //    {
+    //        InsertScore(playerName, score);
+    //        SaveRanking();
+    //        UpdateRankingDisplay();
+    //        virtualKeyboard.gameObject.SetActive(false);
+    //        StartCoroutine(ButtonSetUp());
+    //    }
+    //}
+
+
+    void OnSubmitNameWithKeyboard(string playerName)
     {
         if (!string.IsNullOrEmpty(playerName))
         {
             InsertScore(playerName, score);
             SaveRanking();
+            TextObject.SetActive(true);
             UpdateRankingDisplay();
-            virtualKeyboard.gameObject.SetActive(false);
             StartCoroutine(ButtonSetUp());
+            virtualObject.SetActive(false);
+            VirtualCanvas.enabled = false;
+
         }
-    } 
+    }
 
     /// <summary>
     /// ランキングの読み込み
