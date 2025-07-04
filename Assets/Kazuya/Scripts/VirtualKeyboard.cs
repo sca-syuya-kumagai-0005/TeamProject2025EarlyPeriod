@@ -1,64 +1,65 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.UI;
 using System;
 using System.Collections.Generic;
+using UnityEngine.InputSystem;
 
 public class VirtualKeyboard : MonoBehaviour
 {
-    [Header("‰¼‘zƒL[ƒ{[ƒhİ’è")]
-    public GameObject buttonPrefab;     //•¶šƒ{ƒ^ƒ“‚ÌƒvƒŒƒnƒu
-    public Transform buttonContainer;   //ƒ{ƒ^ƒ“‚Ì•À‚×‚éeƒIƒuƒWƒFƒNƒg
-    public GameObject emptoPrefab;      //‹ó”’ƒ{ƒ^ƒ“
+    [Header("ä»®æƒ³ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰è¨­å®š")]
+    public GameObject buttonPrefab;     //æ–‡å­—ãƒœã‚¿ãƒ³ã®ãƒ—ãƒ¬ãƒãƒ–
+    public Transform buttonContainer;   //ãƒœã‚¿ãƒ³ã®ä¸¦ã¹ã‚‹è¦ªã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
+    public GameObject emptoPrefab;      //ç©ºç™½ãƒœã‚¿ãƒ³
 
-    [Header("UIƒRƒ“ƒ|[ƒlƒ“ƒg")]
-    public Text nameText;               //“ü—Í’†‚Ì–¼‘O‚ÌƒeƒLƒXƒg
-    public Button dakutenButton;    //‘÷“_ƒ{ƒ^ƒ“
-    public Button handakutenButton; //”¼‘÷“_ƒ{ƒ^ƒ“
-    public Button deleteButton;          //1•¶šíœƒ{ƒ^ƒ“
-    public Button alldeteButton;        //‘S•¶šíœƒ{ƒ^ƒ“
-    public Button submitButton;         //–¼‘O‚ÌŠm’èƒ{ƒ^ƒ“
+    [Header("UIã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆ")]
+    public Text nameText;               //å…¥åŠ›ä¸­ã®åå‰ã®ãƒ†ã‚­ã‚¹ãƒˆ
+    public Button dakutenButton;    //æ¿ç‚¹ãƒœã‚¿ãƒ³
+    public Button handakutenButton; //åŠæ¿ç‚¹ãƒœã‚¿ãƒ³
+    public Button deleteButton;          //1æ–‡å­—å‰Šé™¤ãƒœã‚¿ãƒ³
+    public Button alldeteButton;        //å…¨æ–‡å­—å‰Šé™¤ãƒœã‚¿ãƒ³
+    public Button submitButton;         //åå‰ã®ç¢ºå®šãƒœã‚¿ãƒ³
 
-    public Action<string> OnNameSubmitted;  //–¼‘O‚ª“ü—Í‚³‚ê‚½‡}
+    public Action<string> OnNameSubmitted;  //åå‰ãŒå…¥åŠ›ã•ã‚ŒãŸåˆå›³
 
-    private string currentName = "";        //“ü—Í’†‚Ì–¼‘O
-    [Header("•¶š”§ŒÀ")]
-    [SerializeField]private int maxLength = 7;        //Å‘å‚Ì“ü—Í”
+    private string currentName = "";        //å…¥åŠ›ä¸­ã®åå‰
+    [Header("æ–‡å­—æ•°åˆ¶é™")]
+    [SerializeField]private int maxLength = 7;        //æœ€å¤§ã®å…¥åŠ›æ•°
 
-    //ƒŒƒCƒAƒEƒg
+    //ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
     string[] katakanaChars = new string[]
     {
-        "[","ƒ","ƒ‰","ƒ„","ƒ}","ƒn","ƒi","ƒ^","ƒT","ƒJ","ƒA",
-        "ƒb","","ƒŠ","","ƒ~","ƒq","ƒj","ƒ`","ƒV","ƒL","ƒC",
-        "ƒƒ","ƒ’","ƒ‹","ƒ†","ƒ€","ƒt","ƒk","ƒc","ƒX","ƒN","ƒE",
-        "ƒ…","","ƒŒ","","ƒ","ƒw","ƒl","ƒe","ƒZ","ƒP","ƒG",
-        "ƒ‡","ƒ“","ƒ","ƒˆ","ƒ‚","ƒz","ƒm","ƒg","ƒ\","ƒR","ƒI",
+        "[â†]","ãƒ¼","ãƒ¯","ãƒ©","ãƒ¤","ãƒ","ãƒ","ãƒŠ","ã‚¿","ã‚µ","ã‚«","ã‚¢",
+        "[Ë]","ãƒƒ","","ãƒª","","ãƒŸ","ãƒ’","ãƒ‹","ãƒ","ã‚·","ã‚­","ã‚¤",
+        "[ã€‡]","ãƒ£","ãƒ²","ãƒ«","ãƒ¦","ãƒ ","ãƒ•","ãƒŒ","ãƒ„","ã‚¹","ã‚¯","ã‚¦",
+        "[æ±ºå®š]","ãƒ¥","","ãƒ¬","","ãƒ¡","ãƒ˜","ãƒ","ãƒ†","ã‚»","ã‚±","ã‚¨",
+        "[å–æ¶ˆ]","ãƒ§","ãƒ³","ãƒ­","ãƒ¨","ãƒ¢","ãƒ›","ãƒ","ãƒˆ","ã‚½","ã‚³","ã‚ª",
     
     };
 
     Dictionary<string, string> dakutenMap = new Dictionary<string, string>() {
-    {"ƒJ", "ƒK"}, {"ƒL", "ƒM"}, {"ƒN", "ƒO"}, {"ƒP", "ƒQ"}, {"ƒR", "ƒS"},
-    {"ƒT", "ƒU"}, {"ƒV", "ƒW"}, {"ƒX", "ƒY"}, {"ƒZ", "ƒ["}, {"ƒ\", "ƒ]"},
-    {"ƒ^", "ƒ_"}, {"ƒ`", "ƒa"}, {"ƒc", "ƒd"}, {"ƒe", "ƒf"}, {"ƒg", "ƒh"},
-    {"ƒn", "ƒo"}, {"ƒq", "ƒr"}, {"ƒt", "ƒu"}, {"ƒw", "ƒx"}, {"ƒz", "ƒ{"},
-    {"ƒp", "ƒo"}, {"ƒs", "ƒr"}, {"ƒv", "ƒu"}, {"ƒy", "ƒx"}, {"ƒ|", "ƒ{"}
+    {"ã‚«", "ã‚¬"}, {"ã‚­", "ã‚®"}, {"ã‚¯", "ã‚°"}, {"ã‚±", "ã‚²"}, {"ã‚³", "ã‚´"},
+    {"ã‚µ", "ã‚¶"}, {"ã‚·", "ã‚¸"}, {"ã‚¹", "ã‚º"}, {"ã‚»", "ã‚¼"}, {"ã‚½", "ã‚¾"},
+    {"ã‚¿", "ãƒ€"}, {"ãƒ", "ãƒ‚"}, {"ãƒ„", "ãƒ…"}, {"ãƒ†", "ãƒ‡"}, {"ãƒˆ", "ãƒ‰"},
+    {"ãƒ", "ãƒ"}, {"ãƒ’", "ãƒ“"}, {"ãƒ•", "ãƒ–"}, {"ãƒ˜", "ãƒ™"}, {"ãƒ›", "ãƒœ"},
+    {"ãƒ‘", "ãƒ"}, {"ãƒ”", "ãƒ“"}, {"ãƒ—", "ãƒ–"}, {"ãƒš", "ãƒ™"}, {"ãƒ", "ãƒœ"}
     };
 
     Dictionary<string, string> reverseDakutenMap = new()
 {
-    {"ƒK", "ƒJ"}, {"ƒM", "ƒL"}, {"ƒO", "ƒN"}, {"ƒQ", "ƒP"}, {"ƒS", "ƒR"},
-    {"ƒU", "ƒT"}, {"ƒW", "ƒV"}, {"ƒY", "ƒX"}, {"ƒ[", "ƒZ"}, {"ƒ]", "ƒ\"},
-    {"ƒ_", "ƒ^"}, {"ƒa", "ƒ`"}, {"ƒd", "ƒc"}, {"ƒf", "ƒe"}, {"ƒh", "ƒg"},
-    {"ƒo", "ƒn"}, {"ƒr", "ƒq"}, {"ƒu", "ƒt"}, {"ƒx", "ƒw"}, {"ƒ{", "ƒz"}
+    {"ã‚¬", "ã‚«"}, {"ã‚®", "ã‚­"}, {"ã‚°", "ã‚¯"}, {"ã‚²", "ã‚±"}, {"ã‚´", "ã‚³"},
+    {"ã‚¶", "ã‚µ"}, {"ã‚¸", "ã‚·"}, {"ã‚º", "ã‚¹"}, {"ã‚¼", "ã‚»"}, {"ã‚¾", "ã‚½"},
+    {"ãƒ€", "ã‚¿"}, {"ãƒ‚", "ãƒ"}, {"ãƒ…", "ãƒ„"}, {"ãƒ‡", "ãƒ†"}, {"ãƒ‰", "ãƒˆ"},
+    {"ãƒ", "ãƒ"}, {"ãƒ“", "ãƒ’"}, {"ãƒ–", "ãƒ•"}, {"ãƒ™", "ãƒ˜"}, {"ãƒœ", "ãƒ›"}
 };
 
     Dictionary<string, string> handakutenMap = new Dictionary<string, string>() {
-    {"ƒn", "ƒp"}, {"ƒq", "ƒs"}, {"ƒt", "ƒv"}, {"ƒw", "ƒy"}, {"ƒz", "ƒ|"},
-    {"ƒo", "ƒp"}, {"ƒr", "ƒs"}, {"ƒu", "ƒv"}, {"ƒx", "ƒy"}, {"ƒ{", "ƒ|"}
+    {"ãƒ", "ãƒ‘"}, {"ãƒ’", "ãƒ”"}, {"ãƒ•", "ãƒ—"}, {"ãƒ˜", "ãƒš"}, {"ãƒ›", "ãƒ"},
+    {"ãƒ", "ãƒ‘"}, {"ãƒ“", "ãƒ”"}, {"ãƒ–", "ãƒ—"}, {"ãƒ™", "ãƒš"}, {"ãƒœ", "ãƒ"}
     };
 
     Dictionary<string, string> reverseHandakutenMap = new()
     {
-    {"ƒp", "ƒn"}, {"ƒs", "ƒq"}, {"ƒv", "ƒt"}, {"ƒy", "ƒw"}, {"ƒ|", "ƒz"}
+    {"ãƒ‘", "ãƒ"}, {"ãƒ”", "ãƒ’"}, {"ãƒ—", "ãƒ•"}, {"ãƒš", "ãƒ˜"}, {"ãƒ", "ãƒ›"}
     };
 
     void Start()
@@ -74,22 +75,53 @@ public class VirtualKeyboard : MonoBehaviour
             else
             {
                 btn = Instantiate(buttonPrefab, buttonContainer);
-                btn.GetComponentInChildren<Text>().text = Key;
-               string capturedkey = Key;
-                //ƒ{ƒ^ƒ“‚ÉƒNƒŠƒbƒNƒCƒxƒ“ƒg‚Ì“o˜^
-                btn.GetComponent<Button>().onClick.AddListener(() => OnClickCharacter(capturedkey));
+               var buttontext = btn.GetComponentInChildren<Text>();
+               buttontext.text = Key;;
+
+                //ç‰¹æ®Šã‚­ãƒ¼ã®è¨­å®š
+                if (Key.StartsWith("[") && Key.EndsWith("]"))
+                {
+                    string command = Key.Trim('[',']');
+                    switch (command)
+                    {
+                        case "Ë":
+                            Debug.Log("æ¿ç‚¹ã‚­ãƒ¼");
+                            btn.GetComponent<Button>().onClick.AddListener(AddDakuten);
+                            break;
+                        case "ã€‡":
+                            btn.GetComponent<Button>().onClick.AddListener(AddHandakuten);
+                            break ;
+                        case "â†":
+                            btn.GetComponent<Button>().onClick.AddListener(DeleteCharacter);
+                            break;
+                        case "æ±ºå®š":
+                            btn.GetComponent<Button>().onClick.AddListener(SubmitName);
+                            break ;
+                        case "å–æ¶ˆ":
+                            btn.GetComponent<Button>().onClick.AddListener(AllDelete);
+                            break ;
+                    }
+                }
+                else
+                {
+                    //ãƒœã‚¿ãƒ³ã«ã‚¯ãƒªãƒƒã‚¯ã‚¤ãƒ™ãƒ³ãƒˆã®ç™»éŒ²
+                    string captured = Key;
+                    btn.GetComponent<Button>().onClick.AddListener(() => OnClickCharacter(captured));
+                }
+
+
             }
         }
-        // íœƒ{ƒ^ƒ“‚Æ‘—Mƒ{ƒ^ƒ“‚Ìİ’è
+        // å‰Šé™¤ãƒœã‚¿ãƒ³ã¨é€ä¿¡ãƒœã‚¿ãƒ³ã®è¨­å®š
         deleteButton.onClick.AddListener(DeleteCharacter);
         submitButton.onClick.AddListener(SubmitName);
         dakutenButton.onClick.AddListener(AddDakuten);
         handakutenButton.onClick.AddListener(AddHandakuten);
         alldeteButton.onClick.AddListener(AllDelete);
 
-        UpdateDisplay(); // Å‰‚É•\¦‚ğXV
+        UpdateDisplay(); // æœ€åˆã«è¡¨ç¤ºã‚’æ›´æ–°
     }
-    //•¶š‚Ì’Ç‰Áˆ—
+    //æ–‡å­—ã®è¿½åŠ å‡¦ç†
     void OnClickCharacter(string character)
     {
         if (currentName.Length < maxLength)
@@ -98,7 +130,7 @@ public class VirtualKeyboard : MonoBehaviour
             UpdateDisplay();
         }
     }
-    //1•¶šíœ
+    //1æ–‡å­—å‰Šé™¤
     void DeleteCharacter()
     {
         if (currentName.Length > 0)
@@ -117,7 +149,7 @@ public class VirtualKeyboard : MonoBehaviour
         }
     }
     /// <summary>
-    /// •¶š‚Ì‘÷“_‰»
+    /// æ–‡å­—ã®æ¿ç‚¹åŒ–
     /// </summary>
     void AddDakuten()
     {
@@ -134,7 +166,7 @@ public class VirtualKeyboard : MonoBehaviour
         UpdateDisplay();
     }
     /// <summary>
-    /// •¶š‚Ì”¼‘÷“_‰»
+    /// æ–‡å­—ã®åŠæ¿ç‚¹åŒ–
     /// </summary>
     void AddHandakuten()
     {
@@ -151,16 +183,16 @@ public class VirtualKeyboard : MonoBehaviour
         UpdateDisplay();
     }
 
-    //–¼‘O‚ÌŠm’è
+    //åå‰ã®ç¢ºå®š
     void SubmitName()
     {
         if(!string.IsNullOrEmpty(currentName))
         {
-            OnNameSubmitted?.Invoke(currentName);//ƒR[ƒ‹ƒoƒbƒN‚ÅScoreRanking‚É“n‚·
+            OnNameSubmitted?.Invoke(currentName);//ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯ã§ScoreRankingã«æ¸¡ã™
         }
     }
     /// <summary>
-    /// “ü—Í’†‚Ì–¼‘O‚Ì•\¦‚ÌXV
+    /// å…¥åŠ›ä¸­ã®åå‰ã®è¡¨ç¤ºã®æ›´æ–°
     /// </summary>
     void UpdateDisplay()
     {
