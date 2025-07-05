@@ -30,8 +30,8 @@ public class ScoreRanking : MonoBehaviour
     void Start()
     {
         scoreEvaluation = GetComponent<ScoreEvaluation>();
-        //score = Mouse.score;
-        score = scoreEvaluation.testScore;
+        score = Mouse.score;
+        //score = scoreEvaluation.testScore;
 
         /// ランキングの手順
         //StreamingAssetsフォルダのCSVファイルのパスを取得
