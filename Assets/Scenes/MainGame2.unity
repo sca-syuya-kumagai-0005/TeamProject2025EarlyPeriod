@@ -1146,8 +1146,9 @@ MonoBehaviour:
   sceneNames:
   - MainGame0
   - MainGame1
-  - MainGame12
+  - MainGame2
   doorSceneName: DoorScene1
+  finalSceneName: Result
 --- !u!4 &1000750943
 Transform:
   m_ObjectHideFlags: 0
