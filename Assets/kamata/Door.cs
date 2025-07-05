@@ -1,9 +1,9 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;  // ← 追加
 
 public class Door : MonoBehaviour
 {
-    [Header("ドア設定")]
     public Transform leftDoor;
     public Transform rightDoor;
     public float openAngle = 90f;
@@ -21,6 +21,9 @@ public class Door : MonoBehaviour
     public float alphaLoopSpeed = 2.0f;
     public float minAlpha = 0.2f;
     public float maxAlpha = 1.0f;
+
+    [Header("スキップボタン")]
+    public Button skipButton;  // ← 追加
 
     private Quaternion leftClosedRot;
     private Quaternion rightClosedRot;
@@ -41,19 +44,16 @@ public class Door : MonoBehaviour
 
         leftOpenRot = leftClosedRot * Quaternion.Euler(0, 0, -openAngle);
         rightOpenRot = rightClosedRot * Quaternion.Euler(0, 0, openAngle);
+
+        if (skipButton != null)
+        {
+            skipButton.onClick.AddListener(SkipByButton);  // ボタンが押された時に実行
+        }
     }
 
     void Update()
     {
-        // ▼ 左クリックで即シーン切り替え（Doorスキップ）
-        if (!requestedSceneChange && Input.GetMouseButtonDown(0))
-        {
-            requestedSceneChange = true;
-            RequestSceneChange();
-            return;
-        }
-
-        // ▼ TextMeshPro アルファループ（フェード演出）
+        // テキストのアルファ値をループ
         if (loopAlphaText != null)
         {
             float alpha = Mathf.Lerp(minAlpha, maxAlpha, Mathf.PingPong(Time.time * alphaLoopSpeed, 1f));
@@ -62,7 +62,7 @@ public class Door : MonoBehaviour
             loopAlphaText.color = color;
         }
 
-        // ▼ ドア開き処理
+        // ドア開き処理
         if (!doorIsOpening)
         {
             timer += Time.deltaTime;
@@ -83,7 +83,7 @@ public class Door : MonoBehaviour
             }
         }
 
-        // ▼ カメラ移動処理とシーン遷移判定
+        // カメラ移動
         if (cameraIsMoving && targetCamera != null && cameraTargetPosition != null)
         {
             targetCamera.transform.position = Vector3.Lerp(
@@ -97,25 +97,35 @@ public class Door : MonoBehaviour
                 Time.deltaTime * cameraMoveSpeed
             );
 
-            if (!requestedSceneChange &&
-                Vector3.Distance(targetCamera.transform.position, cameraTargetPosition.position) < 0.1f)
+            if (!requestedSceneChange && Vector3.Distance(targetCamera.transform.position, cameraTargetPosition.position) < 0.1f)
             {
-                requestedSceneChange = true;
-                RequestSceneChange();
+                RequestSceneChangeOnce();
             }
         }
     }
 
-    void RequestSceneChange()
+    // ▼ スキップボタンから呼ばれるメソッド
+    public void SkipByButton()
     {
-        var switcher = Object.FindFirstObjectByType<SceneLoopSwitcher>();
-        if (switcher != null)
+        RequestSceneChangeOnce();
+    }
+
+    // ▼ 共通：リクエストは1回のみ通す
+    private void RequestSceneChangeOnce()
+    {
+        if (!requestedSceneChange)
         {
-            SceneLoopSwitcher.RequestSceneChange();
-        }
-        else
-        {
-            Debug.LogWarning("SceneLoopSwitcher が見つかりません。");
+            requestedSceneChange = true;
+
+            var switcher = Object.FindFirstObjectByType<SceneLoopSwitcher>();
+            if (switcher != null)
+            {
+                SceneLoopSwitcher.RequestSceneChange();
+            }
+            else
+            {
+                Debug.LogWarning("SceneLoopSwitcher が存在しません。");
+            }
         }
     }
 }

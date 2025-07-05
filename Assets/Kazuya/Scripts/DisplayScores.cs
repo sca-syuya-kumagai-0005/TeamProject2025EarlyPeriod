@@ -11,6 +11,7 @@ public class DisplayScores : MonoBehaviour
     [Header("スコアデータ")]
     [SerializeField] PointList pointlist;
 
+
     [Header("UI表示テキスト")]
     [SerializeField] Text NumberEyes;//エネミーの目の数
     [SerializeField] Text GostType;//エネミーの種類
@@ -31,6 +32,7 @@ public class DisplayScores : MonoBehaviour
     [SerializeField] GameObject displayArea; // 複製したオバケを表示する範囲となるオブジェクト
     [SerializeField] string maskName;
     [SerializeField] Transform cloneRoot;//表示エリアに配置する親オブジェクト
+    [SerializeField] GameObject maskScore;
 
     [Header("早送りするときの倍速度")]
     [SerializeField] float acceleration = 0.3f;
@@ -42,10 +44,11 @@ public class DisplayScores : MonoBehaviour
     [Header("写真の拡大倍率")]
     [SerializeField] float Magnification =3.0f;
 
-    int cumulativeScore = 0; // 累計スコア
                              //早送り/スキップのフラグ
     bool skipRequested = false;
     bool fastForwardRequested = false;
+
+    [SerializeField] ScoreCalculator scoreZone;
 
     void Start()
     {
@@ -107,7 +110,6 @@ public class DisplayScores : MonoBehaviour
             Debug.LogError("写真オブジェクトが初期化されていません。");
             return;
         }
-
         ResetScoreUI();
 
         // PhotoStorageの子要素（撮影した写真）をリストに追加
@@ -116,7 +118,7 @@ public class DisplayScores : MonoBehaviour
         {
             photoList.Add(photoContainer.GetChild(i).gameObject);
         }
-
+        scoreZone.OnScoreCalculated += UpdateScores;
         StartCoroutine(ProcessPhotos());
     }
 
@@ -169,7 +171,6 @@ public class DisplayScores : MonoBehaviour
         yield return new WaitForSeconds(GetInterval(FocusedPhoto));
 
         if (skipRequested) yield break;
-        UpdateScores();
         yield return new WaitForSeconds(GetInterval(Information));
 
         // 複製したEnemyをすべて削除
@@ -178,6 +179,7 @@ public class DisplayScores : MonoBehaviour
             if (enemy != null) Destroy(enemy);
         }
         clonedEnemies.Clear();
+        scoreZone.ResetScore();
         ResetScoreUI();
     }
     /// <summary>
@@ -186,7 +188,7 @@ public class DisplayScores : MonoBehaviour
     /// <param name="photo">写真オブジェクト名前</param>
     void DuplicateAndMoveEnemies(GameObject photo)
     {
-        // 1. 表示先の範囲オブジェクトとそのColliderを取得
+        // 1. 表示先の範囲オブジェクトとそのCollider2Dを取得
         if (displayArea == null)
         {
             Debug.LogError("オバケの表示範囲(displayArea)が設定されていません。");
@@ -231,7 +233,6 @@ public class DisplayScores : MonoBehaviour
         GameObject maskClone = Instantiate(maskObject);
         maskClone.transform.position = destBounds.center;
         maskClone.transform.localScale = maskObject.transform.lossyScale * baseScaleRatio * Magnification;
-
         clonedEnemies.Add(maskClone);
         
         Transform[] allDescendants = photo.GetComponentsInChildren<Transform>();
@@ -245,6 +246,12 @@ public class DisplayScores : MonoBehaviour
             // これで元のdescendantオブジェクトは一切変更されません。
             GameObject clone = Instantiate(descendant.gameObject);
 
+            // すべての Collider2D を isTrigger に変更して物理干渉を防ぐ
+            Collider2D[] colliders = clone.GetComponentsInChildren<Collider2D>();
+            foreach (var col in colliders)
+            {
+                col.isTrigger = true;
+            }
             // --- ステップ2: 複製したクローンの位置とスケールを計算する ---
             Vector3 originalCenterPos = maskObject.transform.position;
             Vector3 newCenterPos = destBounds.center;
@@ -288,98 +295,20 @@ public class DisplayScores : MonoBehaviour
     /// スコアを集計し、UIテキストを更新する
     /// </summary>
     /// <param name="data"></param>
-    void UpdateScores()
+    void UpdateScores(int photoScore, int rare)
     {
-        if (clonedEnemies.Count > 0)
-        {
-            GameObject maskClone = clonedEnemies[0]; // 最初の要素はマスク
-            ScoreDetail detail = CalculateScoreDetails(maskClone);
+        AddScore.text = $"{photoScore}";
+        BonusPoints.text = $"レア:{rare}点";
+        //if (clonedEnemies.Count > 0)
+        //{
+        //    GameObject maskClone = clonedEnemies[0]; // 最初の要素はマスク
+        //    //cumulativeScore += detail.totalScore;
+        //    //Debug.Log(detail.totalScore);
+        //    //AddScore.text = $"{detail.totalScore}";
 
-            cumulativeScore += detail.totalScore;
-            Debug.Log(detail.totalScore);
-            AddScore.text = $"{detail.totalScore}";
-
-            UpdateDetailedScoreUI(detail,detail.totalScore);
-        }
+        //    //UpdateDetailedScoreUI(detail,detail.totalScore);
+        //}
     }
-
-
-    int CalculateScore(GameObject maskClone)
-    {
-        int nEye = 0,tEye = 0,nRed = 0, tRed = 0,nBlue = 0,tBlue = 0;
-        string[] validTags = {"nEye","tEye","nred","tred","nblue","tblue"};
-
-        Collider maskCol = maskClone.GetComponent<Collider>();
-
-        Bounds maskBounds = maskCol.bounds;
-        foreach(GameObject ghot in clonedEnemies)
-        {
-            if(ghot == null) continue;
-
-            Collider[] childCols = ghot.GetComponentsInChildren<Collider>();
-            foreach(Collider col in childCols)
-            {
-                if (!validTags.Contains(col.tag)) continue;
-
-                if (maskBounds.Contains(col.bounds.min) && maskBounds.Contains(col.bounds.max))
-                {
-                    switch (col.tag)
-                    {
-                        case "nEye": nEye++; break;
-                        case "tEye": tEye++; break;
-                        case "nred": nRed++; break;
-                        case "tred": tRed++; break;
-                        case "nblue": nBlue++; break;
-                        case "tblue": tBlue++; break;
-                    }
-                }
-            }
-        }
-        // スコア計算（Mouse.cs と同じルール）
-        int score = 0;
-        int normal = nEye + nRed + nBlue;
-        score += (normal / 2) * 2;
-        if (normal % 2 == 1) score += 1;
-
-        int threaten = tEye + tRed + tBlue;
-        score += (threaten / 2) * 5;
-        if (threaten % 2 == 1) score += 2;
-
-        score += GetRareBonus(nRed, 50);
-        score += GetRareBonus(nBlue, 100);
-        score += GetRareBonus(tRed, 70);
-        score += GetRareBonus(tBlue, 120);
-
-        score += GetBonusPoint(normal + threaten);
-        return score;
-    }
-    int GetBonusPoint(int eyes)
-    {
-        switch (eyes)
-        {
-            case 3: return 5;
-            case 4: return 10;
-            case 5: return 20;
-            case 6: return 50;
-            case 7: return 100;
-            case 8: return 250;
-            case 9: return 300;
-            case 10: return 500;
-            default: return 0;
-        }
-    }
-
-    int GetRareBonus(int count, int baseScore)
-    {
-        if (count == 0) return 0;
-        if (count <= 2) return baseScore;
-        if (count <= 4) return baseScore * 2;
-        if (count <= 6) return baseScore * 3;
-        if (count <= 8) return baseScore * 4;
-        if (count <= 10) return baseScore * 5;
-        return baseScore * 6;
-    }
-
     /// <summary>
     /// ユーザー入力処理
     /// </summary>
@@ -405,86 +334,7 @@ public class DisplayScores : MonoBehaviour
         return fastForwardRequested ? baseInterval * acceleration : baseInterval;
     }
 
-    // 詳細スコア情報格納用クラス
-    class ScoreDetail
-    {
-        public int totalScore = 0;
-        public int rareBonus = 0;
-        public Dictionary<string, int> enemyTypeCounts = new(); // オバケの種類カウント
-        public Dictionary<string, int> individualScores = new(); // 各オバケのスコア
-    }
 
-    // 詳細スコアを集計
-    ScoreDetail CalculateScoreDetails(GameObject maskClone)
-    {
-        ScoreDetail detail = new();
-
-        if (maskClone == null || clonedEnemies.Count == 0) return detail;
-
-        Collider maskCol = maskClone.GetComponent<Collider>();
-        if (maskCol == null) return detail;
-
-        Bounds maskBounds = maskCol.bounds;
-
-        for (int i = 1; i < clonedEnemies.Count; i++) // 0番目はmaskClone
-        {
-            GameObject ghost = clonedEnemies[i];
-            if (ghost == null) continue;
-
-            string typeName = ghost.name.Replace("_Copy", "").Split('_')[0];
-
-            // タグカウント
-            int nEye = 0, tEye = 0, nRed = 0, tRed = 0, nBlue = 0, tBlue = 0;
-            Collider[] childCols = ghost.GetComponentsInChildren<Collider>();
-
-            foreach (var col in childCols)
-            {
-                if (!maskBounds.Contains(col.bounds.min) || !maskBounds.Contains(col.bounds.max)) continue;
-
-                switch (col.tag)
-                {
-                    case "nEye": nEye++; break;
-                    case "tEye": tEye++; break;
-                    case "nred": nRed++; break;
-                    case "tred": tRed++; break;
-                    case "nblue": nBlue++; break;
-                    case "tblue": tBlue++; break;
-                }
-            }
-
-            int normal = nEye + nRed + nBlue;
-            int threaten = tEye + tRed + tBlue;
-            int rare = GetRareBonus(nRed, 50) + GetRareBonus(nBlue, 100) + GetRareBonus(tRed, 70) + GetRareBonus(tBlue, 120);
-            int score = (normal / 2) * 2 + (normal % 2) + (threaten / 2) * 5 + (threaten % 2 == 1 ? 2 : 0) + rare;
-
-            detail.totalScore += score;
-            detail.rareBonus += rare;
-            Debug.Log(score);
-
-            if (!detail.enemyTypeCounts.ContainsKey(typeName))
-                detail.enemyTypeCounts[typeName] = 0;
-            detail.enemyTypeCounts[typeName]++;
-
-            detail.individualScores[ghost.name] = score;
-        }
-
-        return detail;
-    }
-
-    // 詳細スコアをUIへ反映するメソッド（UpdateScores内で使用）
-    void UpdateDetailedScoreUI(ScoreDetail detail,int photoScore)
-    {
-        // 総スコアの更新
-        AddScore.text = $"{photoScore}";
-
-        // オバケの種類ごとの表示（例：Slime:2体 / Ghost:1体）
-        GostType.text = string.Join(" / ",
-            detail.enemyTypeCounts.Select(kv => $"{kv.Key}:{kv.Value}体"));
-
-        // レアボーナスのみ表示
-        BonusPoints.text = $"レア:{detail.rareBonus}点";
-
-    }
 
 }
 
