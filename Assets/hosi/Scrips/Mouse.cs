@@ -246,25 +246,32 @@ public class Mouse : MonoBehaviour
                 int nCount = EyeCount[parent].nCount;
                 int tCount = EyeCount[parent].tCount;
 
-                int Displayscore = 0; //表示用のスコア
+                int Displayscore = 0;
 
                 //ビビりの表示スコア
-                if (nCount >= 2)
+                if (nCount > 0)
                 {
-                    Displayscore = 2;
+                    if (nCount >= 2)
+                    {
+                        Displayscore += 2;
+                    }
+                    else if (nCount == 1)
+                    {
+                        Displayscore += 1;
+                    }
                 }
-                else
-                {
-                    Displayscore = 1;
-                }
+
                 //脅かしの表示スコア
-                if (tCount >= 2)
+                if (tCount > 0)
                 {
-                    Displayscore = 5;
-                }
-                else
-                {
-                    Displayscore = 2;
+                    if (tCount >= 2)
+                    {
+                        Displayscore += 5;
+                    }
+                    else if (tCount == 1)
+                    {
+                        Displayscore += 2;
+                    }
                 }
 
                 if (Displayscore > 0)
