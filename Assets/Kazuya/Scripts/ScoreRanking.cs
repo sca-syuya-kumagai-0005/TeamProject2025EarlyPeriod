@@ -24,11 +24,15 @@ public class ScoreRanking : MonoBehaviour
     bool Rankingfinish = false;
 
     ScoreEvaluation scoreEvaluation;
+    [SerializeField] VirtualKeyboard virtualKeyboard;
+    [SerializeField] GameObject virtualObject;
+    [SerializeField] Canvas VirtualCanvas;
     void Start()
     {
         scoreEvaluation = GetComponent<ScoreEvaluation>();
-        //score = Mouse.score;
-        score = scoreEvaluation.testScore;
+        score = Mouse.score;
+        //score = scoreEvaluation.testScore;
+
         /// ランキングの手順
         //StreamingAssetsフォルダのCSVファイルのパスを取得
         filePath = Path.Combine(Application.streamingAssetsPath, "ScoreRanking.csv");
@@ -37,38 +41,53 @@ public class ScoreRanking : MonoBehaviour
         /// 現在のデータと読み込んだデータを比較してtop10に入るかを確認する
         if (IsHighScore(score))
         {
+            /*
             //名前入力を有効か
             nameInputField.gameObject.SetActive(true);
             subitButton.gameObject.SetActive(true);
 
             //ボタンにイベントの登録
-            subitButton.onClick.AddListener(OnSubmitName);
+            subitButton.onClick.AddListener(OnSubmitName);*/
+            TextObject.SetActive(false);
+            virtualObject.SetActive(true);
+            virtualKeyboard.OnNameSubmitted = OnSubmitNameWithKeyboard;
         }
         else
         {
+            TextObject.SetActive(true);
             UpdateRankingDisplay();
             StartCoroutine(ButtonSetUp());
         }
     }
 
 
-    void OnSubmitName()
+    //void OnSubmitName(string playerName)
+    //{
+    //    if (!string.IsNullOrEmpty(playerName))
+    //    {
+    //        InsertScore(playerName, score);
+    //        SaveRanking();
+    //        UpdateRankingDisplay();
+    //        virtualKeyboard.gameObject.SetActive(false);
+    //        StartCoroutine(ButtonSetUp());
+    //    }
+    //}
+
+
+    void OnSubmitNameWithKeyboard(string playerName)
     {
-        string playerName = nameInputField.text.Trim();
         if (!string.IsNullOrEmpty(playerName))
         {
-            /// 名前の入力
             InsertScore(playerName, score);
             SaveRanking();
+            TextObject.SetActive(true);
             UpdateRankingDisplay();
-            nameInputField.gameObject.SetActive(false);
-            subitButton.gameObject.SetActive(false);
             StartCoroutine(ButtonSetUp());
-        }
+            virtualObject.SetActive(false);
+            VirtualCanvas.enabled = false;
 
-        Debug.LogWarning("名前が入力されていません");
-        return;
-    } 
+        }
+    }
 
     /// <summary>
     /// ランキングの読み込み
