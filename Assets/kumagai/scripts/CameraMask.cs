@@ -9,20 +9,15 @@ public class CameraMask :SoundPlayer
     [SerializeField]private GameObject photoStorage;
     [SerializeField]private GameObject lens;
     [SerializeField] private GameObject enemy;
-    private string enemyTag="Enemy";
-    private string backGroundTag="BackGround";
+    private const string enemyTag="Enemy";
+    private const string backGroundTag="BackGround";
+    private const string photoStorageTag = "PhotoStorage";
     [SerializeField] private GameObject hit;
     private const float time=3.0f;
     [SerializeField] float timer;
     [SerializeField]GameObject photoSheet;
     GameObject flashImage;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-
-    private void Awake()
-    {
-       
-
-    }
 
     private void OnEnable()
     {
@@ -35,12 +30,14 @@ public class CameraMask :SoundPlayer
     }
     void Start()
     {
-        if(GameObject.Find("PhotoStorage")!=null)
+       
+        if (GameObject.Find(photoStorageTag)!= null)
         {
-            Destroy(photoSheet);
+            GameObject obj = GameObject.Find(photoStorageTag).gameObject;
+            Destroy(obj);
         }
           photoSheet = Instantiate(photoStorage,new Vector3(0,0,0), Quaternion.identity);
-          photoSheet.name= "PhotoStorage";
+          photoSheet.name= photoStorageTag;
           DontDestroyOnLoad(photoSheet);   
         backGround=GameObject.Find(backGroundTag).gameObject;
         timer = 0;
