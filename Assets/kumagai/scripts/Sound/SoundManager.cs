@@ -62,7 +62,7 @@ public class SoundManager : MonoBehaviour
     {
         string str = "";//ÅI“I‚É•Ô‚·•¶š—ñ
         float maxRatio = 0.0f;
-        float clearLine = 0.8f;
+        float clearLine = 0.0f;
         float continuous = 0.0f;
         int charCount = 0;
         int maxCharCount = 0;

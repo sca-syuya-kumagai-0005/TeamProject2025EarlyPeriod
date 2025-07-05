@@ -12,8 +12,8 @@ public class SoundPlayer : SoundManager
       
         AudioClip clip = SetSound(name,sePath);
 
-       
-;        if (clip != null)//遊んだ痕跡　エラーログをカラフルに表示する
+
+        ; if (clip != null)//遊んだ痕跡　エラーログをカラフルに表示する
         {
             string[] color = new string[4] { "cyan", "yellow", "lime", "fuchsia" };
             string check = this.gameObject.name + "で呼ばれているSEPlayerに対応するSEが代入されていません。";
@@ -23,7 +23,6 @@ public class SoundPlayer : SoundManager
                 output += $"<color={color[i % color.Length]}>{check[i]}</color>";
             }
             Debug.LogError(output);
-            return;
         }
         GameObject seObj = Resources.Load<GameObject>(seAudioSource);//Resourcesフォルダーに入っているSE用のオーディオソースを取得
         GameObject obj = Instantiate(seObj);//取得したものを生成して、生成したオブジェクトを取得
@@ -42,13 +41,17 @@ public class SoundPlayer : SoundManager
         }
     }
 
-    protected void BGMPlayer()
+    protected void BGMPlayer(string name)
     {
         GameObject obj;
-        obj = GameObject.Find("BGMPlayer").gameObject;
-        if (obj==null)
+       
+        if (GameObject.Find("BGMPlayer") == null)
         {
             obj=(GameObject)Instantiate(Resources.Load(bgmAudioSource));
+        }
+        else
+        {
+            obj = GameObject.Find("BGMPlayer").gameObject;
         }
         AudioClip clip = SetSound(name,bgmPath);
         AudioSource bgm=obj.GetComponent<AudioSource>();
