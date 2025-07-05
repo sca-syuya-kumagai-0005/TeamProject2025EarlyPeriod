@@ -3,10 +3,12 @@ using UnityEngine.SceneManagement;
 public class TimeManager : MonoBehaviour
 {
     [SerializeField] Sprite[] sprits;
-    [SerializeField] float MaxTimer;
+    [SerializeField] float waitTimer;
+    public float WaitTimer {  get { return waitTimer; }  }
     SpriteRenderer sr;
     float timer;
-    [SerializeField]int nowSprite ;
+    public float Timer { get { return timer; } }
+    int nowSprite ;
     const string result = "Result";
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -20,14 +22,9 @@ public class TimeManager : MonoBehaviour
     void Update()
     {
         timer+=Time.deltaTime;
-        if(timer>MaxTimer/sprits.Length*(nowSprite+1))
+        if(timer>waitTimer/sprits.Length*(nowSprite+1))
         {
-            
             nowSprite++;
-        }
-        if(timer>MaxTimer)
-        {
-            SceneManager.LoadScene(result);
         }
         if(sprits.Length>nowSprite)
         { 
