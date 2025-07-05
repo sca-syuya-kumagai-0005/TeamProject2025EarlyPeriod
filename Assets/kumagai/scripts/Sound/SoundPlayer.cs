@@ -42,13 +42,17 @@ public class SoundPlayer : SoundManager
         }
     }
 
-    protected void BGMPlayer()
+    protected void BGMPlayer(string name)
     {
         GameObject obj;
-        obj = GameObject.Find("BGMPlayer").gameObject;
-        if (obj==null)
+        
+        if (GameObject.Find("BGMPlayer") == null)
         {
             obj=(GameObject)Instantiate(Resources.Load(bgmAudioSource));
+        }
+        else
+        {
+            obj = GameObject.Find("BGMPlayer").gameObject;
         }
         AudioClip clip = SetSound(name,bgmPath);
         AudioSource bgm=obj.GetComponent<AudioSource>();
