@@ -8,10 +8,6 @@ using System.Linq;
 
 public class DisplayScores : MonoBehaviour
 {
-    [Header("スコアデータ")]
-    [SerializeField] PointList pointlist;
-
-
     [Header("UI表示テキスト")]
     [SerializeField] Text NumberEyes;//エネミーの目の数
     [SerializeField] Text GostType;//エネミーの種類
@@ -43,6 +39,9 @@ public class DisplayScores : MonoBehaviour
     [SerializeField] List<GameObject> clonedEnemies = new List<GameObject>(); // 複製したオバケのリスト
     [Header("写真の拡大倍率")]
     [SerializeField] float Magnification =3.0f;
+    [Header("ページ演出用")]
+    [SerializeField] Image pageTurnImage;//空白のページのイラスト
+    [SerializeField] float pageFadeTime = 0.5f;
 
                              //早送り/スキップのフラグ
     bool skipRequested = false;
@@ -118,7 +117,7 @@ public class DisplayScores : MonoBehaviour
         {
             photoList.Add(photoContainer.GetChild(i).gameObject);
         }
-        scoreZone.OnScoreCalculated += UpdateScores;
+        scoreZone.OnScoreUpdated += UpdateScores;
         StartCoroutine(ProcessPhotos());
     }
 
@@ -134,11 +133,6 @@ public class DisplayScores : MonoBehaviour
     {
         for (int i = 0; i < photoList.Count; i++)
         {
-            //if (i >= pointlist.point.Count)
-            //{
-            //    Debug.LogWarning("写真の数とスコアデータの数が一致しないため、処理を中断します。");
-            //    break;
-            //}
 
             GameObject currentPhoto = photoList[i];
             skipRequested = false;
@@ -178,9 +172,10 @@ public class DisplayScores : MonoBehaviour
         {
             if (enemy != null) Destroy(enemy);
         }
-        clonedEnemies.Clear();
-        scoreZone.ResetScore();
-        ResetScoreUI();
+        clonedEnemies.Clear();  //中身の初期化
+        scoreZone.ResetScore(); //スコアをリセット
+        ResetScoreUI();         //同上
+        yield return StartCoroutine(PageTurnEffect());//ページをめくる演出 
     }
     /// <summary>
     /// オバケを写真から切り取って複製する
@@ -295,19 +290,14 @@ public class DisplayScores : MonoBehaviour
     /// スコアを集計し、UIテキストを更新する
     /// </summary>
     /// <param name="data"></param>
-    void UpdateScores(int photoScore, int rare)
+    void UpdateScores(ScoreCalculator data)
     {
-        AddScore.text = $"{photoScore}";
-        BonusPoints.text = $"レア:{rare}点";
-        //if (clonedEnemies.Count > 0)
-        //{
-        //    GameObject maskClone = clonedEnemies[0]; // 最初の要素はマスク
-        //    //cumulativeScore += detail.totalScore;
-        //    //Debug.Log(detail.totalScore);
-        //    //AddScore.text = $"{detail.totalScore}";
+        AddScore.text = $"{data.totalScore}";
+        NumberEyes.text = $"{data.totalEyes}つの目";
+        BonusPoints.text = $"レア:{data.rareBonus}点";
 
-        //    //UpdateDetailedScoreUI(detail,detail.totalScore);
-        //}
+        GostType.text = $"オドカシ:{data.odokashiCount}体 / ビビリ:{data.bibiriCount}体";
+
     }
     /// <summary>
     /// ユーザー入力処理
@@ -334,6 +324,31 @@ public class DisplayScores : MonoBehaviour
         return fastForwardRequested ? baseInterval * acceleration : baseInterval;
     }
 
+    IEnumerator PageTurnEffect()
+    {
+        float timer = 0f;
+        while (timer < pageFadeTime)
+        {
+            timer += Time.deltaTime;
+            float alpha = Mathf.Lerp(0, 1, timer / pageFadeTime);
+            pageTurnImage.color = new Color(1f,1f,1f,alpha);
+            yield return null;
+        }
+        //1瞬止める
+        yield return new WaitForSeconds(0.2f);
+
+        // フェードアウト
+        timer = 0f;
+        while (timer < pageFadeTime)
+        {
+            timer += Time.deltaTime;
+            float alpha = Mathf.Lerp(1, 0, timer / pageFadeTime);
+            pageTurnImage.color = new Color(1f, 1f, 1f, alpha);
+            yield return null;
+        }
+
+        pageTurnImage.color = new Color(1f, 1f, 1f, 0f);
+    }
 
 
 }
