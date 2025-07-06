@@ -773,6 +773,32 @@ MonoBehaviour:
   - {x: -7, y: -3, z: 0}
   stayEnemy: {fileID: 2798844205172854006, guid: aead5d67ca3766a4a8335b15cc9b223b, type: 3}
   flash: {fileID: 1439307486}
+  spawnWaitEnemies:
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
 --- !u!4 &268060485
 Transform:
   m_ObjectHideFlags: 0
@@ -1768,7 +1794,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: -83
+  m_SortingOrder: -4
   m_Sprite: {fileID: -1108208121, guid: 987f872ce2db94847bb290c943a4e1eb, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
