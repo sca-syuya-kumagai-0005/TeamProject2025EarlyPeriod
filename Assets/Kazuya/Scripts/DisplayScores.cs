@@ -175,6 +175,7 @@ public class DisplayScores : MonoBehaviour
         clonedEnemies.Clear();  //中身の初期化
         scoreZone.ResetScore(); //スコアをリセット
         ResetScoreUI();         //同上
+        photo.SetActive(false);
         yield return StartCoroutine(PageTurnEffect());//ページをめくる演出 
     }
     /// <summary>
