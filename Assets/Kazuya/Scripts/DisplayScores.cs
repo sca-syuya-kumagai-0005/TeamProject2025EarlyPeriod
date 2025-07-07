@@ -29,6 +29,7 @@ public class DisplayScores : MonoBehaviour
     [SerializeField] string maskName;
     [SerializeField] Transform cloneRoot;//表示エリアに配置する親オブジェクト
     [SerializeField] GameObject maskScore;
+    [SerializeField] Image ScoreTextImage;
 
     [Header("早送りするときの倍速度")]
     [SerializeField] float acceleration = 0.3f;
@@ -120,7 +121,6 @@ public class DisplayScores : MonoBehaviour
         {
             photoList.Add(photoContainer.GetChild(i).gameObject);
         }
-        scoreZone.OnScoreUpdated += UpdateScores;
         StartCoroutine(ProcessPhotos());
     }
 
@@ -168,6 +168,10 @@ public class DisplayScores : MonoBehaviour
         yield return new WaitForSeconds(GetInterval(FocusedPhoto));
 
         if (skipRequested) yield break;
+        Collider2D scoringArea = maskScore.GetComponent<Collider2D>();
+        scoreZone.CalculateScoreLikeMouse(scoringArea);
+
+        UpdateScores(scoreZone);
         yield return new WaitForSeconds(GetInterval(Information));
 
         // 複製したEnemyをすべて削除
@@ -298,8 +302,8 @@ public class DisplayScores : MonoBehaviour
     {
         AddScore.text = $"{data.totalScore}";
         NumberEyes.text = $"{data.totalEyes}つの目";
-        BonusPoints.text = $"レア:{data.rareBonus}点";
-
+        Rarity.text = $"{data.rareEnemyCount}";
+        BonusPoints.text = $"{data.BonusPoint}点";
         GostType.text = $"オドカシ:{data.odokashiCount}体 / ビビリ:{data.bibiriCount}体";
 
     }
