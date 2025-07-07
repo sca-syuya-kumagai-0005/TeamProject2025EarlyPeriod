@@ -124,12 +124,30 @@ public class ScoreRanking : MonoBehaviour
             if (i < rankingList.Count)
             {
                 rankingText[i].text = $"{i + 1}位    :   {rankingList[i].name} :{rankingList[i].score}";
+
+                // 1位から3位の色を変更
+                if (i == 0)
+                {
+                    rankingText[i].color = Color.yellow; // 1位はゴールド
+                }
+                else if (i == 1)
+                {
+                    rankingText[i].color = Color.gray;   // 2位はシルバー
+                }
+                else if (i == 2)
+                {
+                    rankingText[i].color = new Color(0.8f, 0.5f, 0.2f); // 3位はブロンズっぽい色
+                }
+                else
+                {
+                    rankingText[i].color = Color.black; // その他の順位は通常の白
+                }
             }
             else
             {
-                rankingText[i].text = $"{i+1}位; :";
+                rankingText[i].text = $"{i + 1}位; :";
+                rankingText[i].color = Color.black;
             }
-            TextObject.SetActive(true);
         }
 
     }
