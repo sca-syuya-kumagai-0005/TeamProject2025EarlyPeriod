@@ -42,6 +42,9 @@ public class DisplayScores : MonoBehaviour
     [Header("ページ演出用")]
     [SerializeField] Image pageTurnImage;//空白のページのイラスト
     [SerializeField] float pageFadeTime = 0.5f;
+    [Header("本が閉じる演出画像")]
+    [SerializeField] Image closingBookImage;//本が閉じる画像
+    [SerializeField] float closingtime = 1.0f;
 
                              //早送り/スキップのフラグ
     bool skipRequested = false;
@@ -145,7 +148,7 @@ public class DisplayScores : MonoBehaviour
             }
         }
 
-        yield return new WaitForSeconds(1.0f);
+        yield return StartCoroutine(PlayClosingBookEffect());
         SceneManager.LoadScene(nextSceneName);
     }
     /// <summary>
@@ -324,7 +327,10 @@ public class DisplayScores : MonoBehaviour
         //早送り要求があれば基本時間のn倍、なければ基本時間をそのまま返す
         return fastForwardRequested ? baseInterval * acceleration : baseInterval;
     }
-
+    /// <summary>
+    /// ページを閉じる演出
+    /// </summary>
+    /// <returns></returns>
     IEnumerator PageTurnEffect()
     {
         float timer = 0f;
@@ -351,6 +357,26 @@ public class DisplayScores : MonoBehaviour
         pageTurnImage.color = new Color(1f, 1f, 1f, 0f);
     }
 
+    IEnumerator PlayClosingBookEffect()
+    {
+        // 初期状態（透明）
+        Color imageColor = closingBookImage.color;
+        imageColor.a = 0f;
+        closingBookImage.color = imageColor;
+        closingBookImage.gameObject.SetActive(true); // 念のため表示ON
 
+        float timer = 0f;
+        while (timer < closingtime)
+        {
+            timer += Time.deltaTime;
+            float alphaImage = Mathf.Clamp01(timer / closingtime); // 0〜1の範囲
+            closingBookImage.color = new Color(imageColor.r, imageColor.g, imageColor.b, alphaImage);
+            yield return null;
+        }
+
+        // しっかり表示されている状態で1秒待つ
+        closingBookImage.color = new Color(imageColor.r, imageColor.g, imageColor.b, 1f);
+        yield return new WaitForSeconds(1.0f);
+    }
 }
 
