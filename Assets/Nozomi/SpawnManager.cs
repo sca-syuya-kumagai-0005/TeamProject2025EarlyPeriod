@@ -1,10 +1,13 @@
 using System.ComponentModel;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SpawnManager : MonoBehaviour
 {
     [SerializeField] private GameObject[] enemies;
     public int EnemyCount { get { return enemies.Length; } }
+    public static int stageLevel=0;
+    AudioClip clip;
     [SerializeField] private GameObject[] hitEnemy;
     [SerializeField] private GameObject enemyParent;
     [SerializeField] private GameObject enemy;
@@ -24,28 +27,65 @@ public class SpawnManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        if(SceneManager.GetActiveScene().name=="MainGame0"|| SceneManager.GetActiveScene().name == "MainGame1"|| SceneManager.GetActiveScene().name == "MainGame2")
+        {
+            stageLevel++;
+        }
+        else if(SceneManager.GetActiveScene().name == "Result")
+        {
+            stageLevel = 0;
+        }
         EnemySearch();
-        int makeMove = Random.Range(moveEnemyRandomMin, moveEnemyRandomMax + 1);
+
+        int makeMove;
+        switch (stageLevel / 5)
+        {
+            case 0:
+                {
+                    makeMove = Random.Range(1, 2 + 1);
+                }
+                break;
+            case 1:
+                {
+                    makeMove = Random.Range(2, 5 + 1);
+                }
+                break;
+            case 2:
+                {
+                    makeMove = Random.Range(4, 7 + 1);
+                }
+                break;
+            case 3:
+                {
+                    makeMove = Random.Range(7, 10 + 1);
+                }
+                break;
+            default:
+                {
+                    makeMove = Random.Range(15, 20);
+                }
+                break;
+        }
+
         int[] makeMovePoint = new int[makeMove];
         for(int i=0;i<makeMovePoint.Length;i++)
         {
             while (true)
             {
-               
+                int r = Random.Range(0, spawnWaitEnemies.Length);
+                bool duplicate = false;
                 for (int j = 0; j < makeMovePoint.Length; j++)
                 {
-                    int r = Random.Range(0, spawnWaitEnemies.Length);
-                    if (j == 0)
+                    if (r == makeMovePoint[j])
                     {
-                        makeMovePoint[j] = r;
+                        duplicate = true;
                     }
-                    else if (r == makeMovePoint[j])
-                    {
-                        j--;
-                        continue;
-                    }
-                    makeMovePoint[j] = r;
                 }
+                if(duplicate)
+                {
+                    continue;
+                }
+                makeMovePoint[i] = r;
                 break;
             }
         }
@@ -53,13 +93,11 @@ public class SpawnManager : MonoBehaviour
         {
             for(int j=0;j<makeMovePoint.Length;j++)
             {
+                spawnWaitEnemies[i] = stayEnemyTag;
                 if (makeMovePoint[j]==i)
                 {
                     spawnWaitEnemies[i]=moveEnemyTag;
-                }
-                else
-                {
-                    spawnWaitEnemies[i] = stayEnemyTag;
+                    break;
                 }
             }
         }
