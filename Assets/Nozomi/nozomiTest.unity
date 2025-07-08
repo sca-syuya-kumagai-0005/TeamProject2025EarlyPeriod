@@ -480,6 +480,32 @@ MonoBehaviour:
   - {x: -7, y: -3, z: 0}
   stayEnemy: {fileID: 2798844205172854006, guid: aead5d67ca3766a4a8335b15cc9b223b, type: 3}
   flash: {fileID: 0}
+  spawnWaitEnemies:
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
 --- !u!4 &268060485
 Transform:
   m_ObjectHideFlags: 0
@@ -504,7 +530,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 301603646}
-  - component: {fileID: 301603645}
+  - component: {fileID: 301603647}
   m_Layer: 0
   m_Name: Sound
   m_TagString: HideObject
@@ -512,18 +538,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &301603645
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 301603644}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f3968b677cc61d46acbdce5cb2a0749, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &301603646
 Transform:
   m_ObjectHideFlags: 0
@@ -539,6 +553,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &301603647
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 301603644}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f3968b677cc61d46acbdce5cb2a0749, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &344012630 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2798844205172854006, guid: aead5d67ca3766a4a8335b15cc9b223b, type: 3}
@@ -624,8 +650,7 @@ MonoBehaviour:
   - {fileID: -533207388, guid: f3916bd2f3382f74f968161dc55e2471, type: 3}
   - {fileID: -1406776051, guid: e984f319fc890c14ab10f074e2e97cfb, type: 3}
   - {fileID: -1400870029, guid: 26692aeaf6f8086449506496bf117dfc, type: 3}
-  MaxTimer: 60
-  nowSprite: 0
+  waitTimer: 0
 --- !u!212 &581773358
 SpriteRenderer:
   m_ObjectHideFlags: 0
