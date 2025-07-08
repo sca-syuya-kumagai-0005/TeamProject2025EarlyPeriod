@@ -21,6 +21,7 @@ public class HitManager : MonoBehaviour
     };
     [SerializeField] modeChange mode;
     public modeChange Mode { get { return mode; } }
+    public bool HitCoolUp { get { return coolTimeUp; } }
     [SerializeField] private GameObject imageObject; // 表示・非表示を切り替える対象
     [SerializeField] private GameObject blueRectangle; // Canvas配下の青い四角
 
