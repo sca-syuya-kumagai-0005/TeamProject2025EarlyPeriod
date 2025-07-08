@@ -543,6 +543,10 @@ PrefabInstance:
       value: CameraMask
       objectReference: {fileID: 0}
     - target: {fileID: 5871057429966973393, guid: 89c6fc7f67a510f4bab8ec26b756ca34, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 7482667652216324306, guid: 48e93eef0688c4a259cb0eddcd8661f7, type: 3}
+    - target: {fileID: 5871057429966973393, guid: 89c6fc7f67a510f4bab8ec26b756ca34, type: 3}
       propertyPath: m_BackSortingOrder
       value: -5
       objectReference: {fileID: 0}
@@ -550,6 +554,10 @@ PrefabInstance:
       propertyPath: m_FrontSortingOrder
       value: 11
       objectReference: {fileID: 0}
+    - target: {fileID: 6725831795224590575, guid: 89c6fc7f67a510f4bab8ec26b756ca34, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 7482667652216324306, guid: 48e93eef0688c4a259cb0eddcd8661f7, type: 3}
     - target: {fileID: 6725831795224590575, guid: 89c6fc7f67a510f4bab8ec26b756ca34, type: 3}
       propertyPath: m_Color.a
       value: 0

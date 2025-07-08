@@ -3014,7 +3014,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TitleSceneName: YScene
-  MainGameSceneName: MainGame
+  MainGameSceneName: DoorScene1
 --- !u!4 &1761502360
 Transform:
   m_ObjectHideFlags: 0
