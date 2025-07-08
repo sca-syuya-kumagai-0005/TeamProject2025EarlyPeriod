@@ -122,6 +122,8 @@ public class DisplayScores : MonoBehaviour
             photoList.Add(photoContainer.GetChild(i).gameObject);
         }
         StartCoroutine(ProcessPhotos());
+        displayArea.gameObject.SetActive(false);
+        ScoreTextImage.gameObject.SetActive(false);
     }
 
     void Update()
@@ -163,11 +165,14 @@ public class DisplayScores : MonoBehaviour
         if (skipRequested) yield break;
         yield return new WaitForSeconds(GetInterval(WholePhotoTime));
 
+
         if (skipRequested) yield break;
+        displayArea.gameObject.SetActive(true);
         DuplicateAndMoveEnemies(photo);
         yield return new WaitForSeconds(GetInterval(FocusedPhoto));
 
         if (skipRequested) yield break;
+        ScoreTextImage.gameObject.SetActive(true);
         Collider2D scoringArea = maskScore.GetComponent<Collider2D>();
         scoreZone.CalculateScoreLikeMouse(scoringArea);
 
@@ -183,6 +188,8 @@ public class DisplayScores : MonoBehaviour
         scoreZone.ResetScore(); //スコアをリセット
         ResetScoreUI();         //同上
         photo.SetActive(false);
+        displayArea.gameObject.SetActive(false);
+        ScoreTextImage.gameObject.SetActive(false);
         yield return StartCoroutine(PageTurnEffect());//ページをめくる演出 
     }
     /// <summary>
