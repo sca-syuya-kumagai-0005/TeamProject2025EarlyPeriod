@@ -351,6 +351,8 @@ GameObject:
   - component: {fileID: 4566261175835664961}
   - component: {fileID: 5081058163739545805}
   - component: {fileID: 9199926404903162956}
+  - component: {fileID: -3627217303141904336}
+  - component: {fileID: 7412334873216668576}
   m_Layer: 0
   m_Name: StayEnemy02_Red_Blink
   m_TagString: Enemy
@@ -792,3 +794,27 @@ PolygonCollider2D:
       - {x: 0.097019196, y: -1.1173935}
       - {x: 0.11709213, y: -1.1123753}
   m_UseDelaunayMesh: 0
+--- !u!114 &-3627217303141904336
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7170798037113836630}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e04645d2440e49541868e7c0982ae006, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7412334873216668576
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7170798037113836630}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb1fca0103fcdb41a000ea96e33902a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

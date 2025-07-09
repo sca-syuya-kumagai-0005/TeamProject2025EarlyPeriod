@@ -789,13 +789,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemies: []
+  clearLine: 0
   hitEnemy: []
   enemyParent: {fileID: 1293616787}
-  enemy: {fileID: 1159644384196845789, guid: 3836a34b50d2e6c40a15e291c841fff0, type: 3}
+  enemy:
+  - {fileID: 1159644384196845789, guid: 3836a34b50d2e6c40a15e291c841fff0, type: 3}
+  - {fileID: 8278825555363093982, guid: 2b1c40c9f2a334941b5801c26c7acdc4, type: 3}
+  - {fileID: 7213379205222790688, guid: fc6a5398550881e409f78689c231c457, type: 3}
   flashImage: {fileID: 1755194998}
   spawnPosition:
   - {x: -7, y: -3, z: 0}
-  stayEnemy: {fileID: 2798844205172854006, guid: aead5d67ca3766a4a8335b15cc9b223b, type: 3}
+  - {x: 8, y: 2, z: 0}
+  - {x: 3, y: 4, z: 0}
+  stayEnemy:
+  - {fileID: 4910129048963418441, guid: 24a605d782a47b048b6c26ea02724345, type: 3}
+  - {fileID: 2798844205172854006, guid: aead5d67ca3766a4a8335b15cc9b223b, type: 3}
+  - {fileID: 92058668999869489, guid: 0e39913e6921672409cd9ce9e445f1a9, type: 3}
+  - {fileID: 4992407612358589332, guid: 8b4c1bbdaea361642a341b7fc1b436cc, type: 3}
+  - {fileID: 7170798037113836630, guid: 9c6794fdcfe4a7c4eb62c0f35143c279, type: 3}
+  - {fileID: 1560477359162976197, guid: 871ad4ac6c6002545b8c8f61ad778b87, type: 3}
   flash: {fileID: 1439307486}
   spawnWaitEnemies:
   - 
@@ -1428,6 +1440,7 @@ MonoBehaviour:
   - MainGame2
   doorSceneName: DoorScene1
   finalSceneName: Result
+  spawnManager: {fileID: 0}
 --- !u!4 &1000750943
 Transform:
   m_ObjectHideFlags: 0

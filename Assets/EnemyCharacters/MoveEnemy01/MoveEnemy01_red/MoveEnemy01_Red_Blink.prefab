@@ -319,6 +319,7 @@ GameObject:
   - component: {fileID: 3556888217985179348}
   - component: {fileID: 4056313316988301498}
   - component: {fileID: 2384875549225979044}
+  - component: {fileID: 2866866247781934287}
   m_Layer: 0
   m_Name: MoveEnemy01_Red_Blink
   m_TagString: Enemy
@@ -456,7 +457,7 @@ PolygonCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -773,6 +774,18 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &2866866247781934287
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8278825555363093982}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fbd36b5076a4cc4aa5c1d75139e972d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8797937970592698199
 GameObject:
   m_ObjectHideFlags: 0

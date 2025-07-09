@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
 using UnityEditor.Rendering;
+using UnityEngine.SceneManagement;
 
 public class NormalEnemy : StayEnemyTemplate
 {
@@ -16,6 +17,7 @@ public class NormalEnemy : StayEnemyTemplate
     Flash flash;
     private void Awake()
     {
+        if (SceneManager.GetActiveScene().name == "Result") return;
         hideObjects = GameObject.FindGameObjectsWithTag(hideObjectTag);
         motions.Clear();
         motions.Add(RoundTripCoroutine());

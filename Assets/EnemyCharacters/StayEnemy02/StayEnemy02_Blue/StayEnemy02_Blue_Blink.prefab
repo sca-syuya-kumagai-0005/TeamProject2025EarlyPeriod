@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 4691677996111047534}
   - component: {fileID: 7152401611898645624}
   - component: {fileID: 6384104482349467925}
+  - component: {fileID: 602365666605341475}
+  - component: {fileID: 1386536934933294746}
   m_Layer: 0
   m_Name: StayEnemy02_Blue_Blink
   m_TagString: Enemy
@@ -149,7 +151,7 @@ PolygonCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -453,6 +455,30 @@ PolygonCollider2D:
       - {x: 0.097019196, y: -1.1173935}
       - {x: 0.11709213, y: -1.1123753}
   m_UseDelaunayMesh: 0
+--- !u!114 &602365666605341475
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1560477359162976197}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb1fca0103fcdb41a000ea96e33902a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1386536934933294746
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1560477359162976197}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e04645d2440e49541868e7c0982ae006, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5169857123288167534
 GameObject:
   m_ObjectHideFlags: 0

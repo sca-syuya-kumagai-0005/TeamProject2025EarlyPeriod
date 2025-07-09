@@ -46,6 +46,7 @@ GameObject:
   - component: {fileID: 4702596271901512001}
   - component: {fileID: 5424856306987417634}
   - component: {fileID: 8737720413980251676}
+  - component: {fileID: 3490257142486224804}
   m_Layer: 0
   m_Name: MoveEnemy01_White_Blink
   m_TagString: Enemy
@@ -183,7 +184,7 @@ PolygonCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -500,6 +501,18 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &3490257142486224804
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7213379205222790688}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fbd36b5076a4cc4aa5c1d75139e972d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7460354917475064963
 GameObject:
   m_ObjectHideFlags: 0
