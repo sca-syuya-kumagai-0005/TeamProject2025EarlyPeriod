@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections;
 using UnityEditor.Experimental.GraphView;
 using System.Linq;
+using System.Xml.Serialization;
 
 public class DisplayScores : MonoBehaviour
 {
@@ -28,6 +29,7 @@ public class DisplayScores : MonoBehaviour
     [SerializeField] GameObject displayArea; // 複製したオバケを表示する範囲となるオブジェクト
     [SerializeField] string maskName;
     [SerializeField] Transform cloneRoot;//表示エリアに配置する親オブジェクト
+    [SerializeField]GameObject cloneRootObject;   
     [SerializeField] GameObject maskScore;
     [SerializeField] Image ScoreTextImage;
 
@@ -37,6 +39,7 @@ public class DisplayScores : MonoBehaviour
     [SerializeField] GameObject cameraMask; // シーンをまたいで運ばれてきた写真の親オブジェクト("PhotoStorage")
     Transform photoContainer; // 写真オブジェクトのTransform
     [SerializeField] List<GameObject> photoList = new List<GameObject>(); // 写真を格納するリスト
+    GameObject currentPhoto;
     [SerializeField] List<GameObject> clonedEnemies = new List<GameObject>(); // 複製したオバケのリスト
     [Header("写真の拡大倍率")]
     [SerializeField] float Magnification =3.0f;
@@ -125,11 +128,6 @@ public class DisplayScores : MonoBehaviour
         displayArea.gameObject.SetActive(false);
         ScoreTextImage.gameObject.SetActive(false);
     }
-
-    void Update()
-    {
-        HandleUserInput();
-    }
     /// <summary>
     /// 写真をリストにまとめる
     /// </summary>
@@ -138,9 +136,8 @@ public class DisplayScores : MonoBehaviour
     {
         for (int i = 0; i < photoList.Count; i++)
         {
-
-            GameObject currentPhoto = photoList[i];
-            skipRequested = false;
+            if(skipRequested) break;
+            currentPhoto = photoList[i];
 
             yield return StartCoroutine(PhotoDisplaySequence(currentPhoto));
 
@@ -148,6 +145,13 @@ public class DisplayScores : MonoBehaviour
             {
                 Destroy(currentPhoto);
             }
+        }
+        if (skipRequested)
+        {
+            currentPhoto.SetActive(false);
+            cloneRootObject.SetActive(false);
+            displayArea.gameObject.SetActive(false);
+            ScoreTextImage.gameObject.SetActive(false);
         }
 
         yield return StartCoroutine(PlayClosingBookEffect());
@@ -254,7 +258,7 @@ public class DisplayScores : MonoBehaviour
         if (!descendant.CompareTag("Enemy")) continue;
             // --- ステップ1: まず全てのオバケを複製する ---
             // これで元のdescendantオブジェクトは一切変更されません。
-            GameObject clone = Instantiate(descendant.gameObject);
+           GameObject clone = Instantiate(descendant.gameObject);
 
             // すべての Collider2D を isTrigger に変更して物理干渉を防ぐ
             Collider2D[] colliders = clone.GetComponentsInChildren<Collider2D>();
@@ -315,17 +319,26 @@ public class DisplayScores : MonoBehaviour
 
     }
     /// <summary>
-    /// ユーザー入力処理
+    /// スキップ処理
     /// </summary>
-    void HandleUserInput()
+    public void SkipButton()
     {
-        //スキップ処理
-        if (Input.GetKeyDown(KeyCode.S))
+        skipRequested = true;
+    }
+    /// <summary>
+    /// 早送り処理
+    /// </summary>
+    public void fastForwardButton()
+    {
+        if (!fastForwardRequested)
         {
-            skipRequested = true;
+            fastForwardRequested = true;
         }
-        //早送り処理
-        fastForwardRequested = Input.GetKey(KeyCode.F);
+        else
+        {
+            fastForwardRequested = false;
+        }
+
     }
 
     /// <summary>
