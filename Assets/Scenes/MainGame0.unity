@@ -1254,6 +1254,7 @@ MonoBehaviour:
   - MainGame2
   doorSceneName: DoorScene1
   finalSceneName: Result
+  spawnManager: {fileID: 268060484}
 --- !u!4 &1000750943
 Transform:
   m_ObjectHideFlags: 0

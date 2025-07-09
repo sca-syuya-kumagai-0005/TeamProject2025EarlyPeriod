@@ -20,7 +20,8 @@ public class SceneLoopSwitcher : MonoBehaviour
     private bool sceneChangeRequested = false;
 
     private static SceneLoopSwitcher instance;
-
+    [SerializeField]private SpawnManager spawnManager;
+    public static SpawnManager manager;
     // 再生済みのシーンインデックス一覧
     private List<int> playedSceneIndices = new List<int>();
 
@@ -48,6 +49,7 @@ public class SceneLoopSwitcher : MonoBehaviour
 
     void Start()
     {
+        manager = spawnManager;   
         if (SceneManager.GetActiveScene().name != doorSceneName)
         {
             SceneManager.LoadScene(doorSceneName);
@@ -67,47 +69,49 @@ public class SceneLoopSwitcher : MonoBehaviour
             }
         }
 
+
         // メインシーン遷移要求
         if (sceneChangeRequested)
         {
             sceneChangeRequested = false;
 
-            // 全シーン再生済みなら FinalScene へ
-            if (playedSceneIndices.Count >= sceneNames.Length)
-            {
-                SceneManager.LoadScene(finalSceneName);
-                return;
-            }
+            SceneManager.LoadScene(sceneNames[Random.Range(0, sceneNames.Length)]);
+            //// 全シーン再生済みなら FinalScene へ
+            //if (playedSceneIndices.Count >= sceneNames.Length)
+            //{
+            //    SceneManager.LoadScene(finalSceneName);
+            //    return;
+            //}
 
-            // 再生されていないシーンのインデックスを集める
-            List<int> availableIndices = new List<int>();
-            for (int i = 0; i < sceneNames.Length; i++)
-            {
-                if (!playedSceneIndices.Contains(i))
-                {
-                    availableIndices.Add(i);
-                }
-            }
+            //// 再生されていないシーンのインデックスを集める
+            //List<int> availableIndices = new List<int>();
+            //for (int i = 0; i < sceneNames.Length; i++)
+            //{
+            //    if (!playedSceneIndices.Contains(i))
+            //    {
+            //        availableIndices.Add(i);
+            //    }
+            //}
 
-            // ランダムに未再生シーンを選択
-            if (availableIndices.Count > 0)
-            {
-                do
-                {
-                    int randomPick = Random.Range(0, availableIndices.Count);
-                    currentSceneIndex = availableIndices[randomPick];
-                } while (sceneNames.Length > 1 && currentSceneIndex == previousSceneIndex);
+            //// ランダムに未再生シーンを選択
+            //if (availableIndices.Count > 0)
+            //{
+            //    do
+            //    {
+            //        int randomPick = Random.Range(0, availableIndices.Count);
+            //        currentSceneIndex = availableIndices[randomPick];
+            //    } while (sceneNames.Length > 1 && currentSceneIndex == previousSceneIndex);
 
-                previousSceneIndex = currentSceneIndex;
-                playedSceneIndices.Add(currentSceneIndex);
+            //    previousSceneIndex = currentSceneIndex;
+            //    playedSceneIndices.Add(currentSceneIndex);
 
-                SceneManager.LoadScene(sceneNames[currentSceneIndex]);
-            }
-            else
-            {
-                // 念のため（到達しない想定）
-                Debug.LogWarning("再生可能なシーンが見つかりません");
-            }
+            //    SceneManager.LoadScene(sceneNames[currentSceneIndex]);
+            //}
+            //else
+            //{
+            //    // 念のため（到達しない想定）
+            //    Debug.LogWarning("再生可能なシーンが見つかりません");
+            //}
         }
     }
 
@@ -125,15 +129,15 @@ public class SceneLoopSwitcher : MonoBehaviour
     }
 
     // 外部スクリプト（タイマーなど）から Door シーンへ移動
-    public static void TriggerNextScene()
+    public static void TriggerNextScene(bool clear)
     {
-        if (instance != null)
+        if(clear)
         {
-            instance.goToNextScene = true;
+            SceneManager.LoadScene("DoorScene1");
         }
         else
         {
-            Debug.LogWarning("SceneLoopSwitcher: TriggerNextScene に失敗。インスタンスが見つかりません。");
+            SceneManager.LoadScene("Result");
         }
     }
 }
