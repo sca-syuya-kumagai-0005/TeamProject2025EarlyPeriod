@@ -11,10 +11,10 @@ public class SpawnManager : MonoBehaviour
     public bool ClearLine { get {  return clearLine; } }
     [SerializeField] private GameObject[] hitEnemy;
     [SerializeField] private GameObject enemyParent;
-    [SerializeField] private GameObject enemy;
+    [SerializeField] private GameObject[] enemy;
     [SerializeField] private GameObject flashImage;
     [SerializeField] private Vector3[] spawnPosition;
-    [SerializeField] private GameObject stayEnemy;
+    [SerializeField] private GameObject[] stayEnemy;
     [SerializeField] private GameObject flash;
     [SerializeField,ReadOnly(true)]private string[] spawnWaitEnemies = new string[25];//25‚Í‰¼
     const string stayEnemyTag = "StayEnemy";
@@ -121,12 +121,12 @@ public class SpawnManager : MonoBehaviour
             {
                 case (moveEnemyTag):
                     {
-                        Instantiate(enemy, PositionRand(), Quaternion.identity, enemyParent.transform);
+                        Instantiate(enemy[Random.Range(0,enemy.Length)], PositionRand(), Quaternion.identity, enemyParent.transform);
                     }
                     break;
                 case (stayEnemyTag):
                     {
-                        Instantiate(stayEnemy, spawnPos, Quaternion.identity, enemyParent.transform);
+                        Instantiate(stayEnemy[Random.Range(0,stayEnemy.Length)], spawnPos, Quaternion.identity, enemyParent.transform);
                     }
                     break;
             }
@@ -137,7 +137,7 @@ public class SpawnManager : MonoBehaviour
                 clearLine = true;
             }
             nextMakeEnemy%=spawnWaitEnemies.Length;
-            return;
+            return; 
         }
         //int makeRand=Random.Range(0,100);
        

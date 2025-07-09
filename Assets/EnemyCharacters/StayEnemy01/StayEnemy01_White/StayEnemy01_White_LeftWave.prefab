@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 1167896661395716072}
   - component: {fileID: 2940801297403280639}
   - component: {fileID: 6280517415876028458}
+  - component: {fileID: 5502032819090121394}
+  - component: {fileID: -8693656869208488571}
   m_Layer: 0
   m_Name: StayEnemy01_White_LeftWave
   m_TagString: Enemy
@@ -352,6 +354,30 @@ PolygonCollider2D:
       - {x: 0.25592995, y: -1.1876488}
       - {x: 0.32618523, y: -1.185976}
   m_UseDelaunayMesh: 0
+--- !u!114 &5502032819090121394
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 92058668999869489}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e04645d2440e49541868e7c0982ae006, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-8693656869208488571
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 92058668999869489}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb1fca0103fcdb41a000ea96e33902a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1099351483306883619
 GameObject:
   m_ObjectHideFlags: 0

@@ -318,6 +318,8 @@ GameObject:
   - component: {fileID: 7529426933815032160}
   - component: {fileID: 4259042610554298211}
   - component: {fileID: 6485988251964403562}
+  - component: {fileID: -5061375199115806988}
+  - component: {fileID: -6008054894063250653}
   m_Layer: 0
   m_Name: StayEnemy01_Blue_LeftWave
   m_TagString: Enemy
@@ -658,6 +660,30 @@ PolygonCollider2D:
       - {x: 0.25592995, y: -1.1876488}
       - {x: 0.32618523, y: -1.185976}
   m_UseDelaunayMesh: 0
+--- !u!114 &-5061375199115806988
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4910129048963418441}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb1fca0103fcdb41a000ea96e33902a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-6008054894063250653
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4910129048963418441}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e04645d2440e49541868e7c0982ae006, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7157379890323647820
 GameObject:
   m_ObjectHideFlags: 0
