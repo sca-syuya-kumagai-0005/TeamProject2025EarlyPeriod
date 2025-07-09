@@ -7,7 +7,8 @@ public class SpawnManager : MonoBehaviour
     [SerializeField] private GameObject[] enemies;
     public int EnemyCount { get { return enemies.Length; } }
     public static int stageLevel=0;
-    AudioClip clip;
+    [SerializeField,ReadOnly(false)]private bool clearLine;
+    public bool ClearLine { get {  return clearLine; } }
     [SerializeField] private GameObject[] hitEnemy;
     [SerializeField] private GameObject enemyParent;
     [SerializeField] private GameObject enemy;
@@ -18,8 +19,6 @@ public class SpawnManager : MonoBehaviour
     [SerializeField,ReadOnly(true)]private string[] spawnWaitEnemies = new string[25];//25は仮
     const string stayEnemyTag = "StayEnemy";
     const string moveEnemyTag = "MoveEnemy";
-    int moveEnemyRandomMin = 2;
-    int moveEnemyRandomMax = 3;
     int nextMakeEnemy = 0;
     public GameObject FlashImage { get { return flashImage; } }
     public GameObject Flash {  get { return flash; } }  
@@ -27,6 +26,7 @@ public class SpawnManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        clearLine = false;
         if(SceneManager.GetActiveScene().name=="MainGame0"|| SceneManager.GetActiveScene().name == "MainGame1"|| SceneManager.GetActiveScene().name == "MainGame2")
         {
             stageLevel++;
@@ -131,6 +131,11 @@ public class SpawnManager : MonoBehaviour
                     break;
             }
             nextMakeEnemy++;
+            Debug.Log("エネミーは" + nextMakeEnemy);
+            if(nextMakeEnemy == spawnWaitEnemies.Length)
+            {
+                clearLine = true;
+            }
             nextMakeEnemy%=spawnWaitEnemies.Length;
             return;
         }
