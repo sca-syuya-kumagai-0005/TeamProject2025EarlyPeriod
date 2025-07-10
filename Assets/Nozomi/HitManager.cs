@@ -14,6 +14,8 @@ public class HitManager : MonoBehaviour
     public bool Click { get { return click; } }
     [SerializeField] bool coolTimeUp;
     [SerializeField] float coolTime;
+    float effectTime = 1f;
+    private GameObject cameraEffect;
     public enum modeChange
     {
         cameraMode,
@@ -36,6 +38,9 @@ public class HitManager : MonoBehaviour
         //(modeChange) = 1;
         coolTimeUp = true;
         collider = GetComponent<Collider2D>();
+        cameraEffect = GameObject.Find("CameraEffect");
+        cameraEffect.SetActive(false);
+
     }
 
 
@@ -158,6 +163,14 @@ public class HitManager : MonoBehaviour
         collider.enabled = false;
         yield return new WaitForSeconds(coolTime);
         Debug.Log("クールタイム終了（撮影）");
+        yield return StartCoroutine(effectCoroutine());
         coolTimeUp = true;
+    }
+
+    IEnumerator effectCoroutine()
+    {
+        cameraEffect.SetActive(true);
+        yield return new WaitForSeconds(effectTime);
+        cameraEffect.SetActive(false);
     }
 }
