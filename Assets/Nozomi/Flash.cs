@@ -8,6 +8,7 @@ public class Flash : MonoBehaviour
     float flashTimer;
     float imageAlpha = 1;
     float coolTime = 3f;
+    float effectTime = 1f;
     [SerializeField] Image Image;
     bool getFirst;
     bool flashCoolUp;
@@ -16,6 +17,7 @@ public class Flash : MonoBehaviour
     public bool FlashCoolUp { get { return flashCoolUp; } }
     // [SerializeField] SpriteRenderer spriteRenderer;
     [SerializeField] HitManager hitManager;
+    private GameObject flashEffect;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -26,6 +28,8 @@ public class Flash : MonoBehaviour
         Image.gameObject.SetActive(false);
         getFirst = true;
         flashCoolUp = true;
+        flashEffect = GameObject.Find("FlashEffect");
+        flashEffect.SetActive(false);
     }
 
     // Update is called once per frame
@@ -61,10 +65,18 @@ public class Flash : MonoBehaviour
         yield return new WaitForSeconds(coolTime);
         Image.gameObject.SetActive(false);
         Debug.Log("クールタイム終了（フラッシュ）");
+        yield  return StartCoroutine(effectCoroutine());
         flashCoolUp = true;
         flashOn = false;
         imageAlpha = 1; Image.color = new Color(1, 1, 1, imageAlpha);
         getFirst = true;
 
+    }
+
+    IEnumerator effectCoroutine()
+    {
+        flashEffect.SetActive(true);
+        yield return new WaitForSeconds(effectTime);
+        flashEffect.SetActive(false);
     }
 }
