@@ -25,14 +25,22 @@ public class VirtualKeyboard : MonoBehaviour
     [Header("文字数制限")]
     [SerializeField]private int maxLength = 7;        //最大の入力数
 
+    public enum InputMode
+    {
+        Katakana,
+        Hiragana,
+    }
+
+    private InputMode currentMode = InputMode.Katakana;
+
     //レイアウト
-    string[] katakanaChars = new string[]
+    string[] katakanaLayout = new string[]
     {
         "[←]","ー","ワ","ラ","ヤ","マ","ハ","ナ","タ","サ","カ","ア",
         "[˝]","ッ","","リ","","ミ","ヒ","ニ","チ","シ","キ","イ",
         "[〇]","ャ","ヲ","ル","ユ","ム","フ","ヌ","ツ","ス","ク","ウ",
-        "[決定]","ュ","","レ","","メ","ヘ","ネ","テ","セ","ケ","エ",
-        "[取消]","ョ","ン","ロ","ヨ","モ","ホ","ノ","ト","ソ","コ","オ",
+        "[カナ]","ュ","","レ","","メ","ヘ","ネ","テ","セ","ケ","エ",
+        "[ヒラ]","ョ","ン","ロ","ヨ","モ","ホ","ノ","ト","ソ","コ","オ",
     
     };
 
@@ -62,9 +70,46 @@ public class VirtualKeyboard : MonoBehaviour
     {"パ", "ハ"}, {"ピ", "ヒ"}, {"プ", "フ"}, {"ペ", "ヘ"}, {"ポ", "ホ"}
     };
 
+
+    string[] hiraganaLayout = new string[]
+    {
+        "[←]", "ー","わ","ら","や","ま","は","な","た","さ","か","あ",
+        "[˝]", "っ", "",  "り", "","み","ひ","に","ち","し","き","い",
+        "[〇]", "ゃ","を","る","ゆ","む","ふ","ぬ","つ","す","く","う",
+        "[カナ]","ゅ", "","れ", "","め","へ","ね","て","せ","け","え",
+        "[ヒラ]","ょ","ん","ろ","よ","も","ほ","の","と","そ","こ","お",
+    };
+
+    Dictionary<string, string> dakutenhiraMap = new Dictionary<string, string>()
+    {
+    {"か", "が"}, {"き", "ぎ"}, {"く", "ぐ"}, {"け", "げ"}, {"こ", "ご"},
+    {"さ", "ざ"}, {"し", "じ"}, {"す", "ず"}, {"せ", "ぜ"}, {"そ", "ぞ"},
+    {"た", "だ"}, {"ち", "ぢ"}, {"つ", "づ"}, {"て", "で"}, {"と", "ど"},
+    {"は", "ば"}, {"ひ", "び"}, {"ふ", "ぶ"}, {"へ", "べ"}, {"ほ", "ぼ"},
+    {"ぱ", "ば"}, {"ぴ", "び"}, {"ぷ", "ぶ"}, {"ぺ", "べ"}, {"ぽ", "ぼ"}
+    };
+
+    Dictionary<string, string> reverseDakutenhiraMap = new()
+    {
+    {"が", "か"}, {"ぎ", "き"}, {"ぐ", "く"}, {"げ", "け"}, {"ご", "こ"},
+    {"ざ", "さ"}, {"じ", "し"}, {"ず", "す"}, {"ぜ", "せ"}, {"ぞ", "そ"},
+    {"だ", "た"}, {"ぢ", "ち"}, {"づ", "つ"}, {"で", "て"}, {"ど", "と"},
+    {"ば", "は"}, {"び", "ひ"}, {"ぶ", "ふ"}, {"べ", "へ"}, {"ぼ", "ほ"}
+    };
+    
+    Dictionary<string, string> handakutenhiraMap = new Dictionary<string, string>() {
+    {"は", "ぱ"}, {"ひ", "ぴ"}, {"ふ", "ぷ"}, {"へ", "ぺ"}, {"ほ", "ぽ"},
+    {"ば", "ぱ"}, {"び", "ぴ"}, {"ぶ", "ぷ"}, {"べ", "ぺ"}, {"ぼ", "ぽ"}
+    };
+
+    Dictionary<string, string> reverseHandakutenhiraMap = new()
+    {
+    {"ぱ", "は"}, {"ぴ", "ひ"}, {"ぷ", "ふ"}, {"ぺ", "へ"}, {"ぽ", "ほ"}
+    };
+
     void Start()
     {
-        foreach(string Key in katakanaChars)
+        foreach(string Key in katakanaLayout)
         {
             GameObject btn;
 
@@ -100,6 +145,12 @@ public class VirtualKeyboard : MonoBehaviour
                         case "取消":
                             btn.GetComponent<Button>().onClick.AddListener(AllDelete);
                             break ;
+                        case "カナ":
+                            btn.GetComponent<Button>().onClick.AddListener(() =>SwitchMode(InputMode.Katakana));
+                            break ;
+                        case "ヒラ":
+                            btn.GetComponent<Button>().onClick.AddListener(() => SwitchMode(InputMode.Hiragana));
+                            break ;
                     }
                 }
                 else
@@ -108,19 +159,96 @@ public class VirtualKeyboard : MonoBehaviour
                     string captured = Key;
                     btn.GetComponent<Button>().onClick.AddListener(() => OnClickCharacter(captured));
                 }
-
-
             }
+            alldeteButton.onClick.AddListener(AllDelete);
+            submitButton.onClick.AddListener(SubmitName);
         }
-        // 削除ボタンと送信ボタンの設定
-        deleteButton.onClick.AddListener(DeleteCharacter);
-        submitButton.onClick.AddListener(SubmitName);
-        dakutenButton.onClick.AddListener(AddDakuten);
-        handakutenButton.onClick.AddListener(AddHandakuten);
-        alldeteButton.onClick.AddListener(AllDelete);
 
         UpdateDisplay(); // 最初に表示を更新
     }
+
+    public void SwitchMode(InputMode mode)
+    {
+        if(mode == currentMode) return;
+        currentMode = mode;
+        GenerateKeyboard();
+    }
+
+    void GenerateKeyboard()
+    {
+        //既存のボタン削除
+        foreach(Transform child in buttonContainer)
+        {
+            Destroy(child.gameObject);
+        }
+
+        //レイアウト選択
+        string[] layout = currentMode 
+        switch
+        {
+            InputMode.Katakana => katakanaLayout,
+            InputMode.Hiragana => hiraganaLayout,
+        };
+
+        foreach (string Key  in layout)
+        {
+            GameObject btn;
+            if (string.IsNullOrWhiteSpace(Key))
+            {
+                btn = Instantiate(emptoPrefab, buttonContainer);
+            }
+            else
+            {
+                btn = Instantiate(buttonPrefab, buttonContainer);
+                btn.GetComponentInChildren<Text>().text = Key;
+
+                string captured = Key;
+
+                //特殊キーの設定
+                if (captured.StartsWith("[") && captured.EndsWith("]"))
+                {
+                    string command = Key.Trim('[', ']');
+                    switch (command)
+                    {
+                        case "˝":
+                            Debug.Log("濁点キー");
+                            btn.GetComponent<Button>().onClick.AddListener(AddDakuten);
+                            break;
+                        case "〇":
+                            btn.GetComponent<Button>().onClick.AddListener(AddHandakuten);
+                            break;
+                        case "←":
+                            btn.GetComponent<Button>().onClick.AddListener(DeleteCharacter);
+                            break;
+                        case "決定":
+                            btn.GetComponent<Button>().onClick.AddListener(SubmitName);
+                            break;
+                        case "取消":
+                            btn.GetComponent<Button>().onClick.AddListener(AllDelete);
+                            break;
+                        case "カナ":
+                            btn.GetComponent<Button>().onClick.AddListener(() => SwitchMode(InputMode.Katakana));
+                            break;
+                        case "ヒラ":
+                            btn.GetComponent<Button>().onClick.AddListener(() => SwitchMode(InputMode.Hiragana));
+                            break;
+                    }
+                }
+                else
+                {
+                    //ボタンにクリックイベントの登録
+                    btn.GetComponent<Button>().onClick.AddListener(() => OnClickCharacter(captured));
+                }
+            }
+
+            var rt = btn.GetComponent<RectTransform>();
+            rt.localScale = Vector3.one;
+            rt.anchoredPosition3D = Vector3.zero;
+        }
+        UpdateDisplay(); // 最初に表示を更新
+    }
+
+
     //文字の追加処理
     void OnClickCharacter(string character)
     {
@@ -155,13 +283,27 @@ public class VirtualKeyboard : MonoBehaviour
     {
         if(currentName.Length == 0)  return;
         string last = currentName[^1].ToString();
-        if(dakutenMap.TryGetValue(last, out string converted))
+        if(currentMode == InputMode.Katakana)
         {
-            currentName = currentName.Substring(0,currentName.Length-1)+converted;
+            if (dakutenMap.TryGetValue(last, out string converted))
+            {
+                currentName = currentName.Substring(0, currentName.Length - 1) + converted;
+            }
+            else if (reverseDakutenMap.TryGetValue(last, out string original))
+            {
+                currentName = currentName.Substring(0, currentName.Length - 1) + original;
+            }
         }
-        else if(reverseDakutenMap.TryGetValue(last, out string original))
+        else if(currentMode == InputMode.Hiragana)
         {
-            currentName = currentName.Substring(0, currentName.Length - 1) + original;
+            if(dakutenhiraMap.TryGetValue(last, out string converted))
+            {
+                currentName = currentName.Substring(0,currentName.Length - 1) + converted;
+            }
+            else if(reverseDakutenhiraMap.TryGetValue(last,out string original))
+            {
+                currentName = currentName.Substring(0,currentName.Length-1) + original;
+            }
         }
         UpdateDisplay();
     }
@@ -172,13 +314,27 @@ public class VirtualKeyboard : MonoBehaviour
     {
         if (currentName.Length == 0) return;
         string last = currentName[^1].ToString();
-        if (handakutenMap.TryGetValue(last, out string converted))
+        if(currentMode == InputMode.Katakana)
         {
-            currentName = currentName.Substring(0, currentName.Length - 1) + converted;
+            if (handakutenMap.TryGetValue(last, out string converted))
+            {
+                currentName = currentName.Substring(0, currentName.Length - 1) + converted;
+            }
+            else if (reverseHandakutenMap.TryGetValue(last, out string original))
+            {
+                currentName = currentName.Substring(0, currentName.Length - 1) + original;
+            }
         }
-        else if (reverseHandakutenMap.TryGetValue(last, out string original))
+        else if(currentMode == InputMode.Hiragana)
         {
-            currentName = currentName.Substring(0, currentName.Length - 1) + original;
+            if (handakutenhiraMap.TryGetValue(last, out string converted))
+            {
+                currentName = currentName.Substring(0, currentName.Length - 1) + converted;
+            }
+            else if (reverseHandakutenhiraMap.TryGetValue(last, out string original))
+            {
+                currentName = currentName.Substring(0, currentName.Length - 1) + original;
+            }
         }
         UpdateDisplay();
     }
