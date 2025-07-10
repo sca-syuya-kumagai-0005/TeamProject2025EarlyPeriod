@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.SceneManagement;
 public class Animation : MonoBehaviour
 {
+    [SerializeField] private GameObject skipObj;
     [SerializeField] private Material clickTo_Mat;
     [SerializeField] private SpriteRenderer rainSpriteRenderer;
     //スナップショットで使用
@@ -83,6 +84,7 @@ public class Animation : MonoBehaviour
             Debug.Log(i);
         }
         StartCoroutine(NoiseClickToStart());
+        skipObj.SetActive(false);
 
     }
 
@@ -159,6 +161,7 @@ public class Animation : MonoBehaviour
 
     private IEnumerator Anime_1()
     {
+        skipObj.SetActive(true);
         rainSpriteRenderer.enabled = false;
         yield return new WaitForSeconds(0.5f);
         // ---- UI移動 ----
@@ -226,6 +229,7 @@ public class Animation : MonoBehaviour
 
     private IEnumerator Anime_2()
     {
+        skipObj.SetActive(true);
         rainSpriteRenderer.enabled = false;
         yield return new WaitForSeconds(1f);
         crackGround_Mat.SetFloat(alpha, 2.5f);
@@ -270,6 +274,7 @@ public class Animation : MonoBehaviour
 
     private IEnumerator Anime_3()
     {
+        skipObj.SetActive(true);
         rainSpriteRenderer.enabled = false;
         yield return new WaitForSeconds(1f);
         surprise.enabled = true;

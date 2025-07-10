@@ -473,7 +473,7 @@ MonoBehaviour:
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
@@ -619,7 +619,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   targetPosition: {x: -0.5, y: -3, z: -5}
   targetScale: {x: 2, y: 2, z: 2}
-  duration: 1
+  duration: 0.25
   targetObject_Transform: {fileID: 1658310804}
   targetObject_SpriteRenderer: {fileID: 1658310805}
   shardRigidbodies: []
