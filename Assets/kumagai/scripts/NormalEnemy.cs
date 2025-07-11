@@ -34,7 +34,9 @@ public class NormalEnemy : StayEnemyTemplate
     void Start()
     {
         coroutine = motions[Random.Range(0,motions.Count)];
-        StartCoroutine(coroutine);   
+        StartCoroutine(coroutine);
+        sr = GetComponent<SpriteRenderer>();
+        alphaTimer = 1.0f;
     }
 
 
@@ -93,32 +95,52 @@ public class NormalEnemy : StayEnemyTemplate
             yield return new WaitForSeconds(time + waitTime);
         }
     }
+    bool invisible = false;
 
     private IEnumerator InvisibleCoroutine()
     {
-        float waitTime = 0.0f;
-        bool invisible = false;
+        float waitTimer;
         while(true)
         {
-            Debug.Log("コルーチンが実行中だよ");
-            waitTime = Random.Range(1.0f, 5.0f);
-            yield return new WaitForSeconds(waitTime);
-            invisible = !invisible;
-            this.gameObject.SetActive(invisible);
+            waitTimer = Random.Range(2.0f, 6.0f);
+            yield return new WaitForSeconds(waitTimer);
+            StartCoroutine(AlphaChanger(waitTimer/2f));
         }
     }
 
-    private IEnumerator AlphaChanger()
+    [SerializeField]float alphaTimer;
+    SpriteRenderer sr;
+    private IEnumerator AlphaChanger(float timer)
     {
-        float timer = 1.0f;
-        SpriteRenderer sr = GetComponent<SpriteRenderer>();
-        while (timer > 0.0f)
+        alphaTimer = 1.0f;
+        while (alphaTimer > 0.0f)
         {
-            timer-=Time.deltaTime;
-            sr.color = new Color(0, 0, 0, timer);
+            alphaTimer -= Time.deltaTime;
+            sr.color = new Color(0,0,0,alphaTimer);
             yield return null;
         }
-        yield return null;
+        PolygonCollider2D c = GetComponent<PolygonCollider2D>();
+        Collider2D[] cs = new Collider2D[transform.childCount];
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            cs[i] = transform.GetChild(0).transform.GetChild(i).gameObject.GetComponent<Collider2D>();
+            cs[i].enabled = false;
+        }
+        c.enabled = false;
+
+        
+        float time = 0.0f;
+        while(time<timer)
+        {
+            time += Time.deltaTime;
+            sr.color = new Color(0, 0, 0, 0);
+            yield return null;
+        }
+        for(int i=0;i<cs.Length; i++)
+        {
+            cs[i].enabled=true;
+        }
+        c.enabled=true;
     }
 
  
