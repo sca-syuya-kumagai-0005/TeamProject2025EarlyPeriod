@@ -3651,7 +3651,7 @@ MonoBehaviour:
   deleteButton: {fileID: 1458766477}
   alldeteButton: {fileID: 609933863}
   submitButton: {fileID: 1382011551}
-  maxLength: 1000
+  maxLength: 7
 --- !u!1 &1762381578
 GameObject:
   m_ObjectHideFlags: 0

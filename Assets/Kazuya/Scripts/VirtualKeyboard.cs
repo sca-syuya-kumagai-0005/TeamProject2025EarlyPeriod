@@ -119,10 +119,10 @@ public class VirtualKeyboard : MonoBehaviour
     };
     string[] AlphanumericLayout = new string[]
     {
-        "+。:.ﾟ٩(๑＞◡＜๑)۶:.｡+ﾟ","(｀・ω・´)✧","｡ﾟﾟ(*´□`*｡)°ﾟ｡","(((* ॑꒳ ॑* ≡ * ॑꒳ ॑* )))ﾜｸﾜｸ","5","6","7","8","9","0","-","^",
+        "☆","✧","#","♡","◎","△","▽","♪","〆","α","γ","β",
         "Q","W","E","R","T","Y","U","I","O","P","`","{",
         "A","S","D","F","G","H","J","K","L","+","*","}",
-        "Z","X","C","V","B","N","M","<",">","?","_","",
+        "Z","X","C","V","B","N","M","<",">","?","_","ω",
         "[ひら]","[カナ]","[大]","[小]","[英]","[←]",
     };
     Dictionary<string,string> CapitalizationMap = new Dictionary<string, string>()
