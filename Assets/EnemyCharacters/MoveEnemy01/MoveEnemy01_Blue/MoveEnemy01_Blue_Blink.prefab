@@ -118,7 +118,7 @@ MonoBehaviour:
   pauseDuration: 3
   enableScaling: 1
   targetScale: {x: 4, y: 4, z: 1}
-  scaleDuration: 10
+  scaleDuration: 6
   targetImageName: FlashImage
   cameraFrameCollider: {fileID: 0}
   cameraFrameColliderName: CameraCenter
