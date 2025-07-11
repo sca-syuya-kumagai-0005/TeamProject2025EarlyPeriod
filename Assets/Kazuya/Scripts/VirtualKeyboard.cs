@@ -29,6 +29,8 @@ public class VirtualKeyboard : MonoBehaviour
     {
         Katakana,
         Hiragana,
+        Roumazo,
+        Alphanumeric,
     }
 
     private InputMode currentMode = InputMode.Katakana;
@@ -39,8 +41,8 @@ public class VirtualKeyboard : MonoBehaviour
         "[←]","ー","ワ","ラ","ヤ","マ","ハ","ナ","タ","サ","カ","ア",
         "[˝]","ッ","","リ","","ミ","ヒ","ニ","チ","シ","キ","イ",
         "[〇]","ャ","ヲ","ル","ユ","ム","フ","ヌ","ツ","ス","ク","ウ",
-        "[カナ]","ュ","","レ","","メ","ヘ","ネ","テ","セ","ケ","エ",
-        "[ヒラ]","ョ","ン","ロ","ヨ","モ","ホ","ノ","ト","ソ","コ","オ",
+        "[英]","ュ","","レ","","メ","ヘ","ネ","テ","セ","ケ","エ",
+        "[ひら]","ョ","ン","ロ","ヨ","モ","ホ","ノ","ト","ソ","コ","オ",
     
     };
 
@@ -76,8 +78,8 @@ public class VirtualKeyboard : MonoBehaviour
         "[←]", "ー","わ","ら","や","ま","は","な","た","さ","か","あ",
         "[˝]", "っ", "",  "り", "","み","ひ","に","ち","し","き","い",
         "[〇]", "ゃ","を","る","ゆ","む","ふ","ぬ","つ","す","く","う",
-        "[カナ]","ゅ", "","れ", "","め","へ","ね","て","せ","け","え",
-        "[ヒラ]","ょ","ん","ろ","よ","も","ほ","の","と","そ","こ","お",
+        "[英]","ゅ", "","れ", "","め","へ","ね","て","せ","け","え",
+        "[カナ]","ょ","ん","ろ","よ","も","ほ","の","と","そ","こ","お",
     };
 
     Dictionary<string, string> dakutenhiraMap = new Dictionary<string, string>()
@@ -105,6 +107,36 @@ public class VirtualKeyboard : MonoBehaviour
     Dictionary<string, string> reverseHandakutenhiraMap = new()
     {
     {"ぱ", "は"}, {"ぴ", "ひ"}, {"ぷ", "ふ"}, {"ぺ", "へ"}, {"ぽ", "ほ"}
+    };
+    
+    string[] roumaziLayout = new string[]
+    {
+        "1","2","3","4","5","6","7","8","9","0","-","^",
+        "q","w","e","r","t","y","u","i","o","p","@","[",
+        "a","s","d","f","g","h","j","k","l",";",":","]",
+        "z","x","c","v","b","n","m",",",".","/","","",
+        "[ひら]","[カナ]","[大]","[小]","[Shift]","[←]",
+    };
+    string[] AlphanumericLayout = new string[]
+    {
+        "+。:.ﾟ٩(๑＞◡＜๑)۶:.｡+ﾟ","(｀・ω・´)✧","｡ﾟﾟ(*´□`*｡)°ﾟ｡","(((* ॑꒳ ॑* ≡ * ॑꒳ ॑* )))ﾜｸﾜｸ","5","6","7","8","9","0","-","^",
+        "Q","W","E","R","T","Y","U","I","O","P","`","{",
+        "A","S","D","F","G","H","J","K","L","+","*","}",
+        "Z","X","C","V","B","N","M","<",">","?","_","",
+        "[ひら]","[カナ]","[大]","[小]","[英]","[←]",
+    };
+    Dictionary<string,string> CapitalizationMap = new Dictionary<string, string>()
+    {
+        {"a","A" },{"b","B" },{"c","C" },{"d","D" },{"e","E" },{"f","F" },{"g","G" },{"h","H" },{"i","I" },{"j","J" },
+        {"k","K" },{"l","L" },{"m","M" },{"n","N" },{"o","O" },{"p","P" },{"q","Q" },{"r","R" },{"s","S" },{"t","T" },
+        {"u","U" },{"v","V" },{"w","W" },{"x","X" },{"y","Y" },{"z","Z" },
+    };
+
+    Dictionary<string,string> LowercasingMap = new Dictionary<string, string>()
+    {
+        {"A","a" },{"B","b" },{"C","c" },{"D","d" },{"E","e" },{"F","f" },{"G","g" },{"H","h" },{"I","i" },{"J","j" },
+        {"K","k" },{"L","l" },{"M","m" },{"N","n" },{"O","o" },{"P","p" },{"Q","q" },{"R","r" },{"S","s" },{"T","t" },
+        {"U","u" },{"V","v" },{"W","w" },{"X","x" },{"Y","y" },{"Z","z" },
     };
 
     void Start()
@@ -148,8 +180,11 @@ public class VirtualKeyboard : MonoBehaviour
                         case "カナ":
                             btn.GetComponent<Button>().onClick.AddListener(() =>SwitchMode(InputMode.Katakana));
                             break ;
-                        case "ヒラ":
+                        case "ひら":
                             btn.GetComponent<Button>().onClick.AddListener(() => SwitchMode(InputMode.Hiragana));
+                            break ;
+                            case "英":
+                            btn.GetComponent<Button>().onClick.AddListener(() => SwitchMode(InputMode.Roumazo));
                             break ;
                     }
                 }
@@ -183,11 +218,13 @@ public class VirtualKeyboard : MonoBehaviour
         }
 
         //レイアウト選択
-        string[] layout = currentMode 
-        switch
+        string[] layout = currentMode switch
         {
             InputMode.Katakana => katakanaLayout,
             InputMode.Hiragana => hiraganaLayout,
+            InputMode.Roumazo => roumaziLayout,
+            InputMode.Alphanumeric => AlphanumericLayout,
+            _ => katakanaLayout
         };
 
         foreach (string Key  in layout)
@@ -229,9 +266,23 @@ public class VirtualKeyboard : MonoBehaviour
                         case "カナ":
                             btn.GetComponent<Button>().onClick.AddListener(() => SwitchMode(InputMode.Katakana));
                             break;
-                        case "ヒラ":
+                        case "ひら":
                             btn.GetComponent<Button>().onClick.AddListener(() => SwitchMode(InputMode.Hiragana));
                             break;
+                        case "英":
+                            btn.GetComponent<Button>().onClick.AddListener(() => SwitchMode(InputMode.Roumazo));
+                            break;
+                        case "大":
+                            btn.GetComponent<Button>().onClick.AddListener(Capitalization);
+                            break;
+                        case "小":
+                            btn.GetComponent<Button>().onClick.AddListener(Lowercasing);
+                            break;
+                        case "Shift":
+                            btn.GetComponent<Button>().onClick.AddListener(() => SwitchMode(InputMode.Alphanumeric));
+                            break;
+
+
                     }
                 }
                 else
@@ -335,6 +386,29 @@ public class VirtualKeyboard : MonoBehaviour
             {
                 currentName = currentName.Substring(0, currentName.Length - 1) + original;
             }
+        }
+        UpdateDisplay();
+    }
+    /// <summary>
+    /// ローマ字の大文字化
+    /// </summary>
+    void Capitalization()
+    {
+        if (currentName.Length == 0) return;
+        string last = currentName[^1].ToString();
+        if (CapitalizationMap.TryGetValue(last, out string converted))
+        {
+            currentName = currentName.Substring(0, currentName.Length - 1) + converted;
+        }
+        UpdateDisplay();
+    }
+    void Lowercasing()
+    {
+        if (currentName.Length == 0) return;
+        string last = currentName[^1].ToString();
+        if (LowercasingMap.TryGetValue(last, out string converted))
+        {
+            currentName = currentName.Substring(0, currentName.Length - 1) + converted;
         }
         UpdateDisplay();
     }
