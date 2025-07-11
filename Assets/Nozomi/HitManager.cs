@@ -41,7 +41,6 @@ public class HitManager : MonoBehaviour
         coolTimeUp = true;
         collider = GetComponent<Collider2D>();
         cameraEffect = GameObject.Find("CameraEffect");
-        cameraEffect.SetActive(false);
         cameraEffect.SetActive(true);
     }
 
