@@ -1,19 +1,19 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 
 public class SceneLoopSwitcher : MonoBehaviour
 {
-    [Header("ƒƒCƒ“ƒV[ƒ“‚Ì–¼‘OƒŠƒXƒgiBuild Settings‚ÉŠÜ‚ß‚éj")]
+    [Header("ãƒ¡ã‚¤ãƒ³ã‚·ãƒ¼ãƒ³ã®åå‰ãƒªã‚¹ãƒˆï¼ˆBuild Settingsã«å«ã‚ã‚‹ï¼‰")]
     public string[] sceneNames;
 
-    [Header("DoorƒV[ƒ“–¼i•K‚¸Build Settings‚ÉŠÜ‚ß‚éj")]
+    [Header("Doorã‚·ãƒ¼ãƒ³åï¼ˆå¿…ãšBuild Settingsã«å«ã‚ã‚‹ï¼‰")]
     public string doorSceneName = "DoorScene1";
 
-    [Header("‘SƒV[ƒ“Ä¶Œã‚É‘JˆÚ‚·‚éƒV[ƒ“–¼")]
+    [Header("å…¨ã‚·ãƒ¼ãƒ³å†ç”Ÿå¾Œã«é·ç§»ã™ã‚‹ã‚·ãƒ¼ãƒ³å")]
     public string finalSceneName = "Result";
 
-    [Header("Å‰‚¾‚¯‹²‚Şƒ`ƒ…[ƒgƒŠƒAƒ‹ƒV[ƒ“–¼")]
+    [Header("æœ€åˆã ã‘æŒŸã‚€ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«ã‚·ãƒ¼ãƒ³å")]
     public string tutorialSceneName = "TutorialScene";
 
     private int currentSceneIndex = 0;
@@ -21,9 +21,13 @@ public class SceneLoopSwitcher : MonoBehaviour
 
     private bool goToNextScene = false;
     private bool sceneChangeRequested = false;
-    private bool hasShownTutorial = false; // © ƒ`ƒ…[ƒgƒŠƒAƒ‹ˆê‰ñ‚¾‚¯•\¦
+    private bool hasShownTutorial = false;
+
+    private bool goToFinalSceneNext = false;      // å…¨ã‚·ãƒ¼ãƒ³å†ç”Ÿå¾Œã« Result ã¸å‘ã‹ã†ãƒ•ãƒ©ã‚°
+    private bool pendingFinalTransition = false;  // Result ã¸ã®ç§»è¡Œã‚’ Door çµŒç”±ã§å¾…æ©Ÿä¸­
 
     private static SceneLoopSwitcher instance;
+
     [SerializeField] private SpawnManager spawnManager;
     public static SpawnManager manager;
 
@@ -36,8 +40,11 @@ public class SceneLoopSwitcher : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-        instance = this;
 
+        instance = this;
+        DontDestroyOnLoad(gameObject);
+
+        // Canvas ã®é‡è¤‡é˜²æ­¢ï¼ˆä»»æ„ï¼‰
         GameObject[] objs = GameObject.FindGameObjectsWithTag("Canvas");
         if (objs.Length > 1)
         {
@@ -46,13 +53,12 @@ public class SceneLoopSwitcher : MonoBehaviour
                 Destroy(objs[i]);
             }
         }
-
-        DontDestroyOnLoad(gameObject);
     }
 
     void Start()
     {
         manager = spawnManager;
+
         if (SceneManager.GetActiveScene().name != doorSceneName)
         {
             SceneManager.LoadScene(doorSceneName);
@@ -61,18 +67,19 @@ public class SceneLoopSwitcher : MonoBehaviour
 
     void Update()
     {
-        // Door‚©‚çŸ‚Öiƒ`ƒ…[ƒgƒŠƒAƒ‹ or ƒƒCƒ“j
+        string currentScene = SceneManager.GetActiveScene().name;
+
+        // Door â†’ Tutorial or MainScene
         if (goToNextScene)
         {
             goToNextScene = false;
-
-            if (SceneManager.GetActiveScene().name != doorSceneName)
+            if (currentScene != doorSceneName)
             {
                 SceneManager.LoadScene(doorSceneName);
             }
         }
 
-        // ƒƒCƒ“ƒV[ƒ“‘JˆÚ—v‹
+        // Door â†’ æ¬¡ã®ã‚·ãƒ¼ãƒ³ã¸é·ç§»
         if (sceneChangeRequested)
         {
             sceneChangeRequested = false;
@@ -82,33 +89,60 @@ public class SceneLoopSwitcher : MonoBehaviour
                 hasShownTutorial = true;
                 SceneManager.LoadScene(tutorialSceneName);
             }
+            else if (goToFinalSceneNext)
+            {
+                goToFinalSceneNext = false;
+                pendingFinalTransition = true;
+                SceneManager.LoadScene(doorSceneName); // æœ€å¾Œã« Door æŒŸã‚€
+            }
             else
             {
                 LoadNextMainScene();
             }
         }
+
+        // Door çµŒç”±ã§ Result ã¸ç§»è¡Œã™ã‚‹
+        if (pendingFinalTransition && currentScene == doorSceneName)
+        {
+            pendingFinalTransition = false;
+            SceneManager.LoadScene(finalSceneName);
+        }
     }
 
-    // ƒƒCƒ“ƒV[ƒ““Ç‚İ‚İˆ—
+    // ãƒ¡ã‚¤ãƒ³ã‚·ãƒ¼ãƒ³ã‹ã‚‰æœªå†ç”Ÿã‚’1ã¤é¸ã³ãƒ­ãƒ¼ãƒ‰
     private void LoadNextMainScene()
     {
         if (sceneNames == null || sceneNames.Length == 0)
         {
-            Debug.LogWarning("SceneLoopSwitcher: sceneNames ‚ªİ’è‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB");
+            Debug.LogWarning("SceneLoopSwitcher: sceneNames ãŒè¨­å®šã•ã‚Œã¦ã„ã¾ã›ã‚“ã€‚");
             return;
         }
 
-        do
+        // æœªå†ç”Ÿã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’ãƒªã‚¹ãƒˆåŒ–
+        List<int> remaining = new List<int>();
+        for (int i = 0; i < sceneNames.Length; i++)
         {
-            currentSceneIndex = Random.Range(0, sceneNames.Length);
-        } while (sceneNames.Length > 1 && currentSceneIndex == previousSceneIndex);
+            if (!playedSceneIndices.Contains(i)) remaining.Add(i);
+        }
 
-        previousSceneIndex = currentSceneIndex;
+        if (remaining.Count == 0)
+        {
+            // å…¨éƒ¨å†ç”Ÿæ¸ˆã¿ â†’ Door â†’ Result
+            goToFinalSceneNext = true;
+            sceneChangeRequested = true;
+            return;
+        }
+
+        // ãƒ©ãƒ³ãƒ€ãƒ ã«æœªå†ç”Ÿã®ã‚·ãƒ¼ãƒ³ã‚’é¸ã¶
+        int newIndex = remaining[Random.Range(0, remaining.Count)];
+        currentSceneIndex = newIndex;
+        previousSceneIndex = newIndex;
+        playedSceneIndices.Add(newIndex);
 
         SceneManager.LoadScene(sceneNames[currentSceneIndex]);
     }
 
-    // DoorƒV[ƒ“‚©‚çŒÄ‚Î‚ê‚éFŸ‚ÌƒV[ƒ“‚Öi‚Ş
+    // Door ã‹ã‚‰æ¬¡ã®ã‚·ãƒ¼ãƒ³ã¸é€²ã‚ã‚‹
     public static void RequestSceneChange()
     {
         if (instance != null)
@@ -117,14 +151,34 @@ public class SceneLoopSwitcher : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("SceneLoopSwitcher: ƒCƒ“ƒXƒ^ƒ“ƒX‚ª‘¶İ‚µ‚Ü‚¹‚ñB");
+            Debug.LogWarning("SceneLoopSwitcher: RequestSceneChange å‘¼ã³å‡ºã—ã«å¤±æ•—ã—ã¾ã—ãŸã€‚");
         }
     }
 
-    // ŠO•”‚©‚çDoorƒV[ƒ“‚ğ‹²‚Ş‚©Result‚És‚­‚©”»’f
-    public static void TriggerNextScene(bool clear)
+    // Tutorial ã‹ã‚‰ MainScene ã«é€²ã‚ã‚‹
+    public static void EndTutorialAndProceed()
     {
-        if (clear)
+        if (instance != null)
+        {
+            instance.hasShownTutorial = true;
+            instance.sceneChangeRequested = true;
+        }
+        else
+        {
+            Debug.LogWarning("SceneLoopSwitcher: EndTutorialAndProceed å‘¼ã³å‡ºã—ã«å¤±æ•—ã—ã¾ã—ãŸã€‚");
+        }
+    }
+
+    // Door ã¾ãŸã¯ Result ã‚’å¤–éƒ¨ã‹ã‚‰æŒ‡å®šé·ç§»
+    public static void TriggerNextScene(bool goToDoor)
+    {
+        if (instance == null)
+        {
+            Debug.LogWarning("SceneLoopSwitcher: TriggerNextScene å‘¼ã³å‡ºã—ã«å¤±æ•—ã—ã¾ã—ãŸã€‚");
+            return;
+        }
+
+        if (goToDoor)
         {
             SceneManager.LoadScene(instance.doorSceneName);
         }
@@ -132,5 +186,11 @@ public class SceneLoopSwitcher : MonoBehaviour
         {
             SceneManager.LoadScene(instance.finalSceneName);
         }
+    }
+
+    // Tutorial â†’ MainScene é·ç§»ã®å­˜åœ¨ç¢ºèªç”¨
+    public static bool InstanceExists()
+    {
+        return instance != null;
     }
 }
