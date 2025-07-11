@@ -27,8 +27,8 @@ public class ScoreEvaluation : MonoBehaviour
 
     [Header("キャンバスの種類")]
     [SerializeField] Canvas EvaluationCanvas;
-    [SerializeField] Canvas RankingCanvas;
     [SerializeField] Canvas VirtualCanvas;
+    [SerializeField] Canvas RankingCanvas;
 
     [Header("合計スコア")]
     [SerializeField] Text scoretext;
@@ -108,8 +108,8 @@ public class ScoreEvaluation : MonoBehaviour
     {
         yield return new WaitForSeconds(3.0f);
         EvaluationCanvas.enabled = false;
-        RankingCanvas.enabled = true;
         VirtualCanvas.enabled = true;
+        RankingCanvas.enabled = true;
     }
 
 }
