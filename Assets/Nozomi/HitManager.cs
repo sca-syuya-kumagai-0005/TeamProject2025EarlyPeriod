@@ -17,6 +17,7 @@ public class HitManager : MonoBehaviour
     float effectTime = 1f;
     bool isCoroutine;
     private GameObject cameraEffect;
+
     public enum modeChange
     {
         cameraMode,
@@ -41,10 +42,10 @@ public class HitManager : MonoBehaviour
         collider = GetComponent<Collider2D>();
         cameraEffect = GameObject.Find("CameraEffect");
         cameraEffect.SetActive(false);
-
+        cameraEffect.SetActive(true);
     }
 
-
+    
     private void FixedUpdate()
     {
         if (Input.GetKey(KeyCode.A))
@@ -129,6 +130,7 @@ public class HitManager : MonoBehaviour
             //clickTest2.AlphaStart = true;
         }
         //collider.enabled = false;
+        cameraEffect.SetActive(false);
         hitEnemies = new List<GameObject>();
     }
 
@@ -157,6 +159,7 @@ public class HitManager : MonoBehaviour
             //clickTest2.AlphaStart = true;
         }
         // collider.enabled = false;
+        cameraEffect.SetActive(false);
         hitEnemies = new List<GameObject>();
     }
 
@@ -175,7 +178,6 @@ public class HitManager : MonoBehaviour
         {
             cameraEffect.SetActive(true);
             yield return new WaitForSeconds(effectTime);
-            cameraEffect.SetActive(false);
             isCoroutine = false;
         }
     }
