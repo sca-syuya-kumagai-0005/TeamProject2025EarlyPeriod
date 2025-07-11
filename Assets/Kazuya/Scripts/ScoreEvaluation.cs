@@ -35,6 +35,8 @@ public class ScoreEvaluation : MonoBehaviour
 
     [SerializeField] float waittime = 3.0f;//待機時間
 
+    [SerializeField] ScoreRanking scoreRanking;
+
 
 
 
@@ -59,33 +61,12 @@ public class ScoreEvaluation : MonoBehaviour
         {
             evaluation = Evaluation.A;
         }
-        ////スコアによるランク判定
-        //if (testScore < evaluationC)
-        //{
-        //    evaluation = Evaluation.C;
-        //}
-        //else if (testScore < evaluationB)
-        //{
-        //    evaluation = Evaluation.C;
-        //}
-        //else if (testScore < evaluationA)
-        //{
-        //    evaluation = Evaluation.B;
-        //}
-        //else
-        //{
-        //    evaluation = Evaluation.A;
-        //    }
-        }
-
-        void Update()
-    {
         //ランクの表示
         switch (evaluation)
         {
             case Evaluation.A:
                 EvaluationTextA.SetActive(true);
-               // Debug.Log("評価A");
+                // Debug.Log("評価A");
                 break;
             case Evaluation.B:
                 EvaluationTextB.SetActive(true);
@@ -96,7 +77,7 @@ public class ScoreEvaluation : MonoBehaviour
                 //  Debug.Log("評価C");
                 break;
             default:
-              //  Debug.Log("評価外");
+                //  Debug.Log("評価外");
                 break;
         }
 
@@ -108,8 +89,8 @@ public class ScoreEvaluation : MonoBehaviour
     {
         yield return new WaitForSeconds(3.0f);
         EvaluationCanvas.enabled = false;
-        VirtualCanvas.enabled = true;
-        RankingCanvas.enabled = true;
+
+        scoreRanking.BeginRanking();
     }
 
 }
