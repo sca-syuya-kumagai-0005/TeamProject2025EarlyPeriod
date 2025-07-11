@@ -318,7 +318,7 @@ public class VirtualKeyboard : MonoBehaviour
             UpdateDisplay();
         }
     }
-
+    //全文字の削除
     void AllDelete()
     {
         if (currentName.Length > 0)
@@ -402,6 +402,9 @@ public class VirtualKeyboard : MonoBehaviour
         }
         UpdateDisplay();
     }
+    /// <summary>
+    /// ローマ字の小文字化
+    /// </summary>
     void Lowercasing()
     {
         if (currentName.Length == 0) return;
