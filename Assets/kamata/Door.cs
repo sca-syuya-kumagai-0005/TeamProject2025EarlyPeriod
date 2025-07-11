@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;  // ← 追加
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class Door : MonoBehaviour
 {
@@ -23,7 +24,13 @@ public class Door : MonoBehaviour
     public float maxAlpha = 1.0f;
 
     [Header("スキップボタン")]
-    public Button skipButton;  // ← 追加
+    public Button skipButton;
+
+    [Header("サウンド設定")]
+    public AudioSource audioSource;
+    public AudioClip doorOpenSound;
+    public AudioClip doorCloseSound;
+    public float doorCloseDelay = 2.5f;
 
     private Quaternion leftClosedRot;
     private Quaternion rightClosedRot;
@@ -37,6 +44,10 @@ public class Door : MonoBehaviour
     private float timer = 0f;
     private float cameraMoveTimer = 0f;
 
+    private bool playedOpenSound = false;
+    private bool playedCloseSound = false;
+    private float closeSoundTimer = 0f;
+
     void Start()
     {
         leftClosedRot = leftDoor.localRotation;
@@ -47,13 +58,13 @@ public class Door : MonoBehaviour
 
         if (skipButton != null)
         {
-            skipButton.onClick.AddListener(SkipByButton);  // ボタンが押された時に実行
+            skipButton.onClick.AddListener(SkipByButton);
         }
     }
 
     void Update()
     {
-        // テキストのアルファ値をループ
+        // アルファループ
         if (loopAlphaText != null)
         {
             float alpha = Mathf.Lerp(minAlpha, maxAlpha, Mathf.PingPong(Time.time * alphaLoopSpeed, 1f));
@@ -76,6 +87,27 @@ public class Door : MonoBehaviour
             leftDoor.localRotation = Quaternion.Lerp(leftDoor.localRotation, leftOpenRot, Time.deltaTime * doorOpenSpeed);
             rightDoor.localRotation = Quaternion.Lerp(rightDoor.localRotation, rightOpenRot, Time.deltaTime * doorOpenSpeed);
 
+            // 開いた直後に音を再生
+            if (!playedOpenSound && audioSource != null && doorOpenSound != null)
+            {
+                audioSource.PlayOneShot(doorOpenSound);
+                playedOpenSound = true;
+            }
+
+            // 数秒後に閉まる音を再生
+            if (playedOpenSound && !playedCloseSound)
+            {
+                closeSoundTimer += Time.deltaTime;
+                if (closeSoundTimer >= doorCloseDelay)
+                {
+                    if (audioSource != null && doorCloseSound != null)
+                    {
+                        audioSource.PlayOneShot(doorCloseSound);
+                    }
+                    playedCloseSound = true;
+                }
+            }
+
             cameraMoveTimer += Time.deltaTime;
             if (!cameraIsMoving && cameraMoveTimer >= cameraMoveDelay)
             {
@@ -97,35 +129,34 @@ public class Door : MonoBehaviour
                 Time.deltaTime * cameraMoveSpeed
             );
 
-            if (!requestedSceneChange && Vector3.Distance(targetCamera.transform.position, cameraTargetPosition.position) < 0.1f)
+            // 最終的に次のシーンへ
+            if (!requestedSceneChange &&
+                Vector3.Distance(targetCamera.transform.position, cameraTargetPosition.position) < 0.1f)
             {
                 RequestSceneChangeOnce();
             }
         }
     }
 
-    // ▼ スキップボタンから呼ばれるメソッド
     public void SkipByButton()
     {
         RequestSceneChangeOnce();
     }
 
-    // ▼ 共通：リクエストは1回のみ通す
     private void RequestSceneChangeOnce()
     {
-        if (!requestedSceneChange)
-        {
-            requestedSceneChange = true;
+        if (requestedSceneChange) return;
 
-            var switcher = Object.FindFirstObjectByType<SceneLoopSwitcher>();
-            if (switcher != null)
-            {
-                SceneLoopSwitcher.RequestSceneChange();
-            }
-            else
-            {
-                Debug.LogWarning("SceneLoopSwitcher が存在しません。");
-            }
+        requestedSceneChange = true;
+
+        var switcher = Object.FindFirstObjectByType<SceneLoopSwitcher>();
+        if (switcher != null)
+        {
+            SceneLoopSwitcher.RequestSceneChange();
+        }
+        else
+        {
+            Debug.LogWarning("SceneLoopSwitcher が存在しません。");
         }
     }
 }

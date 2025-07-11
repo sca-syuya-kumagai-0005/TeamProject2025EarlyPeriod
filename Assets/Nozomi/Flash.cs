@@ -29,7 +29,6 @@ public class Flash : MonoBehaviour
         getFirst = true;
         flashCoolUp = true;
         flashEffect = GameObject.Find("FlashEffect");
-        flashEffect.SetActive(false);
     }
 
     // Update is called once per frame
@@ -62,10 +61,12 @@ public class Flash : MonoBehaviour
     IEnumerator TestCoroutine()
     {
         flashOn = true;
+        flashEffect.SetActive(false);
         yield return new WaitForSeconds(coolTime);
         Image.gameObject.SetActive(false);
+        yield return StartCoroutine(effectCoroutine());
         Debug.Log("クールタイム終了（フラッシュ）");
-        yield  return StartCoroutine(effectCoroutine());
+ 
         flashCoolUp = true;
         flashOn = false;
         imageAlpha = 1; Image.color = new Color(1, 1, 1, imageAlpha);
@@ -76,7 +77,6 @@ public class Flash : MonoBehaviour
     IEnumerator effectCoroutine()
     {
         flashEffect.SetActive(true);
-        yield return new WaitForSeconds(effectTime);
-        flashEffect.SetActive(false);
+        yield return null;
     }
 }

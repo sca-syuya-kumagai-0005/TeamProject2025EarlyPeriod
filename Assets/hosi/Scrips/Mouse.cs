@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using TMPro;
 using UnityEngine;
 using static HitManager;
 
@@ -15,16 +14,12 @@ public class Mouse : MonoBehaviour
 
     bool canMove = true;                //移動可能かどうか
     public ShutterEffect shutterEffect; //シャッターエフェクトへの参照
-    
-    [SerializeField] TextMeshProUGUI VarText;
-    public GameObject ScoreTextPrefab;  //スコアテキストのプレハブ
-    int scoreText = 0;
 
     public float ShutterTime = 3.0f;    //シャッター効果の持続時間
     public float moveDistance = 2.0f;   //スコアテキストの移動距離
 
     [SerializeField] GameObject ScoreSpritePrefab;
-    [SerializeField] Sprite[] ScoreSprites; // 例: +1～+10などのスプライト
+    [SerializeField] Sprite[] ScoreSprites;
 
     [SerializeField] HitManager hitManager;
     [SerializeField] GameObject HitObje;
@@ -194,9 +189,11 @@ public class Mouse : MonoBehaviour
 
         }
 
+        //ノーマルの目の総数とスコア計算
         int nTotalEye = nEye + nRed + nBlue;
         int nPieces = nTotalEye / 2;
         int nSurplus = nTotalEye % 2;
+
         //ノーマルの目のポイントの加算
         for(int i = 0; i < nPieces; i++)
         {
@@ -207,6 +204,7 @@ public class Mouse : MonoBehaviour
             TotalEyesScore += 1;
         }
 
+        //脅かしの目の総数とスコア計算
         int tTotalEye = tEye + tRed + tBlue;
         int tPieces = tTotalEye / 2;
         int tSurplus = tTotalEye % 2;
@@ -249,16 +247,16 @@ public class Mouse : MonoBehaviour
                 int nCount = EyeCount[parent].nCount;
                 int tCount = EyeCount[parent].tCount;
 
-                int Displayscore = 0;
+                int Displayscore = 0; //表示用スコア
 
                 //ビビりの表示スコア
                 if (nCount > 0)
                 {
-                    if (nCount >= 2)
+                    if (nCount >= 2)        //目が２個
                     {
                         Displayscore += 2;
                     }
-                    else if (nCount == 1)
+                    else if (nCount == 1)   //目が1個
                     {
                         Displayscore += 1;
                     }
@@ -267,19 +265,19 @@ public class Mouse : MonoBehaviour
                 //脅かしの表示スコア
                 if (tCount > 0)
                 {
-                    if (tCount >= 2)
+                    if (tCount >= 2)        //目が２個
                     {
                         Displayscore += 5;
                     }
-                    else if (tCount == 1)
+                    else if (tCount == 1)   //目が1個
                     {
                         Displayscore += 2;
                     }
                 }
 
+                //スコアがある場合は表示
                 if (Displayscore > 0)
                 {
-                    Debug.Log($"ShowScore: {Displayscore}");
                     ShowScoreText(Displayscore, parent.position + Vector3.up * 1.5f);
                 }
             }
@@ -380,11 +378,11 @@ public class Mouse : MonoBehaviour
         GameObject scoreSpriteObj = Instantiate(ScoreSpritePrefab, worldPos, Quaternion.identity);
         SpriteRenderer spriteRenderer = scoreSpriteObj.GetComponent<SpriteRenderer>();
 
+        //スプライト選択とアニメーション
         if (spriteRenderer != null && ShowScore - 1 < ScoreSprites.Length)
         {
-            spriteRenderer.sprite = ScoreSprites[ShowScore - 1];
-            // アニメーションコルーチンを開始
-            StartCoroutine(AnimateScoreSprite(scoreSpriteObj));
+            spriteRenderer.sprite = ScoreSprites[ShowScore - 1]; //スコアに応じたスプライトを設定
+            StartCoroutine(AnimateScoreSprite(scoreSpriteObj)); // アニメーションコルーチンを開始
         }
         else
         {
@@ -411,6 +409,7 @@ public class Mouse : MonoBehaviour
         Color startColor = sr.color;
         Color endColor = new Color(startColor.r, startColor.g, startColor.b, 0f); //透明に
 
+        //アニメーション
         while (elapsedTime < ShutterTime)
         {
             float progress = elapsedTime / ShutterTime;
@@ -418,7 +417,7 @@ public class Mouse : MonoBehaviour
             //上に移動
             scoreSpriteObj.transform.position = Vector3.Lerp(startPos, endPos, progress);
 
-            //透明度を0
+            //透明度を0に
             sr.color = Color.Lerp(startColor, endColor, progress);
             elapsedTime += Time.deltaTime;
             yield return null;
@@ -426,7 +425,12 @@ public class Mouse : MonoBehaviour
         Destroy(scoreSpriteObj);
     }
 
-
+    /// <summary>
+    /// 目のコライダーを完全に含んでいるかチェック
+    /// </summary>
+    /// <param name="outer">外側のBounds</param>
+    /// <param name="inner">内側のBounds</param>
+    /// <returns>完全に含んでいる場合はtrue</returns>
     bool IsFullyInside(Bounds outer, Bounds inner)
     {
         return outer.Contains(inner.min) && outer.Contains(inner.max);

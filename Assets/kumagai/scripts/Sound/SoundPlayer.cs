@@ -9,21 +9,21 @@ public class SoundPlayer : SoundManager
     /// <param name="loop">再生後ループするかどうか</param>
     protected void SEPlayer(string name, bool loop)
     {
-      
+     
         AudioClip clip = SetSound(name,sePath);
 
 
-        ; if (clip != null)//遊んだ痕跡　エラーログをカラフルに表示する
-        {
-            string[] color = new string[4] { "cyan", "yellow", "lime", "fuchsia" };
-            string check = this.gameObject.name + "で呼ばれているSEPlayerに対応するSEが代入されていません。";
-            string output = null;
-            for (int i = 0; i < check.Length; i++)
-            {
-                output += $"<color={color[i % color.Length]}>{check[i]}</color>";
-            }
-            Debug.LogError(output);
-        }
+        //if (clip != null)//遊んだ痕跡　エラーログをカラフルに表示する
+        //{
+        //    string[] color = new string[4] { "cyan", "yellow", "lime", "fuchsia" };
+        //    string check = this.gameObject.name + "で呼ばれているSEPlayerに対応するSEが代入されていません。";
+        //    string output = null;
+        //    for (int i = 0; i < check.Length; i++)
+        //    {
+        //        output += $"<color={color[i % color.Length]}>{check[i]}</color>";
+        //    }
+        //    Debug.LogError(output);
+        //}
         GameObject seObj = Resources.Load<GameObject>(seAudioSource);//Resourcesフォルダーに入っているSE用のオーディオソースを取得
         GameObject obj = Instantiate(seObj);//取得したものを生成して、生成したオブジェクトを取得
         

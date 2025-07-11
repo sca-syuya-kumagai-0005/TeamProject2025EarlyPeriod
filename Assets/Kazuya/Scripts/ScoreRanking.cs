@@ -27,6 +27,7 @@ public class ScoreRanking : MonoBehaviour
     [SerializeField] VirtualKeyboard virtualKeyboard;
     [SerializeField] GameObject virtualObject;
     [SerializeField] Canvas VirtualCanvas;
+    [SerializeField] Canvas RankingCanvas;
     void Start()
     {
         scoreEvaluation = GetComponent<ScoreEvaluation>();
@@ -54,7 +55,6 @@ public class ScoreRanking : MonoBehaviour
         }
         else
         {
-            TextObject.SetActive(true);
             UpdateRankingDisplay();
             StartCoroutine(ButtonSetUp());
         }
@@ -192,7 +192,8 @@ public class ScoreRanking : MonoBehaviour
 
     IEnumerator ButtonSetUp()
     {
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(4.0f);
+        TextObject.SetActive(true);
         TitkeButton.SetActive(true);
         MainGameButton.SetActive(true);
     }
