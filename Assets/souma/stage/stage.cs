@@ -13,16 +13,20 @@ public class SceneLoopSwitcher : MonoBehaviour
     [Header("全シーン再生後に遷移するシーン名")]
     public string finalSceneName = "Result";
 
+    [Header("最初だけ挟むチュートリアルシーン名")]
+    public string tutorialSceneName = "TutorialScene";
+
     private int currentSceneIndex = 0;
     private int previousSceneIndex = -1;
 
     private bool goToNextScene = false;
     private bool sceneChangeRequested = false;
+    private bool hasShownTutorial = false; // ← チュートリアル一回だけ表示
 
     private static SceneLoopSwitcher instance;
-    [SerializeField]private SpawnManager spawnManager;
+    [SerializeField] private SpawnManager spawnManager;
     public static SpawnManager manager;
-    // 再生済みのシーンインデックス一覧
+
     private List<int> playedSceneIndices = new List<int>();
 
     void Awake()
@@ -34,7 +38,6 @@ public class SceneLoopSwitcher : MonoBehaviour
         }
         instance = this;
 
-        // Canvas の重複防止（任意）
         GameObject[] objs = GameObject.FindGameObjectsWithTag("Canvas");
         if (objs.Length > 1)
         {
@@ -49,7 +52,7 @@ public class SceneLoopSwitcher : MonoBehaviour
 
     void Start()
     {
-        manager = spawnManager;   
+        manager = spawnManager;
         if (SceneManager.GetActiveScene().name != doorSceneName)
         {
             SceneManager.LoadScene(doorSceneName);
@@ -58,7 +61,7 @@ public class SceneLoopSwitcher : MonoBehaviour
 
     void Update()
     {
-        // Doorへ移行
+        // Doorから次へ（チュートリアル or メイン）
         if (goToNextScene)
         {
             goToNextScene = false;
@@ -69,53 +72,43 @@ public class SceneLoopSwitcher : MonoBehaviour
             }
         }
 
-
         // メインシーン遷移要求
         if (sceneChangeRequested)
         {
             sceneChangeRequested = false;
 
-            SceneManager.LoadScene(sceneNames[Random.Range(0, sceneNames.Length)]);
-            //// 全シーン再生済みなら FinalScene へ
-            //if (playedSceneIndices.Count >= sceneNames.Length)
-            //{
-            //    SceneManager.LoadScene(finalSceneName);
-            //    return;
-            //}
-
-            //// 再生されていないシーンのインデックスを集める
-            //List<int> availableIndices = new List<int>();
-            //for (int i = 0; i < sceneNames.Length; i++)
-            //{
-            //    if (!playedSceneIndices.Contains(i))
-            //    {
-            //        availableIndices.Add(i);
-            //    }
-            //}
-
-            //// ランダムに未再生シーンを選択
-            //if (availableIndices.Count > 0)
-            //{
-            //    do
-            //    {
-            //        int randomPick = Random.Range(0, availableIndices.Count);
-            //        currentSceneIndex = availableIndices[randomPick];
-            //    } while (sceneNames.Length > 1 && currentSceneIndex == previousSceneIndex);
-
-            //    previousSceneIndex = currentSceneIndex;
-            //    playedSceneIndices.Add(currentSceneIndex);
-
-            //    SceneManager.LoadScene(sceneNames[currentSceneIndex]);
-            //}
-            //else
-            //{
-            //    // 念のため（到達しない想定）
-            //    Debug.LogWarning("再生可能なシーンが見つかりません");
-            //}
+            if (!hasShownTutorial && !string.IsNullOrEmpty(tutorialSceneName))
+            {
+                hasShownTutorial = true;
+                SceneManager.LoadScene(tutorialSceneName);
+            }
+            else
+            {
+                LoadNextMainScene();
+            }
         }
     }
 
-    // Door シーン側から呼ばれる：メインシーンに移動するトリガー
+    // メインシーン読み込み処理
+    private void LoadNextMainScene()
+    {
+        if (sceneNames == null || sceneNames.Length == 0)
+        {
+            Debug.LogWarning("SceneLoopSwitcher: sceneNames が設定されていません。");
+            return;
+        }
+
+        do
+        {
+            currentSceneIndex = Random.Range(0, sceneNames.Length);
+        } while (sceneNames.Length > 1 && currentSceneIndex == previousSceneIndex);
+
+        previousSceneIndex = currentSceneIndex;
+
+        SceneManager.LoadScene(sceneNames[currentSceneIndex]);
+    }
+
+    // Doorシーンから呼ばれる：次のシーンへ進む
     public static void RequestSceneChange()
     {
         if (instance != null)
@@ -128,16 +121,16 @@ public class SceneLoopSwitcher : MonoBehaviour
         }
     }
 
-    // 外部スクリプト（タイマーなど）から Door シーンへ移動
+    // 外部からDoorシーンを挟むかResultに行くか判断
     public static void TriggerNextScene(bool clear)
     {
-        if(clear)
+        if (clear)
         {
-            SceneManager.LoadScene("DoorScene1");
+            SceneManager.LoadScene(instance.doorSceneName);
         }
         else
         {
-            SceneManager.LoadScene("Result");
+            SceneManager.LoadScene(instance.finalSceneName);
         }
     }
 }
