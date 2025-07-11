@@ -337,6 +337,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1644502394306620063, guid: a74515de833199c458f874e407ee424a, type: 3}
     - target: {fileID: 3470303467476942025, guid: 89c6fc7f67a510f4bab8ec26b756ca34, type: 3}
+      propertyPath: photoSheet
+      value: 
+      objectReference: {fileID: 5410587280259903048, guid: f9885860b7baadd4fab2f5953225e2c5, type: 3}
+    - target: {fileID: 3470303467476942025, guid: 89c6fc7f67a510f4bab8ec26b756ca34, type: 3}
       propertyPath: photoStorage
       value: 
       objectReference: {fileID: 5410587280259903048, guid: f9885860b7baadd4fab2f5953225e2c5, type: 3}
