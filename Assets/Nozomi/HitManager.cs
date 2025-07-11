@@ -15,6 +15,7 @@ public class HitManager : MonoBehaviour
     [SerializeField] bool coolTimeUp;
     [SerializeField] float coolTime;
     float effectTime = 1f;
+    bool isCoroutine;
     private GameObject cameraEffect;
     public enum modeChange
     {
@@ -99,6 +100,7 @@ public class HitManager : MonoBehaviour
 
         if (collider.enabled)
         {
+            isCoroutine = true;
             StartCoroutine(CoolTimeCoroutine());
         }
     }
@@ -169,8 +171,12 @@ public class HitManager : MonoBehaviour
 
     IEnumerator effectCoroutine()
     {
-        cameraEffect.SetActive(true);
-        yield return new WaitForSeconds(effectTime);
-        cameraEffect.SetActive(false);
+        if (isCoroutine)
+        {
+            cameraEffect.SetActive(true);
+            yield return new WaitForSeconds(effectTime);
+            cameraEffect.SetActive(false);
+            isCoroutine = false;
+        }
     }
 }
