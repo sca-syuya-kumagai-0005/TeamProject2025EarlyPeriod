@@ -15,7 +15,7 @@ public class CameraMask :SoundPlayer
     [SerializeField] private GameObject hit;
     private const float time=3.0f;
     [SerializeField] float timer;
-    [SerializeField]GameObject photoSheet;
+    GameObject photoSheet;
     GameObject flashImage;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
@@ -30,11 +30,15 @@ public class CameraMask :SoundPlayer
     }
     void Start()
     {
-        if (GameObject.Find(photoStorageTag)!= null)
+        if (GameObject.Find(photoStorageTag) == null)
         {
             photoSheet = Instantiate(photoStorage, new Vector3(0, 0, 0), Quaternion.identity);
             photoSheet.name = photoStorageTag;
             DontDestroyOnLoad(photoSheet);
+        }
+        else
+        {
+            photoSheet=GameObject.Find(photoStorageTag).gameObject;
         }
         
         backGround=GameObject.Find(backGroundTag).gameObject;
@@ -56,7 +60,6 @@ public class CameraMask :SoundPlayer
         //{
         //    return;
         //}
-        
         PointerMove();
         MakePhoto();
     }
@@ -77,6 +80,8 @@ public class CameraMask :SoundPlayer
         
         if (Input.GetMouseButtonDown(0))
         {
+            Debug.Log(photo);
+            Debug.Log(photoSheet);
             GameObject p = Instantiate(photo,new Vector3(0,0,0),Quaternion.identity,photoSheet.transform);
             p.name = "photo";
             p.SetActive(false);
