@@ -30,54 +30,45 @@ public class ScoreRanking : MonoBehaviour
     [SerializeField] Canvas RankingCanvas;
     void Start()
     {
+        
+    }
+
+   public void BeginRanking()
+    {
         scoreEvaluation = GetComponent<ScoreEvaluation>();
-        score = Mouse.score;
-        //score = scoreEvaluation.testScore;
+        //score = Mouse.score;
+        score = scoreEvaluation.testScore;
 
         /// ランキングの手順
         //StreamingAssetsフォルダのCSVファイルのパスを取得
         filePath = Path.Combine(Application.streamingAssetsPath, "ScoreRanking.csv");
         /// データの読み込み 
         LoadRanking();
+
         /// 現在のデータと読み込んだデータを比較してtop10に入るかを確認する
         if (IsHighScore(score))
         {
-            /*
-            //名前入力を有効か
-            nameInputField.gameObject.SetActive(true);
-            subitButton.gameObject.SetActive(true);
-
-            //ボタンにイベントの登録
-            subitButton.onClick.AddListener(OnSubmitName);*/
+            Debug.Log("ランキングイン");
             TextObject.SetActive(false);
+            VirtualCanvas.enabled = true;
             virtualObject.SetActive(true);
             virtualKeyboard.OnNameSubmitted = OnSubmitNameWithKeyboard;
         }
         else
         {
+            Debug.Log("ランキング外");
+            RankingCanvas.enabled = true;
             UpdateRankingDisplay();
             StartCoroutine(ButtonSetUp());
         }
     }
 
-
-    //void OnSubmitName(string playerName)
-    //{
-    //    if (!string.IsNullOrEmpty(playerName))
-    //    {
-    //        InsertScore(playerName, score);
-    //        SaveRanking();
-    //        UpdateRankingDisplay();
-    //        virtualKeyboard.gameObject.SetActive(false);
-    //        StartCoroutine(ButtonSetUp());
-    //    }
-    //}
-
-
     void OnSubmitNameWithKeyboard(string playerName)
     {
         if (!string.IsNullOrEmpty(playerName))
         {
+            if(Rankingfinish)return;
+            Rankingfinish = true;
             InsertScore(playerName, score);
             SaveRanking();
             TextObject.SetActive(true);
@@ -85,6 +76,7 @@ public class ScoreRanking : MonoBehaviour
             StartCoroutine(ButtonSetUp());
             virtualObject.SetActive(false);
             VirtualCanvas.enabled = false;
+            RankingCanvas.enabled = true;
 
         }
     }
@@ -128,7 +120,7 @@ public class ScoreRanking : MonoBehaviour
                 // 1位から3位の色を変更
                 if (i == 0)
                 {
-                    rankingText[i].color = Color.yellow; // 1位はゴールド
+                    rankingText[i].color = new Color(255,223,0); // 1位はゴールド
                 }
                 else if (i == 1)
                 {
@@ -196,5 +188,9 @@ public class ScoreRanking : MonoBehaviour
         TextObject.SetActive(true);
         TitkeButton.SetActive(true);
         MainGameButton.SetActive(true);
+    }
+    IEnumerator WaitTime()
+    {
+        yield return new WaitForSeconds(30.0f);
     }
 }

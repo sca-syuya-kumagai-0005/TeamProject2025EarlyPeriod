@@ -293,6 +293,7 @@ public class DisplayScores : MonoBehaviour
                 Destroy(clone);
             }
         }
+
     }
     /// <summary>
     /// スコアの初期化
