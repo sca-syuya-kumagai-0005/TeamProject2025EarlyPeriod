@@ -22,22 +22,19 @@ public class NormalEnemy : StayEnemyTemplate
         motions.Clear();
         motions.Add(RoundTripCoroutine());
         motions.Add(HIdeCoroutine());   
+        motions.Add(InvisibleCoroutine());
         GameObject obj = GameObject.Find("SpawnManager").gameObject;
         if (obj != null)
         {
             flashImage = obj.GetComponent<SpawnManager>().FlashImage;
             flash = obj.GetComponent<SpawnManager>().Flash.GetComponent<Flash>();
         }
-        
-
     }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
         coroutine = motions[Random.Range(0,motions.Count)];
-        StartCoroutine(coroutine);
-        
+        StartCoroutine(coroutine);   
     }
 
 
@@ -93,9 +90,32 @@ public class NormalEnemy : StayEnemyTemplate
             }
          
             float waitTime = Random.Range(1.0f, 3.0f);
-            yield return new WaitForSeconds(time+waitTime);
+            yield return new WaitForSeconds(time + waitTime);
+        }
+    }
+
+    private IEnumerator InvisibleCoroutine()
+    {
+        float waitTime = 0.0f;
+        bool invisible = false;
+        while(true)
+        {
+            Debug.Log("コルーチンが実行中だよ");
+            waitTime = Random.Range(1.0f, 5.0f);
+            yield return new WaitForSeconds(waitTime);
+            invisible = !invisible;
+            this.gameObject.SetActive(invisible);
+        }
+    }
+
+    private IEnumerator AlphaChanger()
+    {
+        float timer = 1.0f;
+        while (timer > 0.0f)
+        {
 
         }
+        yield return null;
     }
 
  

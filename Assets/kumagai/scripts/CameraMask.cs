@@ -30,15 +30,13 @@ public class CameraMask :SoundPlayer
     }
     void Start()
     {
-       
         if (GameObject.Find(photoStorageTag)!= null)
         {
-            GameObject obj = GameObject.Find(photoStorageTag).gameObject;
-            Destroy(obj);
+            photoSheet = Instantiate(photoStorage, new Vector3(0, 0, 0), Quaternion.identity);
+            photoSheet.name = photoStorageTag;
+            DontDestroyOnLoad(photoSheet);
         }
-          photoSheet = Instantiate(photoStorage,new Vector3(0,0,0), Quaternion.identity);
-          photoSheet.name= photoStorageTag;
-          DontDestroyOnLoad(photoSheet);   
+        
         backGround=GameObject.Find(backGroundTag).gameObject;
         timer = 0;
         mask.transform.position = new Vector3(0, 0, 0);
