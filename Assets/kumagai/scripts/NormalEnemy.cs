@@ -111,9 +111,12 @@ public class NormalEnemy : StayEnemyTemplate
     private IEnumerator AlphaChanger()
     {
         float timer = 1.0f;
+        SpriteRenderer sr = GetComponent<SpriteRenderer>();
         while (timer > 0.0f)
         {
-
+            timer-=Time.deltaTime;
+            sr.color = new Color(0, 0, 0, timer);
+            yield return null;
         }
         yield return null;
     }
