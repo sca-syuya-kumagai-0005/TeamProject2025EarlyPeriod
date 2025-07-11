@@ -337,6 +337,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1644502394306620063, guid: a74515de833199c458f874e407ee424a, type: 3}
     - target: {fileID: 3470303467476942025, guid: 89c6fc7f67a510f4bab8ec26b756ca34, type: 3}
+      propertyPath: photoSheet
+      value: 
+      objectReference: {fileID: 5410587280259903048, guid: f9885860b7baadd4fab2f5953225e2c5, type: 3}
+    - target: {fileID: 3470303467476942025, guid: 89c6fc7f67a510f4bab8ec26b756ca34, type: 3}
       propertyPath: photoStorage
       value: 
       objectReference: {fileID: 5410587280259903048, guid: f9885860b7baadd4fab2f5953225e2c5, type: 3}
@@ -647,6 +651,51 @@ Transform:
   - {fileID: 1609826140}
   - {fileID: 965179213}
   - {fileID: 1988668267}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &321709053
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 321709055}
+  - component: {fileID: 321709054}
+  m_Layer: 0
+  m_Name: EnemyWarning
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &321709054
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 321709053}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a60a10560c389bc4588ee6681d851037, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  warningSE: {fileID: 8300000, guid: ce6996b1d358fb84ab1464cc0da2fdd4, type: 3}
+--- !u!4 &321709055
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 321709053}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &549892032
@@ -3005,3 +3054,4 @@ SceneRoots:
   - {fileID: 796913620}
   - {fileID: 305447548}
   - {fileID: 549892032}
+  - {fileID: 321709055}
