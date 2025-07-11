@@ -28,16 +28,12 @@ public class ScoreRanking : MonoBehaviour
     [SerializeField] GameObject virtualObject;
     [SerializeField] Canvas VirtualCanvas;
     [SerializeField] Canvas RankingCanvas;
-    void Start()
-    {
-        
-    }
 
    public void BeginRanking()
     {
         scoreEvaluation = GetComponent<ScoreEvaluation>();
-        //score = Mouse.score;
-        score = scoreEvaluation.testScore;
+        score = Mouse.score;
+        //score = scoreEvaluation.testScore;
 
         /// ランキングの手順
         //StreamingAssetsフォルダのCSVファイルのパスを取得
