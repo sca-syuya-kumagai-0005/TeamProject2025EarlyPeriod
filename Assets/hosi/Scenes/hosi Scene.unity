@@ -3752,6 +3752,34 @@ PrefabInstance:
       propertyPath: shutterEffect
       value: 
       objectReference: {fileID: 315900629}
+    - target: {fileID: 185299896699258944, guid: 70dc622718b8b204d85f2000a359e5ef, type: 3}
+      propertyPath: ScoreSpritePrefab
+      value: 
+      objectReference: {fileID: 1391895077761868933, guid: 19bd02d5012bea942a400adb9531915c, type: 3}
+    - target: {fileID: 185299896699258944, guid: 70dc622718b8b204d85f2000a359e5ef, type: 3}
+      propertyPath: ScoreSprites.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 185299896699258944, guid: 70dc622718b8b204d85f2000a359e5ef, type: 3}
+      propertyPath: 'ScoreSprites.Array.data[0]'
+      value: 
+      objectReference: {fileID: 21300000, guid: 398b7c1a9ee7ecc408205751951f6da2, type: 3}
+    - target: {fileID: 185299896699258944, guid: 70dc622718b8b204d85f2000a359e5ef, type: 3}
+      propertyPath: 'ScoreSprites.Array.data[1]'
+      value: 
+      objectReference: {fileID: 21300000, guid: d7712baa56881b7448d9ba4d151efed9, type: 3}
+    - target: {fileID: 185299896699258944, guid: 70dc622718b8b204d85f2000a359e5ef, type: 3}
+      propertyPath: 'ScoreSprites.Array.data[2]'
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 185299896699258944, guid: 70dc622718b8b204d85f2000a359e5ef, type: 3}
+      propertyPath: 'ScoreSprites.Array.data[3]'
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 185299896699258944, guid: 70dc622718b8b204d85f2000a359e5ef, type: 3}
+      propertyPath: 'ScoreSprites.Array.data[4]'
+      value: 
+      objectReference: {fileID: 21300000, guid: 2acfe290f78253640b17cd71690cbb4f, type: 3}
     - target: {fileID: 3234272675386190914, guid: 70dc622718b8b204d85f2000a359e5ef, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

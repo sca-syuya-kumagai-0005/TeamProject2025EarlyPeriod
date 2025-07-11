@@ -23,6 +23,9 @@ public class Mouse : MonoBehaviour
     public float ShutterTime = 3.0f;    //シャッター効果の持続時間
     public float moveDistance = 2.0f;   //スコアテキストの移動距離
 
+    [SerializeField] GameObject ScoreSpritePrefab;
+    [SerializeField] Sprite[] ScoreSprites; // 例: +1～+10などのスプライト
+
     [SerializeField] HitManager hitManager;
     [SerializeField] GameObject HitObje;
     void Start()
@@ -276,6 +279,7 @@ public class Mouse : MonoBehaviour
 
                 if (Displayscore > 0)
                 {
+                    Debug.Log($"ShowScore: {Displayscore}");
                     ShowScoreText(Displayscore, parent.position + Vector3.up * 1.5f);
                 }
             }
@@ -367,24 +371,24 @@ public class Mouse : MonoBehaviour
     void ShowScoreText(int ShowScore, Vector3 worldPos)
     {
         //プレハブが設定されていない場合は処理を終了
-        if (ScoreTextPrefab == null)
+        if (ScoreSpritePrefab == null || ScoreSprites == null || ScoreSprites.Length == 0)
         {
             return;
         }
 
         //スコアテキストオブジェクトを生成
-        GameObject scoreTextObj = Instantiate(ScoreTextPrefab, worldPos, Quaternion.identity);
-        TextMeshProUGUI textMesh = scoreTextObj.GetComponentInChildren<TextMeshProUGUI>();
+        GameObject scoreSpriteObj = Instantiate(ScoreSpritePrefab, worldPos, Quaternion.identity);
+        SpriteRenderer spriteRenderer = scoreSpriteObj.GetComponent<SpriteRenderer>();
 
-        if (textMesh != null)
+        if (spriteRenderer != null && ShowScore - 1 < ScoreSprites.Length)
         {
-            textMesh.text = "+" + ShowScore;
+            spriteRenderer.sprite = ScoreSprites[ShowScore - 1];
             // アニメーションコルーチンを開始
-            StartCoroutine(AnimateScoreText(textMesh, scoreTextObj));
+            StartCoroutine(AnimateScoreSprite(scoreSpriteObj));
         }
         else
         {
-            Destroy(scoreTextObj, ShutterTime);
+            Destroy(scoreSpriteObj, ShutterTime);
         }
     }
 
@@ -394,32 +398,32 @@ public class Mouse : MonoBehaviour
     /// <param name="textMesh">アニメーションするのテキスト</param>
     /// <param name="scoreTextObj">アニメーションするオブジェクト</param>
     /// <returns>コルーチン</returns>
-    IEnumerator AnimateScoreText(TextMeshProUGUI textMesh, GameObject scoreTextObj)
+    IEnumerator AnimateScoreSprite(GameObject scoreSpriteObj)
     {
         //位置
-        Vector3 startPos = scoreTextObj.transform.position;
+        Vector3 startPos = scoreSpriteObj.transform.position;
         Vector3 endPos = startPos + Vector3.up * moveDistance;
 
-        //色
-        Color startColor = textMesh.color;
-        Color endColor = new Color(startColor.r, startColor.g, startColor.b, 0f); //透明に
-
         float elapsedTime = 0f;
+
+        //色
+        SpriteRenderer sr = scoreSpriteObj.GetComponent<SpriteRenderer>();
+        Color startColor = sr.color;
+        Color endColor = new Color(startColor.r, startColor.g, startColor.b, 0f); //透明に
 
         while (elapsedTime < ShutterTime)
         {
             float progress = elapsedTime / ShutterTime;
 
             //上に移動
-            scoreTextObj.transform.position = Vector3.Lerp(startPos, endPos, progress);
+            scoreSpriteObj.transform.position = Vector3.Lerp(startPos, endPos, progress);
 
             //透明度を0
-            textMesh.color = Color.Lerp(startColor, endColor, progress);
-
+            sr.color = Color.Lerp(startColor, endColor, progress);
             elapsedTime += Time.deltaTime;
             yield return null;
         }
-        Destroy(scoreTextObj);
+        Destroy(scoreSpriteObj);
     }
 
 
