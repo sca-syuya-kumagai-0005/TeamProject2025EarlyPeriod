@@ -23,8 +23,8 @@ public class SceneLoopSwitcher : MonoBehaviour
     private bool sceneChangeRequested = false;
     private bool hasShownTutorial = false;
 
-    private bool goToFinalSceneNext = false;      // 全シーン再生後に Result へ向かうフラグ
-    private bool pendingFinalTransition = false;  // Result への移行を Door 経由で待機中
+    private bool goToFinalSceneNext = false;
+    private bool pendingFinalTransition = false;
 
     private static SceneLoopSwitcher instance;
 
@@ -44,7 +44,6 @@ public class SceneLoopSwitcher : MonoBehaviour
         instance = this;
         DontDestroyOnLoad(gameObject);
 
-        // Canvas の重複防止（任意）
         GameObject[] objs = GameObject.FindGameObjectsWithTag("Canvas");
         if (objs.Length > 1)
         {
@@ -69,7 +68,12 @@ public class SceneLoopSwitcher : MonoBehaviour
     {
         string currentScene = SceneManager.GetActiveScene().name;
 
-        // Door → Tutorial or MainScene
+        // リザルト到達時に状態リセット
+        if (currentScene == finalSceneName)
+        {
+            ResetLoopState();
+        }
+
         if (goToNextScene)
         {
             goToNextScene = false;
@@ -79,7 +83,6 @@ public class SceneLoopSwitcher : MonoBehaviour
             }
         }
 
-        // Door → 次のシーンへ遷移
         if (sceneChangeRequested)
         {
             sceneChangeRequested = false;
@@ -93,7 +96,7 @@ public class SceneLoopSwitcher : MonoBehaviour
             {
                 goToFinalSceneNext = false;
                 pendingFinalTransition = true;
-                SceneManager.LoadScene(doorSceneName); // 最後に Door 挟む
+                SceneManager.LoadScene(doorSceneName);
             }
             else
             {
@@ -101,7 +104,6 @@ public class SceneLoopSwitcher : MonoBehaviour
             }
         }
 
-        // Door 経由で Result へ移行する
         if (pendingFinalTransition && currentScene == doorSceneName)
         {
             pendingFinalTransition = false;
@@ -109,7 +111,6 @@ public class SceneLoopSwitcher : MonoBehaviour
         }
     }
 
-    // メインシーンから未再生を1つ選びロード
     private void LoadNextMainScene()
     {
         if (sceneNames == null || sceneNames.Length == 0)
@@ -118,7 +119,6 @@ public class SceneLoopSwitcher : MonoBehaviour
             return;
         }
 
-        // 未再生のインデックスをリスト化
         List<int> remaining = new List<int>();
         for (int i = 0; i < sceneNames.Length; i++)
         {
@@ -127,13 +127,11 @@ public class SceneLoopSwitcher : MonoBehaviour
 
         if (remaining.Count == 0)
         {
-            // 全部再生済み → Door → Result
             goToFinalSceneNext = true;
             sceneChangeRequested = true;
             return;
         }
 
-        // ランダムに未再生のシーンを選ぶ
         int newIndex = remaining[Random.Range(0, remaining.Count)];
         currentSceneIndex = newIndex;
         previousSceneIndex = newIndex;
@@ -142,7 +140,6 @@ public class SceneLoopSwitcher : MonoBehaviour
         SceneManager.LoadScene(sceneNames[currentSceneIndex]);
     }
 
-    // Door から次のシーンへ進める
     public static void RequestSceneChange()
     {
         if (instance != null)
@@ -155,7 +152,6 @@ public class SceneLoopSwitcher : MonoBehaviour
         }
     }
 
-    // Tutorial から MainScene に進める
     public static void EndTutorialAndProceed()
     {
         if (instance != null)
@@ -169,7 +165,6 @@ public class SceneLoopSwitcher : MonoBehaviour
         }
     }
 
-    // Door または Result を外部から指定遷移
     public static void TriggerNextScene(bool goToDoor)
     {
         if (instance == null)
@@ -188,9 +183,21 @@ public class SceneLoopSwitcher : MonoBehaviour
         }
     }
 
-    // Tutorial → MainScene 遷移の存在確認用
     public static bool InstanceExists()
     {
         return instance != null;
+    }
+
+    // 🔄 状態をすべて初期化（Result到達時に呼ばれる）
+    private void ResetLoopState()
+    {
+        playedSceneIndices.Clear();
+        currentSceneIndex = 0;
+        previousSceneIndex = -1;
+        hasShownTutorial = false;
+        goToFinalSceneNext = false;
+        pendingFinalTransition = false;
+        sceneChangeRequested = false;
+        goToNextScene = false;
     }
 }
