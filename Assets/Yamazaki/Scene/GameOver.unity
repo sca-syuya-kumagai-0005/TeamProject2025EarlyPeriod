@@ -581,7 +581,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4a84e95640db7b40ba88c1b367a9ced, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flashDuration: 0.2
+  flashDuration: 0.5
   glassObj:
   - {fileID: 758723875}
   - {fileID: 843073958}
@@ -619,7 +619,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   targetPosition: {x: -0.5, y: -3, z: -5}
   targetScale: {x: 2, y: 2, z: 2}
-  duration: 1
+  duration: 0.5
   targetObject_Transform: {fileID: 1658310804}
   targetObject_SpriteRenderer: {fileID: 1658310805}
   shardRigidbodies: []

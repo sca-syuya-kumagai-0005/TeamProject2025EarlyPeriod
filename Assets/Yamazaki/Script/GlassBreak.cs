@@ -3,10 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 
-public class GlassBrake : MonoBehaviour
+public class GlassBrake : SoundPlayer
 {
     const string nextScene = "Result";
-    [SerializeField] private float flashDuration = 0.5f;
+    [SerializeField] private float flashDuration = 2f;
     [SerializeField] private GameObject[] glassObj;
     [SerializeField] Sprite[] ghostSprite; 
     public float explosionForce = 500f;
@@ -34,12 +34,12 @@ public class GlassBrake : MonoBehaviour
     public List<Rigidbody> shardRigidbodies = new List<Rigidbody>();
 
     public Canvas GameOver;//å„Ç≈è¡Ç∑
-    public GameObject Camera;
+    //public GameObject Camera;
 
     private void Start()
     {
         Flash();
-        Camera.SetActive(true);
+        //Camera.SetActive(true);
     }
 
     public void Flash()
@@ -70,6 +70,8 @@ public class GlassBrake : MonoBehaviour
         Vector3 startScale = targetTransform.localScale;
         float elapsed = 0f;
 
+        yield return new WaitForSeconds(0.8f);
+
         while (elapsed < duration)
         {
             float t = elapsed / duration;
@@ -95,9 +97,10 @@ public class GlassBrake : MonoBehaviour
         for (int i = 0; i < glassObj.Length; i++)
         {
             glassObj[i].SetActive(true);
+            SEPlayer("ÉKÉâÉXÇ™äÑÇÍÇÈ3", false);
             yield return new WaitForSeconds(flashDuration);
         }
-        Camera.SetActive(false);
+        //Camera.SetActive(false);
         PrepareRigidbodies();
 
         // îjï–åQÇÃèdêSÇåvéZ
@@ -111,6 +114,7 @@ public class GlassBrake : MonoBehaviour
         if (count > 0) explosionCenter /= count;
         else explosionCenter = transform.position;
 
+        SEPlayer("ÉKÉâÉXÇ™äÑÇÍÇÈ2", false);
         // îöî≠óÕÇâ¡Ç¶ÇÈ
         foreach (Rigidbody rb in shardRigidbodies)
         {

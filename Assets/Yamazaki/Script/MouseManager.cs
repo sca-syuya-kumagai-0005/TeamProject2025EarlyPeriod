@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class MouseManager : MonoBehaviour
+public class MouseManager : SoundPlayer
 {
     [Header("マウスクリック時にフラッシュ表示する SpriteRenderer")]
     [SerializeField] private SpriteRenderer cameraFlash;
@@ -99,6 +99,7 @@ public class MouseManager : MonoBehaviour
 
     void TakeSnapshot()
     {
+        SEPlayer("SE_6_Camera", false);
         if (targetCamera == null || renderTexture == null || targetSpriteRenderer == null)
         {
             Debug.LogError("設定が不完全です");
