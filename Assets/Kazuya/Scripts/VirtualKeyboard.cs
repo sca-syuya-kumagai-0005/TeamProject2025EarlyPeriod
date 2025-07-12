@@ -31,6 +31,7 @@ public class VirtualKeyboard : MonoBehaviour
         Hiragana,
         Roumazo,
         Alphanumeric,
+        girisya,
     }
 
     private InputMode currentMode = InputMode.Katakana;
@@ -119,10 +120,10 @@ public class VirtualKeyboard : MonoBehaviour
     };
     string[] AlphanumericLayout = new string[]
     {
-        "☆","✧","#","♡","◎","△","▽","♪","〆","α","γ","β",
+        "☆","✧","#","♡","◎","△","▽","♪","〆","[α]","","",
         "Q","W","E","R","T","Y","U","I","O","P","`","{",
         "A","S","D","F","G","H","J","K","L","+","*","}",
-        "Z","X","C","V","B","N","M","<",">","?","_","ω",
+        "Z","X","C","V","B","N","M","<",">","?","_","",
         "[ひら]","[カナ]","[大]","[小]","[英]","[←]",
     };
     Dictionary<string,string> CapitalizationMap = new Dictionary<string, string>()
@@ -137,6 +138,15 @@ public class VirtualKeyboard : MonoBehaviour
         {"A","a" },{"B","b" },{"C","c" },{"D","d" },{"E","e" },{"F","f" },{"G","g" },{"H","h" },{"I","i" },{"J","j" },
         {"K","k" },{"L","l" },{"M","m" },{"N","n" },{"O","o" },{"P","p" },{"Q","q" },{"R","r" },{"S","s" },{"T","t" },
         {"U","u" },{"V","v" },{"W","w" },{"X","x" },{"Y","y" },{"Z","z" },
+    };
+
+    string[] girisyaLayout = new string[]
+    {
+        "α","β","γ","δ","ε","ζ","η","θ","ι","κ","λ","μ",
+        "ν","ξ","ο","π","ρ","ς","τ","υ","φ","χ","ψ","ω",
+        "Α","Β","Γ","Δ","Ε","Ζ","Η","Θ","Ι","Κ","Λ","Μ",
+        "Ν","Ξ","Ο","Π","Ρ","Σ","Τ","Υ","Φ","Χ","Ψ","Ω",
+        "[英]","[←]",
     };
 
     void Start()
@@ -224,6 +234,7 @@ public class VirtualKeyboard : MonoBehaviour
             InputMode.Hiragana => hiraganaLayout,
             InputMode.Roumazo => roumaziLayout,
             InputMode.Alphanumeric => AlphanumericLayout,
+            InputMode.girisya => girisyaLayout,
             _ => katakanaLayout
         };
 
@@ -280,6 +291,9 @@ public class VirtualKeyboard : MonoBehaviour
                             break;
                         case "Shift":
                             btn.GetComponent<Button>().onClick.AddListener(() => SwitchMode(InputMode.Alphanumeric));
+                            break;
+                        case "α":
+                            btn.GetComponent<Button>().onClick.AddListener(() => SwitchMode(InputMode.girisya));
                             break;
 
 
