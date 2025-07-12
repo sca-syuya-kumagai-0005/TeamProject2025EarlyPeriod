@@ -63,14 +63,14 @@ public class DisplayScores : MonoBehaviour
         if (cameraMask == null)
         {
             Debug.LogError("PhotoStorageオブジェクトが見つかりません。");
-            return;
+             StartCoroutine(PlayClosingBookEffect());
         }
 
         // 表示位置の基準となるオブジェクトが設定されているか確認
         if (photoDisplayReference == null)
         {
             Debug.LogError("基準オブジェクト(photoDisplayReference)が設定されていません。");
-            return;
+            StartCoroutine(PlayClosingBookEffect());
         }
 
         // 写真オブジェクトを現在のシーンに移動
@@ -155,7 +155,6 @@ public class DisplayScores : MonoBehaviour
         }
 
         yield return StartCoroutine(PlayClosingBookEffect());
-        SceneManager.LoadScene(nextSceneName);
     }
     /// <summary>
     /// 写真を表示するシークエンス
@@ -402,6 +401,7 @@ public class DisplayScores : MonoBehaviour
         // しっかり表示されている状態で1秒待つ
         closingBookImage.color = new Color(imageColor.r, imageColor.g, imageColor.b, 1f);
         yield return new WaitForSeconds(1.0f);
+        SceneManager.LoadScene(nextSceneName);
     }
 }
 
