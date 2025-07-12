@@ -34,10 +34,12 @@ public class GlassBrake : MonoBehaviour
     public List<Rigidbody> shardRigidbodies = new List<Rigidbody>();
 
     public Canvas GameOver;//Œã‚ÅÁ‚·
+    public GameObject Camera;
 
     private void Start()
     {
         Flash();
+        Camera.SetActive(true);
     }
 
     public void Flash()
@@ -95,7 +97,7 @@ public class GlassBrake : MonoBehaviour
             glassObj[i].SetActive(true);
             yield return new WaitForSeconds(flashDuration);
         }
-
+        Camera.SetActive(false);
         PrepareRigidbodies();
 
         // ”j•ĞŒQ‚ÌdS‚ğŒvZ

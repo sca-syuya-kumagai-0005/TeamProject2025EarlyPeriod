@@ -3,19 +3,16 @@ using System.Collections;
 using UnityEngine.SceneManagement;
 public class Animation : MonoBehaviour
 {
+    [SerializeField] private Animator m_Animator;
+
     [SerializeField] private GameObject skipObj;
     [SerializeField] private Material clickTo_Mat;
     [SerializeField] private SpriteRenderer rainSpriteRenderer;
     //スナップショットで使用
-    [Header("移動開始オフセット（ローカル座標）")]
-    [SerializeField] private Vector3 startOffset = new Vector3(25f, 0, 0);
+
     [SerializeField] private GameObject snapShot;
     [Header("演出にかける秒数")]
     [SerializeField] private float duration_Phot = 1.0f;
-
-    private Vector3 startPosition;
-    private Vector3 targetPosition;
-    private SpriteRenderer spriteRenderer_Phot;
 
     //アニメーション1で私用する
     [Header("Canvas上のUIオブジェクト")]
@@ -84,6 +81,7 @@ public class Animation : MonoBehaviour
             Debug.Log(i);
         }
         StartCoroutine(NoiseClickToStart());
+        StartCoroutine(TitleAnimecoroutine(15));
         skipObj.SetActive(false);
 
     }
@@ -108,7 +106,7 @@ public class Animation : MonoBehaviour
                 anime_num = 0;
                 break;
             default:
-                Debug.LogError("アニメナンバーがないよ");
+                //Debug.LogError("アニメナンバーがないよ");
                 break;
         }
     }
@@ -370,5 +368,35 @@ public class Animation : MonoBehaviour
             yield return new WaitForSeconds(2f);
             SceneManager.LoadScene(mainGame);
         }
+    }
+
+    private IEnumerator TitleAnimecoroutine(float coolTime)
+    {
+        while(true)
+        {
+            int rnd = Random.Range(1, 4);
+            switch (rnd)
+            {
+                case 1:
+                    m_Animator.SetBool("isAnime_1", true);
+                    yield return new WaitForSeconds(coolTime);
+                    m_Animator.SetBool("isAnime_1", false);
+                    break;
+
+                case 2:
+                    m_Animator.SetBool("isAnime_2", true);
+                    yield return new WaitForSeconds(coolTime);
+                    m_Animator.SetBool("isAnime_2", false);
+                    break;
+
+                case 3:
+                    m_Animator.SetBool("isAnime_3", true);
+                    yield return new WaitForSeconds(coolTime);
+                    m_Animator.SetBool("isAnime_3", false);
+                    break;
+
+            }
+        }
+        
     }
 }
