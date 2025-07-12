@@ -45,7 +45,6 @@ public class NormalEnemy : StayEnemyTemplate
        
         if(flash.Flashing)
         {
-            Debug.Log("コルーチンを停止します");
             if(coroutine!=null) StopCoroutine(coroutine) ;
             if(moveRightCoroutine!=null)StopCoroutine(moveRightCoroutine);
             if(moveLeftCoroutine!=null)StopCoroutine(moveLeftCoroutine);
@@ -57,7 +56,6 @@ public class NormalEnemy : StayEnemyTemplate
     {
         while (true)
         {
-            Debug.Log("コルーチンは動いています");
             float randomR = Random.Range(0.5f, 10.0f);
             float randomL = randomR * -1;
             float totalTime = Random.Range(0.1f, 2.0f);
@@ -104,7 +102,7 @@ public class NormalEnemy : StayEnemyTemplate
         {
             waitTimer = Random.Range(2.0f, 6.0f);
             yield return new WaitForSeconds(waitTimer);
-            StartCoroutine(AlphaChanger(waitTimer/2f));
+            StartCoroutine(AlphaChanger(waitTimer));
         }
     }
 
@@ -113,34 +111,22 @@ public class NormalEnemy : StayEnemyTemplate
     private IEnumerator AlphaChanger(float timer)
     {
         alphaTimer = 1.0f;
-        while (alphaTimer > 0.0f)
+        while (alphaTimer > 0.3f)
         {
             alphaTimer -= Time.deltaTime;
-            sr.color = new Color(0,0,0,alphaTimer);
+            sr.color = new Color(1.0f,1.0f,1.0f,alphaTimer);
             yield return null;
         }
-        PolygonCollider2D c = GetComponent<PolygonCollider2D>();
-        Collider2D[] cs = new Collider2D[transform.childCount];
-        for (int i = 0; i < transform.childCount; i++)
-        {
-            cs[i] = transform.GetChild(0).transform.GetChild(i).gameObject.GetComponent<Collider2D>();
-            cs[i].enabled = false;
-        }
-        c.enabled = false;
+       
 
         
         float time = 0.0f;
         while(time<timer)
         {
             time += Time.deltaTime;
-            sr.color = new Color(0, 0, 0, 0);
+            sr.color = new Color(1.0f, 1.0f, 1.0f, alphaTimer);
             yield return null;
         }
-        for(int i=0;i<cs.Length; i++)
-        {
-            cs[i].enabled=true;
-        }
-        c.enabled=true;
     }
 
  
