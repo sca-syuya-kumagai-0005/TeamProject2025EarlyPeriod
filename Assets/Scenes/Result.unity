@@ -355,7 +355,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.2}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -658,6 +658,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e04645d2440e49541868e7c0982ae006, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  alphaTimer: 0
 --- !u!60 &68263990
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -1973,6 +1974,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e04645d2440e49541868e7c0982ae006, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  alphaTimer: 0
 --- !u!60 &146978623
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -2379,6 +2381,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e04645d2440e49541868e7c0982ae006, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  alphaTimer: 0
 --- !u!60 &157371888
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -2818,6 +2821,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e04645d2440e49541868e7c0982ae006, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  alphaTimer: 0
 --- !u!60 &171886834
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -3224,6 +3228,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e04645d2440e49541868e7c0982ae006, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  alphaTimer: 0
 --- !u!60 &201779626
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -3952,6 +3957,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e04645d2440e49541868e7c0982ae006, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  alphaTimer: 0
 --- !u!60 &233775240
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -4358,6 +4364,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e04645d2440e49541868e7c0982ae006, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  alphaTimer: 0
 --- !u!60 &233939447
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -6498,7 +6505,6 @@ MonoBehaviour:
   enemy: {fileID: 0}
   hit: {fileID: 0}
   timer: -0.3749905
-  photoSheet: {fileID: 1176835239}
 --- !u!331 &482307218
 SpriteMask:
   m_ObjectHideFlags: 0
@@ -6643,6 +6649,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e04645d2440e49541868e7c0982ae006, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  alphaTimer: 0
 --- !u!60 &484917311
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -7736,6 +7743,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e04645d2440e49541868e7c0982ae006, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  alphaTimer: 0
 --- !u!60 &565439300
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -8705,6 +8713,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e04645d2440e49541868e7c0982ae006, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  alphaTimer: 0
 --- !u!60 &610733722
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -10300,6 +10309,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e04645d2440e49541868e7c0982ae006, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  alphaTimer: 0
 --- !u!60 &697141586
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -10706,6 +10716,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e04645d2440e49541868e7c0982ae006, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  alphaTimer: 0
 --- !u!60 &702920412
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -11193,7 +11204,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &792818380
 RectTransform:
   m_ObjectHideFlags: 0
@@ -13728,6 +13739,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e04645d2440e49541868e7c0982ae006, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  alphaTimer: 0
 --- !u!60 &1099790907
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -14527,6 +14539,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e04645d2440e49541868e7c0982ae006, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  alphaTimer: 0
 --- !u!60 &1116634776
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -15568,6 +15581,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e04645d2440e49541868e7c0982ae006, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  alphaTimer: 0
 --- !u!60 &1233918166
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -16160,6 +16174,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e04645d2440e49541868e7c0982ae006, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  alphaTimer: 0
 --- !u!60 &1289755539
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -16763,7 +16778,6 @@ MonoBehaviour:
   enemy: {fileID: 0}
   hit: {fileID: 0}
   timer: -0.5371164
-  photoSheet: {fileID: 1176835239}
 --- !u!331 &1320124310
 SpriteMask:
   m_ObjectHideFlags: 0
@@ -17459,7 +17473,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1386642297
 RectTransform:
   m_ObjectHideFlags: 0
@@ -17837,6 +17851,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e04645d2440e49541868e7c0982ae006, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  alphaTimer: 0
 --- !u!60 &1432213816
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -18987,6 +19002,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e04645d2440e49541868e7c0982ae006, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  alphaTimer: 0
 --- !u!60 &1504414341
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -20472,6 +20488,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e04645d2440e49541868e7c0982ae006, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  alphaTimer: 0
 --- !u!60 &1580486865
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -21067,6 +21084,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e04645d2440e49541868e7c0982ae006, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  alphaTimer: 0
 --- !u!60 &1599654905
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -21438,7 +21456,6 @@ MonoBehaviour:
   enemy: {fileID: 0}
   hit: {fileID: 0}
   timer: -2.0235658
-  photoSheet: {fileID: 1176835239}
 --- !u!331 &1626425195
 SpriteMask:
   m_ObjectHideFlags: 0
@@ -22548,6 +22565,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e04645d2440e49541868e7c0982ae006, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  alphaTimer: 0
 --- !u!60 &1712800020
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -22954,6 +22972,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e04645d2440e49541868e7c0982ae006, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  alphaTimer: 0
 --- !u!60 &1726727207
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -23832,6 +23851,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e04645d2440e49541868e7c0982ae006, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  alphaTimer: 0
 --- !u!60 &1777089601
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -25588,6 +25608,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e04645d2440e49541868e7c0982ae006, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  alphaTimer: 0
 --- !u!60 &1908058075
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -26038,7 +26059,6 @@ MonoBehaviour:
   enemy: {fileID: 0}
   hit: {fileID: 0}
   timer: -1.3713983
-  photoSheet: {fileID: 1176835239}
 --- !u!331 &1936716470
 SpriteMask:
   m_ObjectHideFlags: 0
@@ -26336,6 +26356,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e04645d2440e49541868e7c0982ae006, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  alphaTimer: 0
 --- !u!60 &1943564444
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -26895,6 +26916,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e04645d2440e49541868e7c0982ae006, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  alphaTimer: 0
 --- !u!60 &1957490604
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -27725,7 +27747,6 @@ MonoBehaviour:
   enemy: {fileID: 0}
   hit: {fileID: 0}
   timer: -0.95524377
-  photoSheet: {fileID: 1176835239}
 --- !u!331 &2011392285
 SpriteMask:
   m_ObjectHideFlags: 0
@@ -28066,7 +28087,6 @@ MonoBehaviour:
   enemy: {fileID: 0}
   hit: {fileID: 0}
   timer: -1.6629417
-  photoSheet: {fileID: 1176835239}
 --- !u!331 &2043004321
 SpriteMask:
   m_ObjectHideFlags: 0
@@ -28686,6 +28706,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e04645d2440e49541868e7c0982ae006, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  alphaTimer: 0
 --- !u!60 &2102902256
 PolygonCollider2D:
   m_ObjectHideFlags: 0
