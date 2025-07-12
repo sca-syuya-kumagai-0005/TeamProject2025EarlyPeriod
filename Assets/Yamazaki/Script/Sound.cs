@@ -6,6 +6,6 @@ public class Sound : SoundPlayer
     void Start()
     {
         SEPlayer("SE_8_Door_Open", false);
-        BGMPlayer("Test");
+        BGMPlayer("WitchTheme");
     }
 }
