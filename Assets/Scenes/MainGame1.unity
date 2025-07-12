@@ -1202,7 +1202,6 @@ MonoBehaviour:
   click: 0
   coolTimeUp: 0
   coolTime: 3
-  modeUI: []
   mode: 0
   imageObject: {fileID: 1072513612}
   blueRectangle: {fileID: 1465092709}
@@ -2625,6 +2624,7 @@ GameObject:
   - component: {fileID: 1530340518}
   - component: {fileID: 1530340517}
   - component: {fileID: 1530340522}
+  - component: {fileID: 1530340523}
   m_Layer: 5
   m_Name: Ca
   m_TagString: Untagged
@@ -2735,6 +2735,19 @@ MonoBehaviour:
   nextSceneName: GameOver
   targetScale: {x: 4, y: 4, z: 1}
   tolerance: 0.01
+--- !u!114 &1530340523
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1530340516}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eab40b57ca7e61149befbce7f7ed3cf2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hideOnStart: 1
 --- !u!1001 &1629811590
 PrefabInstance:
   m_ObjectHideFlags: 0
