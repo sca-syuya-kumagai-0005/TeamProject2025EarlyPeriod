@@ -3588,9 +3588,9 @@ MonoBehaviour:
   EvaluationTextA: {fileID: 913161619}
   EvaluationTextB: {fileID: 1119288408}
   EvaluationTextC: {fileID: 724225167}
-  evaluationA: 300
-  evaluationB: 200
-  evaluationC: 100
+  evaluationA: 6000
+  evaluationB: 4000
+  evaluationC: 2000
   EvaluationCanvas: {fileID: 1228297799}
   VirtualCanvas: {fileID: 503431613}
   RankingCanvas: {fileID: 570345006}
