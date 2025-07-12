@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 
 
@@ -14,6 +15,7 @@ public class HitManager : MonoBehaviour
     public bool Click { get { return click; } }
     [SerializeField] bool coolTimeUp;
     [SerializeField] float coolTime;
+   private SpriteRenderer[] modeUI = new SpriteRenderer[2]; 
     float effectTime = 1f;
     bool isCoroutine;
     private GameObject cameraEffect;
@@ -33,6 +35,8 @@ public class HitManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        modeUI[0]=GameObject.Find("CameraMode").GetComponent<SpriteRenderer>();
+        modeUI[1] = GameObject.Find("FlashMode").GetComponent<SpriteRenderer>();
         GameObject obj = GameObject.Find("SpawnManager");//敵を生成するスポナーを検索して代入
         spawnManager = obj.GetComponent<SpawnManager>();//spawnManagerに、上で検索したオブジェクトのInspectorからSpawnManagerを取得
         shoot = false;
@@ -47,6 +51,16 @@ public class HitManager : MonoBehaviour
     
     private void FixedUpdate()
     {
+        if (mode == modeChange.cameraMode)
+        {
+            modeUI[0].color = new Color(1.0f, 1.0f, 1.0f, 1.0f); 
+            modeUI[1].color = new Color(1.0f, 1.0f, 1.0f, 0.5f);
+        }
+        else
+        {
+            modeUI[1].color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+            modeUI[0].color = new Color(1.0f, 1.0f, 1.0f, 0.5f);
+        }
         if (Input.GetKey(KeyCode.A))
         {
             mode = modeChange.cameraMode;
@@ -129,7 +143,10 @@ public class HitManager : MonoBehaviour
             //clickTest2.AlphaStart = true;
         }
         //collider.enabled = false;
-        cameraEffect.SetActive(false);
+        if (SceneManager.GetActiveScene().name != "Result")
+        {
+            cameraEffect.SetActive(false);
+        }
         hitEnemies = new List<GameObject>();
     }
 
@@ -158,7 +175,11 @@ public class HitManager : MonoBehaviour
             //clickTest2.AlphaStart = true;
         }
         // collider.enabled = false;
-        cameraEffect.SetActive(false);
+        if(SceneManager.GetActiveScene().name!="Result")
+        {
+            cameraEffect.SetActive(false);
+        }
+        
         hitEnemies = new List<GameObject>();
     }
 
