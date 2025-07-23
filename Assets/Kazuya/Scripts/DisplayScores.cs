@@ -3,9 +3,6 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Collections;
-using UnityEditor.Experimental.GraphView;
-using System.Linq;
-using System.Xml.Serialization;
 
 public class DisplayScores : MonoBehaviour
 {

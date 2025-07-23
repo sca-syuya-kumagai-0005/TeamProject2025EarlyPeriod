@@ -33,23 +33,23 @@ public class SoundManager : MonoBehaviour
     /// <param name="name">Assetの中から検索するファイルの名前</param>
     protected AudioClip SetSound(string name, string fileName)
     {
-        string[] soundNames = Directory.GetFiles(frontPath + "/" + fileName, "*" + soundExtension);
-        foreach (string soundName in soundNames)
-        {
-            this.soundName.Add(soundName);
-        }
+        //string[] soundNames = Directory.GetFiles(frontPath + "/" + fileName, "*" + soundExtension);
+        //foreach (string soundName in soundNames)
+        //{
+        //    this.soundName.Add(soundName);
+        //}
 
-        if (Resources.Load<AudioClip>(fileName + name) == null)//ファイル内に指定したmp3ファイルがなければ
-        {
-            string str = CheckName(name, fileName);//一致度の高いmp3を検索
-            if (str == "")//一定以上の一致するmp3ファイルを見つけられなければ
-            {
-                Debug.LogError($"指定されたmp3ファイル{name}を見つけられませんでした。ファイル名、保存場所を確認してください");
-                return null;
-            }
-            Debug.LogError($"指定されたmp3ファイル{name}を見つけられませんでした。名前の一致度が高い{str}を再生します。ファイル名、保存場所を確認してください");
-            name = str;
-        }
+        //if (Resources.Load<AudioClip>(fileName + name) == null)//ファイル内に指定したmp3ファイルがなければ
+        //{
+        //    string str = CheckName(name, fileName);//一致度の高いmp3を検索
+        //    if (str == "")//一定以上の一致するmp3ファイルを見つけられなければ
+        //    {
+        //        Debug.LogError($"指定されたmp3ファイル{name}を見つけられませんでした。ファイル名、保存場所を確認してください");
+        //        return null;
+        //    }
+        //    Debug.LogError($"指定されたmp3ファイル{name}を見つけられませんでした。名前の一致度が高い{str}を再生します。ファイル名、保存場所を確認してください");
+        //    name = str;
+        //}
         clip = Resources.Load<AudioClip>(fileName + name);
         return clip;
     }

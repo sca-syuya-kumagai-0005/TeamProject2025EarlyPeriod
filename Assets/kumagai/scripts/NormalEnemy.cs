@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
-using UnityEditor.Rendering;
 using UnityEngine.SceneManagement;
 
 public class NormalEnemy : StayEnemyTemplate
